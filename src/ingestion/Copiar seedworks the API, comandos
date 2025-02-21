@@ -1,0 +1,11 @@
+Copiar seedworks the API, comandos
+Hacer comando para crear  fuente de datos
+Hacer API para agregar funete de datos que llame el comando de crear fuente de datos (202)
+Enviar evento de fuente de datos creato
+Hacer API para listar fuente de datos de un partner 200
+Hacer un comando para inicar una ingestion
+Hacer evento para terminar ingestion 
+
+
+
+Hacer UI

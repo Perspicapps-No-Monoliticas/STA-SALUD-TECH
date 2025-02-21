@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = {extras = ["standard"], version = "*"}
+sqlalchemy = "*"
+python-dotenv = "*"
+pydantic = "*"
+pulsar-client = {extras = ["avro"], version = "*"}
+pydispatcher = "*"
+
+[dev-packages]
+black = "*"
+
+[requires]
+python_version = "3.13"
