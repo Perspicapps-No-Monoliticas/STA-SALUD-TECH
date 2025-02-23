@@ -66,11 +66,11 @@ class UnitOfWork(ABC):
 
     def _publish_domain_events(self, batch):
         for event in self._get_events(batches=[batch]):
-            dispatcher.send(signal=f"{type(event).__name__}Domain", evento=event)
+            dispatcher.send(signal=f"{type(event).__name__}Domain", event=event)
 
     def _publish_events_post_commit(self):
         for event in self._get_events():
-            dispatcher.send(signal=f"{type(event).__name__}Integration", evento=event)
+            dispatcher.send(signal=f"{type(event).__name__}Integration", event=event)
 
 
 _thread_local = local()

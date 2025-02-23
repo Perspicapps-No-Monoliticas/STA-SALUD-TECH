@@ -1,6 +1,6 @@
 from pulsar.schema import AvroSchema
 
-from seedwork.application.commands import Command
+from seedwork.application.commands import Command, dispatch_command
 from seedwork.infraestructure.dispatcher import Dispatcher
 from modules.data_source.application.commands import CreateDataSource
 from modules.data_source.infraestrucuture.schema.v1.commands import (
@@ -30,8 +30,8 @@ class DataSourceDispatcher(Dispatcher):
             schema=AvroSchema(CommandCreateDataSource),
         )
 
-    def publish_command(self, command: Command):
-        switcher = {
-            CreateDataSource: self.publish_create_data_source,
-        }
-        switcher[type(command)](command)
+
+@dispatch_command.register(CreateDataSource)
+def dispatch_create_data_source(command: CreateDataSource):
+    dispatcher = DataSourceDispatcher()
+    dispatcher.publish_create_data_source(command)

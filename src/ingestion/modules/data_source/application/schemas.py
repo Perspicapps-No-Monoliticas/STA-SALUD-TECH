@@ -23,7 +23,7 @@ class DataSourceCreationSchema(BaseModel):
 
 
 class DataSourceDetailSchema(DataSourceCreationSchema):
-    id: int
+    id: uuid.UUID
     created_at: datetime
     updated_at: datetime
     model_config = ConfigDict(from_attributes=True)

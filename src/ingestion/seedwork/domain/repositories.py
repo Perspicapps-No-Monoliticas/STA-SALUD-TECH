@@ -20,6 +20,9 @@ class Repository(ABC):
     @abstractmethod
     def delete(self, entity_id: UUID): ...
 
+    @abstractmethod
+    def get_paginated(self, page: int, per_page: int) -> list[Entity]: ...
+
 
 class Mapper(ABC):
     @abstractmethod

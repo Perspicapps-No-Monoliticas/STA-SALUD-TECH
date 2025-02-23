@@ -80,6 +80,7 @@ services:
       - advertisedAddress=broker
       - advertisedListeners=external:pulsar://127.0.0.1:6650
       - PULSAR_MEM=-Xms512m -Xmx512m -XX:MaxDirectMemorySize=256m
+      - isAllowAutoUpdateSchema=true
     depends_on:
       zookeeper:
         condition: service_healthy

@@ -13,7 +13,7 @@ from .dto import DataSourceDTO, CredentialsDTO
 from .schemas import DataSourceCreationSchema, DataSourceDetailSchema
 
 
-class MapperDataSourceDTOJson(Mapper):
+class DataSourceDTOJsonMapper(Mapper):
 
     def dto_to_external(self, dto: DataSourceDTO) -> Dict:
         return DataSourceDetailSchema(
@@ -51,6 +51,9 @@ class DataSourceMapper(RepMapper):
                 type=entity.credentials.type.value,
             ),
             provider_id=entity.provider_id,
+            id=entity.id,
+            created_at=entity.created_at,
+            updated_at=entity.updated_at,
         )
 
     def dto_to_entity(self, dto: DataSourceDTO) -> DataSource:
@@ -62,4 +65,7 @@ class DataSourceMapper(RepMapper):
                 type=CredentialType(dto.credentials.type),
             ),
             provider_id=dto.provider_id,
+            id=dto.id,
+            created_at=dto.created_at,
+            updated_at=dto.updated_at,
         )

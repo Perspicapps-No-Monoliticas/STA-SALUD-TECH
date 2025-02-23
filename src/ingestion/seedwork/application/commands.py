@@ -14,3 +14,8 @@ class CommandHandler(ABC):
 @singledispatch
 def execute_command(command):
     raise NotImplementedError(f"No handler for command {type(command).__name__}")
+
+
+@singledispatch
+def dispatch_command(command):
+    raise NotImplementedError(f"No dispatcher for command {type(command).__name__}")

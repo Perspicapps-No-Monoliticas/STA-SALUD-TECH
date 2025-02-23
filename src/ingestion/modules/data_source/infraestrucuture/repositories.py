@@ -1,4 +1,5 @@
 from functools import cached_property
+from typing import Optional
 import uuid
 
 from config.db import db
@@ -19,9 +20,16 @@ class DataSurceSQLAlchemyRepository(DataSourceRepository):
     def data_source_factory(self) -> DataSourceFactory:
         return self._data_source_factory
 
-    def get_by_id(self, data_source_id: uuid.UUID) -> domain_entities.DataSource:
+    def get_by_id(
+        self, data_source_id: uuid.UUID
+    ) -> Optional[domain_entities.DataSource]:
         data_source_dto = (
             db.query(DataSourceDTO).filter(DataSourceDTO.id == data_source_id).first()
+        )
+        db.close()
+
+        return self.data_source_factory.create_object(
+            data_source_dto, DataSourceMapper()
         )
 
     def add(self, data_source: domain_entities.DataSource):
@@ -38,3 +46,12 @@ class DataSurceSQLAlchemyRepository(DataSourceRepository):
 
     def get_all(self):
         return db.query(DataSourceDTO).all()
+
+    def get_paginated(self, page: int, per_page: int):
+        offset = (page - 1) * per_page
+        dtos = db.query(DataSourceDTO).offset(offset).limit(per_page).all()
+        db.close()
+        return [
+            self.data_source_factory.create_object(dto, DataSourceMapper())
+            for dto in dtos
+        ]

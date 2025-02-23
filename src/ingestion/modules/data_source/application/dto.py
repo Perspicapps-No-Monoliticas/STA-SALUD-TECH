@@ -13,7 +13,7 @@ class CredentialsDTO(DTO):
 
 @dataclass(frozen=True)
 class DataSourceDTO(DTO):
-    id: int = field(default_factory=int)
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
     provider_id: uuid.UUID = field(default_factory=uuid.uuid4)
     name: str = field(default_factory=str)
     description: str = field(default_factory=str)

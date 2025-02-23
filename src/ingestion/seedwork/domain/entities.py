@@ -25,10 +25,10 @@ class Entity:
         return self._id
 
     @id.setter
-    def id(self, _id: uuid.UUID) -> None:
+    def id(self, id: uuid.UUID) -> None:
         if not InmitableEntity(self).is_valid():
             raise InmutableIdException()
-        self._id = self.next_id()
+        self._id = id
 
 
 @dataclass

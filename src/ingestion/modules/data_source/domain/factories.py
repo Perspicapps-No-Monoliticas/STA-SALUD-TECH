@@ -12,6 +12,10 @@ from .rules import HasCredentials, ValidDataSourceType
 class _DataSourceFactory(Factory):
 
     def create_object(self, obj: any, mapper: Mapper):
+        if not obj:
+            return None
+        if isinstance(obj, list):
+            return [self.create_object(item, mapper) for item in obj]
         if isinstance(obj, Entity):
             return mapper.entity_to_dto(obj)
         data_source: DataSource = mapper.dto_to_entity(obj)
