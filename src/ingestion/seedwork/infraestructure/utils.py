@@ -1,6 +1,6 @@
 import time
 
-from .varaibles import BROKER_HOST
+from .varaibles import BROKER_URL
 
 
 def time_millis():
@@ -8,4 +8,4 @@ def time_millis():
 
 
 def broker_host() -> str:
-    return BROKER_HOST
+    return BROKER_URL

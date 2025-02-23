@@ -10,6 +10,6 @@ ingestion_router.include_router(data_source_router)
 
 
 # health
-@ingestion_router.get("/ping")
+@ingestion_router.get("/health")
 def ping():
     return "pong"
