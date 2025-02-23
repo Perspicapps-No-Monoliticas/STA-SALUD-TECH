@@ -2,7 +2,7 @@
 
 ## General Description
 
-SaludTech de Los Alpes is a microservices-based project designed to handle data ingestion from various data sources. The project leverages Apache Pulsar for messaging and FastAPI for building the API. The project also includes a PostgreSQL database for storing ingested data and uses Docker Compose for container orchestration.
+SaludTech de Los Alpes is a microservices-based project designed to handle data ingestion, cleaning, anonimizaitiona and tagging from various data sources. The project leverages Apache Pulsar for messaging and FastAPI for building the API. The project also includes a PostgreSQL database for storing ingested data and uses Docker Compose for container orchestration.
 
 ## Instructions for Running the Current Docker Compose
 
@@ -40,7 +40,7 @@ Only if running unbut
 
 #### Create Data Source
 
-- **Endpoint**: `POST /data-sources`
+- **Endpoint**: `POST /ingestion/data-sources`
 - **Request Body**:
     ```json
     {
@@ -63,14 +63,14 @@ Only if running unbut
 
 #### List All Data Sources
 
-- **Endpoint**: `GET /data-sources`
+- **Endpoint**: `GET /ingestion/data-sources`
 - **Query Parameters**:
     - `limit` (optional): Number of results to return (default: 100)
     - `page` (optional): Page number to return (default: 1)
 
 #### Get Data Source Detail
 
-- **Endpoint**: `GET /data-sources/:id`
+- **Endpoint**: `GET /ingestion/data-sources/:id`
 - **Path Parameters**:
     - `id`: UUID of the data source
 
@@ -90,10 +90,10 @@ Only if running unbut
 
 You can import the provided Postman collection `salutech.postman_collection.json` to test the API endpoints. The collection includes the following requests:
 
-- **Create Data Source**: `POST /data-sources`
-- **List All Data Sources**: `GET /data-sources`
-- **Get Data Source Detail**: `GET /data-sources/:id`
-- **Check Health**: `GET /health`
+- **Create Data Source**: `POST /ingestion/data-sources`
+- **List All Data Sources**: `GET /ingestion/data-sources`
+- **Get Data Source Detail**: `GET /ingestion/data-sources/:id`
+- **Check Health**: `GET /ingestion/health`
 
 To import the collection:
 
