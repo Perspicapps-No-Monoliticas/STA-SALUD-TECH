@@ -1,7 +1,8 @@
-from abc import ABC, abstractmethod
+from abc import ABC
+from functools import singledispatch
 
+from seedwork.domain.events import DomainEvent
 from seedwork.infraestructure.utils import broker_host
-from seedwork.application.commands import Command
 import pulsar
 
 
@@ -17,3 +18,8 @@ class Dispatcher(ABC):
         producer = client.create_producer(topic=topic, schema=schema)
         producer.send(message)
         client.close()
+
+
+@singledispatch
+def dispatch_event(event: DomainEvent):
+    raise NotImplementedError(f"No dispatcher for event {type(event).__name__}")

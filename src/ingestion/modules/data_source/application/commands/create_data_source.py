@@ -54,6 +54,7 @@ class CreateDataSourceCommandHandler(CreateDataSourceBaseHandler):
         try:
             UnitOfWorkPort.savepoint()
             UnitOfWorkPort.commit()
+            print(f"Data source {data_source.id} created")
         except Exception as e:
             UnitOfWorkPort.rollback()
             raise e

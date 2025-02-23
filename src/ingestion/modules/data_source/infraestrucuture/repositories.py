@@ -20,13 +20,17 @@ class DataSurceSQLAlchemyRepository(DataSourceRepository):
     def data_source_factory(self) -> DataSourceFactory:
         return self._data_source_factory
 
-    def get_by_id(
-        self, data_source_id: uuid.UUID
-    ) -> Optional[domain_entities.DataSource]:
+    def get_by_id_raw(self, data_source_id: uuid.UUID) -> Optional[DataSourceDTO]:
         data_source_dto = (
             db.query(DataSourceDTO).filter(DataSourceDTO.id == data_source_id).first()
         )
         db.close()
+        return data_source_dto
+
+    def get_by_id(
+        self, data_source_id: uuid.UUID
+    ) -> Optional[domain_entities.DataSource]:
+        data_source_dto = self.get_by_id_raw(data_source_id)
 
         return self.data_source_factory.create_object(
             data_source_dto, DataSourceMapper()

@@ -12,10 +12,12 @@ from modules.data_source.application.queries import (
     GetAllDataSourcesQuery,
     GetDataSource,
 )
-from modules.data_source.infraestrucuture.dispatcher import DataSourceDispatcher
 from seedwork.application.commands import dispatch_command
 from seedwork.presentation.api import create_router
 from seedwork.application.queries import execute_query
+
+# Ensure dispatch_command are registered for the commands
+import modules.data_source.infraestrucuture.command_dispatcher  # type: ignore
 
 data_source_router = create_router("/data-sources")
 

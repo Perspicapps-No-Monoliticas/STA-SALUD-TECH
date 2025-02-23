@@ -1,12 +1,14 @@
 from pulsar.schema import AvroSchema
 
-from seedwork.application.commands import Command, dispatch_command
+from seedwork.application.commands import dispatch_command
 from seedwork.infraestructure.dispatcher import Dispatcher
 from modules.data_source.application.commands import CreateDataSource
 from modules.data_source.infraestrucuture.schema.v1.commands import (
     CommandCreateDataSource,
-    CommandCreateDataSourcePayload,
+)
+from modules.data_source.infraestrucuture.schema.v1.common import (
     CredentialsPayload,
+    CreateDataSourcePayload,
 )
 from . import constants
 
@@ -14,7 +16,7 @@ from . import constants
 class DataSourceDispatcher(Dispatcher):
 
     def publish_create_data_source(self, command: CreateDataSource):
-        payload = CommandCreateDataSourcePayload(
+        payload = CreateDataSourcePayload(
             name=command.name,
             description=command.description,
             type=command.type,
