@@ -19,9 +19,9 @@ class DataSourceDispatcher(Dispatcher):
             description=command.description,
             type=command.type,
             credentials=CredentialsPayload(
-                payload=command.credentials.payload, source=command.credentials.source
+                payload=command.credentials.payload, type=command.credentials.type
             ),
-            provider_id=command.provider_id,
+            provider_id=str(command.provider_id),
         )
         integration_command = CommandCreateDataSource(data=payload)
         self.publish_to_broker(

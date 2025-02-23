@@ -1,10 +1,9 @@
 from abc import ABC, abstractmethod
 from enum import Enum
+from threading import local
 
 from seedwork.domain.entities import RootAgregation
 from pydispatch import dispatcher
-
-import pickle
 
 
 class Lock(Enum):
@@ -33,7 +32,7 @@ class UnitOfWork(ABC):
         for batch in batches:
             for arg in batch.args:
                 if isinstance(arg, RootAgregation):
-                    return arg.eventos
+                    return arg.events
         return list()
 
     @abstractmethod
@@ -66,9 +65,62 @@ class UnitOfWork(ABC):
         self._publish_domain_events(batch)
 
     def _publish_domain_events(self, batch):
-        for evento in self._get_events(batches=[batch]):
-            dispatcher.send(signal=f"{type(evento).__name__}Domain", evento=evento)
+        for event in self._get_events(batches=[batch]):
+            dispatcher.send(signal=f"{type(event).__name__}Domain", evento=event)
 
     def _publish_events_post_commit(self):
-        for evento in self._get_events():
-            dispatcher.send(signal=f"{type(evento).__name__}Integration", evento=evento)
+        for event in self._get_events():
+            dispatcher.send(signal=f"{type(event).__name__}Integration", evento=event)
+
+
+_thread_local = local()
+
+
+def sql_alcehmy_unit_of_work():
+    from config.uow import UnitOfWorkSQLAlchmey
+
+    return UnitOfWorkSQLAlchmey()
+
+
+def unit_of_work() -> UnitOfWork:
+    uow = getattr(_thread_local, "uow", None)
+    if not uow:
+        uow = sql_alcehmy_unit_of_work()
+        setattr(_thread_local, "uow", uow)
+    return uow
+
+
+def save_unit_of_work(uow: UnitOfWork):
+    setattr(_thread_local, "uow", uow)
+
+
+class UnitOfWorkPort:
+
+    @staticmethod
+    def commit():
+        uow = unit_of_work()
+        uow.commit()
+        save_unit_of_work(uow)
+
+    @staticmethod
+    def rollback(savepoint=None):
+        uow = unit_of_work()
+        uow.rollback(savepoint=None)
+        save_unit_of_work(uow)
+
+    @staticmethod
+    def savepoint():
+        uow = unit_of_work()
+        uow.savepoint()
+        save_unit_of_work(uow)
+
+    @staticmethod
+    def get_savepoints():
+        uow = unit_of_work()
+        return uow.savepoints()
+
+    @staticmethod
+    def register_batch(operation, *args, lock=Lock.PESIMITS, **kwargs):
+        uow = unit_of_work()
+        uow.register_batch(operation, *args, lock=lock, **kwargs)
+        save_unit_of_work(uow)

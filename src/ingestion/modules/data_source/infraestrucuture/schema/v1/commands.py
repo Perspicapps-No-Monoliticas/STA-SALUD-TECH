@@ -5,7 +5,7 @@ from seedwork.infraestructure.schema.v1.commands import IntegrationCommand
 
 class CredentialsPayload(schema.Record):
     payload = schema.Map(schema.String())
-    source = schema.String
+    type = schema.String()
 
 
 class CommandCreateDataSourcePayload(schema.Record):
@@ -13,7 +13,7 @@ class CommandCreateDataSourcePayload(schema.Record):
     description = schema.String()
     type = schema.String()
     credentials = CredentialsPayload()
-    provider_id = schema.Integer()
+    provider_id = schema.String()
 
 
 class CommandCreateDataSource(IntegrationCommand):

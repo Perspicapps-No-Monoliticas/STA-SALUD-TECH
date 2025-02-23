@@ -1,4 +1,5 @@
 import logging
+import uuid
 
 from pulsar.schema import AvroSchema
 import pulsar
@@ -30,9 +31,9 @@ class CreateDataSourceConsumer(TopicConsumer):
             type=payload.data.type,
             credentials=CredentialsDTO(
                 payload=payload.data.credentials.payload,
-                source=payload.data.credentials.source,
+                type=payload.data.credentials.type,
             ),
-            provider_id=payload.data.provider_id,
+            provider_id=uuid.UUID(payload.data.provider_id),
         )
         execute_command(command)
 

@@ -35,8 +35,8 @@ class Entity:
 class RootAgregation(Entity, RuleValidationMixin):
     events: List[DomainEvent] = field(default_factory=list)
 
-    def agregar_evento(self, event: DomainEvent):
+    def add_event(self, event: DomainEvent):
         self.events.append(event)
 
-    def limpiar_eventos(self):
+    def clean_eventd(self):
         self.events = list()

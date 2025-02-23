@@ -1,25 +1,15 @@
 from enum import Enum
 from datetime import datetime
+import uuid
+
+from modules.data_source.domain.value_objects import CredentialType, DataSourceType
 
 from pydantic import BaseModel, Field, ConfigDict
 
 
-class DataSourceType(Enum):
-    SQL = "SQL"
-    NoSQL = "NoSQL"
-    API = "API"
-    FILE = "FILE"
-
-
-class CrentialType(Enum):
-    PASSWORD = "PASSWORD"
-    TOKEN = "TOKEN"
-    CERTIFICATE = "CERTIFICATE"
-
-
 class CredentialSchema(BaseModel):
     payload: dict
-    source: CrentialType
+    type: CredentialType
 
 
 class DataSourceCreationSchema(BaseModel):
@@ -28,7 +18,8 @@ class DataSourceCreationSchema(BaseModel):
     type: DataSourceType
     credentials: CredentialSchema
     model_config = ConfigDict(from_attributes=True)
-    provider_id: int
+    provider_id: uuid.UUID
+    model_config = ConfigDict(from_attributes=True)
 
 
 class DataSourceDetailSchema(DataSourceCreationSchema):

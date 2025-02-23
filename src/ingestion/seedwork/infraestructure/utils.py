@@ -1,5 +1,6 @@
 import time
-import os
+
+from .varaibles import BROKER_HOST
 
 
 def time_millis():
@@ -7,4 +8,4 @@ def time_millis():
 
 
 def broker_host() -> str:
-    return os.getenv("PULSAR_BROKER_URL", default="pulsar://localhost:6650")
+    return BROKER_HOST
