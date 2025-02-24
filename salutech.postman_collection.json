@@ -1,0 +1,303 @@
+{
+	"info": {
+		"_postman_id": "a2d11e49-10df-465a-b8f8-8885f6b1c309",
+		"name": "salutech",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2331986"
+	},
+	"item": [
+		{
+			"name": "ingestion",
+			"item": [
+				{
+					"name": "data_intake",
+					"item": [
+						{
+							"name": "List all intakes",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{INGESTION_URL}}/data-intakes",
+									"host": [
+										"{{INGESTION_URL}}"
+									],
+									"path": [
+										"data-intakes"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "100",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "3",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create source Copy",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{INGESTION_URL}}/data-intakes",
+									"host": [
+										"{{INGESTION_URL}}"
+									],
+									"path": [
+										"data-intakes"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "data_source",
+					"item": [
+						{
+							"name": "Create source",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"type\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{INGESTION_URL}}/data-sources",
+									"host": [
+										"{{INGESTION_URL}}"
+									],
+									"path": [
+										"data-sources"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "List all soruces",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{INGESTION_URL}}/data-sources",
+									"host": [
+										"{{INGESTION_URL}}"
+									],
+									"path": [
+										"data-sources"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "100",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "3",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get source detail",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{INGESTION_URL}}/data-sources/:id",
+									"host": [
+										"{{INGESTION_URL}}"
+									],
+									"path": [
+										"data-sources",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "8c84be48-084e-4387-8728-309f44209cce"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Health",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{INGESTION_URL}}/health",
+							"host": [
+								"{{INGESTION_URL}}"
+							],
+							"path": [
+								"health"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "3",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete database",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{INGESTION_URL}}/reset-db",
+							"host": [
+								"{{INGESTION_URL}}"
+							],
+							"path": [
+								"reset-db"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "3",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "INGESTION_URL",
+			"value": "localhost:8000/ingestion",
+			"type": "string"
+		}
+	]
+}

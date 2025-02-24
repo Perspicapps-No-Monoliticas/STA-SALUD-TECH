@@ -1,233 +1,162 @@
-# Tutorial 5 - CQRS y manejo de eventos
+# SaludTech de Los Alpes
 
-Repositorio con código base para el uso de un sistema usando el patrón CQRS y usando eventos de dominio e integración para la comunicación asíncrona entre componentes internos parte del mismo contexto acotado y sistemas externos.
+## General Description
 
-Este repositorio está basado en el repositorio de sidecars visto en el tutorial 4 del curso. Por tal motivo, puede usar ese mismo repositorio para entender algunos detalles que este README no cubre.
+SaludTech de Los Alpes is a microservices-based project designed to handle data ingestion from various data sources for a provider using Domain-Driven Design (DDD) principles. The project leverages Apache Pulsar for messaging and FastAPI for building the API. The project also includes a PostgreSQL database for storing ingested data and uses Docker Compose for container orchestration.
 
-## Estructura del proyecto
+## Instructions for Running the Current Docker Compose
 
-Este repositorio sigue en general la misma estructura del repositorio de origen. Sin embargo, hay un par de adiciones importante mencionar:
+To run the project using Docker Compose, follow these steps:
 
-- El directorio **src** ahora cuenta con un nuevo directorio llamado **notificaciones**, el cual representa un servicio de mensajería que recibe eventos de integración propagados del sistema de AeroAlpes, por medio de un broker de eventos.
-- El directorio **src** ahora también cuenta cuenta con un nuevo directorio llamado **ui**, el cual representa nuestra interfaz gráfica la cual puede recibir por medio de un BFF desarrollado en Python usando websockets, las respuestas de nuestros comandos de forma asíncrona.
-- Nuestro proyecto de AeroAlpes ha cambiado de forma considerable. Los siguientes son los cambios relevantes en cada módulo:
-    - **api**: En este módulo se modificó el API de `vuelos.py` el cual cuenta con dos nuevos endpoints: `/reserva-commando` y `/reserva-query`, los cuales por detrás de escenas usan un patrón CQRS como la base de su comunicación.
-    - **modulos/../aplicacion**: Este módulo ahora considera los sub-módulos: `queries` y `comandos`. En dichos directorios pdrá ver como se desacopló las diferentes operaciones lectura y escritura. Vea en el módulo `vuelos` los archivos `obtener_reserva.py` y `crear_reserva.py` para ver como se logra dicho desacoplamiento.
-    - **modulos/../aplicacion/handlers.py**: Estos son los handlers de aplicación que se encargan de oir y reaccionar a eventos. Si consulta el módulo de clientes podra ver que tenemos handlers para oir y reaccionar a los eventos de dominio para poder continuar con una transacción. En el modulo de vuelos encontramos handlers para eventos de integración los cuales pueden ser disparados desde la capa de infraestructura, la cual está consumiendo eventos y comandos del broker de eventos.
-    - **modulos/../dominio/eventos.py**: Este archivo contiene todos los eventos de dominio que son disparados cuando una actividad de dominio es ejecutada de forma correcta.
-    - **modulos/../infraestructura/consumidores.py**: Este archivo cuenta con toda la lógica en términos de infrastructura para consumir los eventos y comandos que provienen del broker de eventos. Desarrollado de una forma funcional.
-    - **modulos/../infraestructura/despachadores.py**: Este archivo cuenta con toda la lógica en terminos de infrastructura para publicar los eventos y comandos de integración en el broker de eventos. Desarrollado de manera OOP.
-    - **modulos/../infraestructura/schema**: En este directorio encontramos la definición de los eventos y comandos de integración. Puede ver que se usa un formato popular en la comunidad de desarrollo de software open source, en donde los directorios/módulos nos dan un indicio de las versiones `/schema/v1/...`. De esta manera podemos estar tranquilos con versiones incrementales y menores, pero listos cuando tengamos que hacer un cambio grande.
-    - **seedwork/aplicacion/comandos.py**: Definición general de los comandos, handlers e interface del despachador.
-    - **seedwork/infraestructura/queries.py**: Definición general de los queries, handlers e interface del despachador.
-    - **seedwork/infraestructura/uow.py**: La Unidad de Trabajo (UoW) mantiene una lista de objetos afectados por una transacción de negocio y coordina los cambios de escritura. Este objeto nos va ser de gran importancia, pues cuando comenzamos a usar eventos de dominio e interactuar con otros módulos, debemos ser capaces de garantizar consistencia entre los diferentes objetos y partes de nuestro sistema.
+1. **Clone the Repository**:
 
-## AeroAlpes
-### Ejecutar Aplicación
+   ```sh
+   git clone https://github.com/your-repo/STA-SALUD-TECH.git
+   cd STA-SALUD-TECH
+   ```
 
-Desde el directorio principal ejecute el siguiente comando.
+2. **Create Necessary Directories**:
 
-```bash
-flask --app src/aeroalpes/api run
-```
+   ```sh
+   sudo mkdir -p ./data/zookeeper ./data/bookkeeper
+   sudo chown -R 10000 data
+   ```
 
-Siempre puede ejecutarlo en modo DEBUG:
+3. **Start Docker Compose**:
 
-```bash
-flask --app src/aeroalpes/api --debug run
-```
+   ```sh
+   docker-compose up -d
+   ```
 
-### Ejecutar pruebas
+4. **Check the Status of the Services**:
 
-```bash
-coverage run -m pytest
-```
+   ```sh
+   docker-compose ps
+   ```
 
-### Ver reporte de covertura
-```bash
-coverage report
-```
+5. **Access the API**:
+   The API will be available at `http://localhost:8000`.
 
-### Crear imagen Docker
+## API Documentation
 
-Desde el directorio principal ejecute el siguiente comando.
+### Ingestion
 
-```bash
-docker build . -f aeroalpes.Dockerfile -t aeroalpes/flask
-```
+#### Data Intake
 
-### Ejecutar contenedora (sin compose)
+##### List All Intakes
 
-Desde el directorio principal ejecute el siguiente comando.
+- **Endpoint**: `GET /ingestion/data-intakes`
+- **Query Parameters**:
+  - `limit` (optional): Number of results to return (default: 100)
+  - `page` (optional): Page number to return (default: 1)
 
-```bash
-docker run -p 5000:5000 aeroalpes/flask
-```
+##### Create Data Intake
 
-## Sidecar/Adaptador
-### Instalar librerías
+- **Endpoint**: `POST /ingestion/data-intakes`
+- **Request Body**:
+  ```json
+  {
+    "provider_id": "afd19370-3387-4b24-9604-1ffe43afe91f"
+  }
+  ```
 
-En el mundo real es probable que ambos proyectos estén en repositorios separados, pero por motivos pedagógicos y de simpleza, 
-estamos dejando ambos proyectos en un mismo repositorio. Sin embargo, usted puede encontrar un archivo `sidecar-requirements.txt`, 
-el cual puede usar para instalar las dependencias de Python para el servidor y cliente gRPC.
+#### Data Source
 
-```bash
-pip install -r sidecar-requirements.txt
-```
+##### Create Data Source
 
-### Ejecutar Servidor
+- **Endpoint**: `POST /ingestion/data-sources`
+- **Request Body**:
+  ```json
+  {
+    "name": "who",
+    "description": "testing",
+    "type": "POSTGRES",
+    "credentials": {
+      "payload": {
+        "DB_USER": "DB_USER",
+        "DB_PASSWORD": "DB_PASSWORD",
+        "DB_HOST": "DB_HOST",
+        "DB_PORT": "DB_PORT",
+        "DB_NAME": "DB_NAME"
+      },
+      "type": "PASSWORD"
+    },
+    "provider_id": "afd19370-3387-4b24-9604-1ffe43afe91f"
+  }
+  ```
 
-Desde el directorio principal ejecute el siguiente comando.
+##### List All Data Sources
 
-```bash
-python src/sidecar/main.py 
-```
+- **Endpoint**: `GET /ingestion/data-sources`
+- **Query Parameters**:
+  - `limit` (optional): Number of results to return (default: 100)
+  - `page` (optional): Page number to return (default: 1)
 
-### Ejecutar Cliente
+##### Get Data Source Detail
 
-Desde el directorio principal ejecute el siguiente comando.
+- **Endpoint**: `GET /ingestion/data-sources/:id`
+- **Path Parameters**:
+  - `id`: UUID of the data source
 
-```bash
-python src/sidecar/cliente.py 
-```
+#### Health
 
-### Compilación gRPC
+##### Check Health
 
-Desde el directorio `src/sidecar` ejecute el siguiente comando.
+- **Endpoint**: `GET /ingestion/health`
+- **Response**:
+  ```json
+  {
+    "status": "healthy"
+  }
+  ```
 
-```bash
-python -m grpc_tools.protoc -Iprotos --python_out=./pb2py --pyi_out=./pb2py --grpc_python_out=./pb2py protos/vuelos.proto
-```
+#### Delete Database
 
-### Crear imagen Docker
+##### Reset Database
 
-Desde el directorio principal ejecute el siguiente comando.
+- **Endpoint**: `POST /ingestion/reset-db`
+- **Request Body**:
+  ```json
+  {
+    "provider_id": "afd19370-3387-4b24-9604-1ffe43afe91f"
+  }
+  ```
 
-```bash
-docker build . -f adaptador.Dockerfile -t aeroalpes/adaptador
-```
+## Postman Collection
 
-### Ejecutar contenedora (sin compose)
+You can import the provided Postman collection [salutech.postman_collection.json](http://_vscodecontentref_/2) to test the API endpoints. The collection includes the following requests:
 
-Desde el directorio principal ejecute el siguiente comando.
+### Ingestion
 
-```bash
-docker run -p 50051:50051 aeroalpes/adaptador
-```
+#### Data Intake
 
-## Microservicio Notificaciones
-### Ejecutar Aplicación
+- **List All Intakes**: `GET /ingestion/data-intakes`
+- **Create Data Intake**: `POST /ingestion/data-intakes`
 
-Desde el directorio principal ejecute el siguiente comando.
+#### Data Source
 
-```bash
-python src/notificaciones/main.py
-```
+- **Create Data Source**: `POST /ingestion/data-sources`
+- **List All Data Sources**: `GET /ingestion/data-sources`
+- **Get Data Source Detail**: `GET /ingestion/data-sources/:id`
 
-### Crear imagen Docker
+#### Health
 
-Desde el directorio principal ejecute el siguiente comando.
+- **Check Health**: `GET /ingestion/health`
 
-```bash
-docker build . -f notificacion.Dockerfile -t aeroalpes/notificacion
-```
+#### Delete Database
 
-### Ejecutar contenedora (sin compose)
+- **Reset Database**: `POST /ingestion/reset-db`
 
-Desde el directorio principal ejecute el siguiente comando.
+To import the collection:
 
-```bash
-docker run aeroalpes/notificacion
-```
+1. Open Postman.
+2. Click on `Import` in the top left corner.
+3. Select the [salutech.postman_collection.json](http://_vscodecontentref_/3) file.
+4. The collection will be imported and available for use.
 
-## UI Websocket Server
-### Ejecutar Aplicación
+## Additional Information
 
-Desde el directorio principal ejecute el siguiente comando.
+- **Docker Compose File**: The [docker-compose.yml](http://_vscodecontentref_/4) file sets up the necessary services including Zookeeper, Pulsar, PostgreSQL, and the FastAPI application.
+- **Environment Variables**: Ensure that the environment variables in the [docker-compose.yml](http://_vscodecontentref_/5) file are correctly set for your environment.
 
-```bash
-python src/ui/main.py
-```
-
-### Crear imagen Docker
-
-Desde el directorio principal ejecute el siguiente comando.
-
-```bash
-docker build . -f ui.Dockerfile -t aeroalpes/ui
-```
-
-### Ejecutar contenedora (sin compose)
-
-Desde el directorio principal ejecute el siguiente comando.
-
-```bash
-docker run aeroalpes/ui
-```
-
-## Docker-compose
-
-Para desplegar toda la arquitectura en un solo comando, usamos `docker-compose`. Para ello, desde el directorio principal, ejecute el siguiente comando:
-
-```bash
-docker-compose up
-```
-
-Si desea detener el ambiente ejecute:
-
-```bash
-docker-compose stop
-```
-
-En caso de querer desplegar dicha topología en el background puede usar el parametro `-d`.
-
-```bash
-docker-compose up -d
-```
-
-## Comandos útiles
-
-### Listar contenedoras en ejecución
-```bash
-docker ps
-```
-
-### Listar todas las contenedoras
-```bash
-docker ps -a
-```
-
-### Parar contenedora
-```bash
-docker stop <id_contenedora>
-```
-
-### Eliminar contenedora
-```bash
-docker rm <id_contenedora>
-```
-
-### Listar imágenes
-```bash
-docker images
-```
-
-### Eliminar imágenes
-```bash
-docker images rm <id_imagen>
-```
-
-### Acceder a una contendora
-```bash
-docker exec -it <id_contenedora> sh
-```
-
-### Kill proceso que esta usando un puerto
-```bash
-fuser -k <puerto>/tcp
-```
-
-### Correr docker-compose usando profiles
-```bash
-docker-compose --profile <pulsar|aeroalpes|ui|notificacion> up
-```
+For more detailed information, please refer to the project documentation or contact the project maintainers.
