@@ -1,0 +1,1 @@
+from .list_provider_intakes import GetAllDataIntakesQuery

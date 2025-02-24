@@ -8,7 +8,8 @@ SLEEP = 1
 
 def init_db():
     # Import all Dtos from the modules infraestrcutures
-    import modules.data_source.infraestrucuture.dto
+    import modules.data_source.infraestrucuture.dto  # type: ignore
+    import modules.data_intake.infraestrucuture.dto  # type: ignore
 
     Base.metadata.create_all(bind=engine)
 

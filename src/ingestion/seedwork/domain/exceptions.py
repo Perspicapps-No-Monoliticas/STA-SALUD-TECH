@@ -29,3 +29,12 @@ class FactoryException(DomainException):
 
     def __str__(self):
         return self.message
+
+
+class ObjectTypeDoesNotExistInDomain(FactoryException):
+
+    def __init__(
+        self,
+        message="No factory  was found in the data source domain for the object type.",
+    ):
+        super().__init__(message)
