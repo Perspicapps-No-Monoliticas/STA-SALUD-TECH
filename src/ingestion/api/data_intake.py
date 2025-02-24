@@ -1,9 +1,13 @@
 from typing import Dict
+import uuid
 
 from fastapi import HTTPException, Query, Response, status
 from pydantic import ValidationError
 
-from modules.data_intake.application.queries import GetAllDataIntakesQuery
+from modules.data_intake.application.queries import (
+    GetAllDataIntakesQuery,
+    GetDataIntake,
+)
 from modules.data_intake.application.mappers import (
     DataIntakeDTOJsonMapper,
     CreateIntakeDTOJsonMapper,
@@ -29,6 +33,18 @@ def list_intakes(page: int = Query(None), limit: int = Query(None)):
         mapper_data_intake.dto_to_external(data_source)
         for data_source in query_result.result
     ]
+
+
+@data_intake_router.get("/{data_intake_id}")
+def get_data_intake(data_intake_id: uuid.UUID):
+    query = GetDataIntake(id=data_intake_id)
+    query_result = execute_query(query)
+    if not query_result.result:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Data source not found"
+        )
+    mapper_data_source = DataIntakeDTOJsonMapper()
+    return mapper_data_source.dto_to_external(query_result.result)
 
 
 @data_intake_router.post("")

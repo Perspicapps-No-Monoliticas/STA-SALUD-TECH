@@ -7,7 +7,7 @@ from modules.data_source.application.mappers import DataSourceMapper
 class GetDataSource(DetailQuery): ...
 
 
-class GetAllDataSourcesQueryHandler(DataSourceQueryBaseHandler):
+class GetDataSourcesQueryHandler(DataSourceQueryBaseHandler):
     def handle(self, query: DetailQuery) -> QueryResult:
         repository = self.repository_factory.create_object(
             DataSourceRepository.__class__
@@ -20,5 +20,5 @@ class GetAllDataSourcesQueryHandler(DataSourceQueryBaseHandler):
 
 @execute_query.register(DetailQuery)
 def execute_get_all_data_sources(query: DetailQuery):
-    handler = GetAllDataSourcesQueryHandler()
+    handler = GetDataSourcesQueryHandler()
     return handler.handle(query)
