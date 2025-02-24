@@ -80,7 +80,7 @@ services:
       - managedLedgerDefaultWriteQuorum=1
       - managedLedgerDefaultAckQuorum=1
       - advertisedAddress=broker
-      - advertisedListeners=external:pulsar://broker:6650
+      - advertisedListeners=local:pulsar://broker:6650,external:pulsar://127.0.0.1:6650
       - PULSAR_MEM=-Xms512m -Xmx512m -XX:MaxDirectMemorySize=256m
       - isAllowAutoUpdateSchema=true
     depends_on:

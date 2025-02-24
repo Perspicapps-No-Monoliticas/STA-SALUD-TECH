@@ -27,7 +27,6 @@ class SQLAlchemyRepository(Repository, Generic[EnttyDTOType, EntityType]):
             .filter(self.alchemy_model.id == enity_id)
             .first()
         )
-        db.close()
         return enity_dto
 
     def get_by_id(self, enity_id: uuid.UUID) -> Optional[EntityType]:
@@ -56,6 +55,4 @@ class SQLAlchemyRepository(Repository, Generic[EnttyDTOType, EntityType]):
         result = [
             self.entity_factory.create_object(dto, self.entity_mapper) for dto in dtos
         ]
-        db.close()
-
         return result

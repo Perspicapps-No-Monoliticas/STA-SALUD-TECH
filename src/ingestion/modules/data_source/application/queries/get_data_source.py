@@ -8,7 +8,7 @@ class GetDataSource(DetailQuery): ...
 
 
 class GetDataSourcesQueryHandler(DataSourceQueryBaseHandler):
-    def handle(self, query: DetailQuery) -> QueryResult:
+    def handle(self, query: GetDataSource) -> QueryResult:
         repository = self.repository_factory.create_object(
             DataSourceRepository.__class__
         )
@@ -18,7 +18,7 @@ class GetDataSourcesQueryHandler(DataSourceQueryBaseHandler):
         return QueryResult(result=data_sources)
 
 
-@execute_query.register(DetailQuery)
-def execute_get_all_data_sources(query: DetailQuery):
+@execute_query.register(GetDataSource)
+def execute_get_all_data_sources(query: GetDataSource):
     handler = GetDataSourcesQueryHandler()
     return handler.handle(query)

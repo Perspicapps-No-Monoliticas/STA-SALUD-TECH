@@ -41,7 +41,7 @@ def get_data_intake(data_intake_id: uuid.UUID):
     query_result = execute_query(query)
     if not query_result.result:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Data source not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Data intake not found"
         )
     mapper_data_source = DataIntakeDTOJsonMapper()
     return mapper_data_source.dto_to_external(query_result.result)
