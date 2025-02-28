@@ -34,7 +34,12 @@ services:
     networks:
       - pulsar
     command: >
-      bash -c "bin/pulsar initialize-cluster-metadata \ --cluster cluster-a \ --zookeeper zookeeper:2181 \ --configuration-store zookeeper:2181 \ --web-service-url http://broker:8080 \ --broker-service-url pulsar://broker:6650"
+      bin/pulsar initialize-cluster-metadata
+      --cluster cluster-a
+      --zookeeper zookeeper:2181
+      --configuration-store zookeeper:2181
+      --web-service-url http://broker:8080
+      --broker-service-url pulsar://broker:6650
     depends_on:
       zookeeper:
         condition: service_healthy
@@ -62,7 +67,8 @@ services:
     # Map the local directory to the container to avoid bookie startup failure due to insufficient container disks.
     volumes:
       - ./data/bookkeeper:/pulsar/data/bookkeeper
-    command: bash -c "bin/apply-config-from-env.py conf/bookkeeper.conf && exec bin/pulsar bookie"
+    command: >
+      bash -c "bin/apply-config-from-env.py conf/bookkeeper.conf && exec bin/pulsar bookie"
 
   # Start broker
   broker:
