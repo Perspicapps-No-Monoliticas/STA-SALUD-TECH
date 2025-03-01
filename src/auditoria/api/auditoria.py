@@ -60,9 +60,9 @@ def dar_todas_regulaciones_usando_query():
         query_resultado = ejecutar_query(ObtenerTodasRegulacion())
         map_regulacion = MapeadorRegulacionDTOJson()
         print("==========CASO TERMINA============") 
-        return [
-         map_regulacion.dto_a_externo(data_source)  for data_source in query_resultado.resultado
-    ]
+        if not query_resultado.resultado:
+         return {}
+        return [map_regulacion.dto_a_externo(data_source)  for data_source in query_resultado.resultado]
         
 @bp.route('/health', methods=('GET',))
 def ping():

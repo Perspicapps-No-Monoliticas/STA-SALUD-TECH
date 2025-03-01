@@ -206,10 +206,10 @@ services:
     working_dir: /app
     environment:
       - BROKER_HOST=broker
-      - DB_USERNAME=root
-      - DB_PASSWORD=adminadmin
+      - DB_USERNAME=auditoria
+      - DB_PASSWORD=admin
       - DB_HOSTNAME=auditoria_db
-      - DB_NAME=auditoria
+      - DB_NAME=postgres_auditoria_db
       - PULSAR_BROKER_URL=pulsar://broker:6650
       - PYTHONPATH=/app
       - PYTHONUNBUFFERED=1
@@ -222,25 +222,21 @@ services:
       broker:
         condition: service_healthy
     ports:
-      - "8002:8002"   
-  # MySQL
+      - "8002:8002"     
   auditoria_db:
-    image: mysql:8
+    image: postgres:latest
     container_name: auditoria_db
-    cap_add:
-      - SYS_NICE
-    restart: always
     environment:
-      - MYSQL_DATABASE=auditoria_db
-      - MYSQL_ROOT_PASSWORD=adminadmin
+      - POSTGRES_USER=auditoria
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=postgres_auditoria_db
+    restart: on-failure
     networks:
       - auditoria_net
     ports:
-      - '3306:3306'
-    volumes:
-      - ./data/mysql:/var/lib/mysql  
+      - '5432:5432'
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p $${MYSQL_ROOT_PASSWORD}"]
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
       interval: 10s
       timeout: 5s
       retries: 5
