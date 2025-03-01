@@ -5,7 +5,10 @@ from modules.data_canonization.domain.repositories import (
 from modules.data_canonization.domain.factories import DataCanonizationFactory
 from modules.data_canonization.domain import entities as domain_entities
 from seedwork.infraestructure.repositories import SQLAlchemyRepository
-from .dto import DataCanonization as DataCanonizationDTO, DataCanonizationStep as DataCanonizationStepDTO
+from .dto import (
+    DataCanonization as DataCanonizationDTO,
+    DataCanonizationStep as DataCanonizationStepDTO,
+)
 from .mappers import DataCanonizationMapper, DataCanonizationStepMapper
 
 
@@ -14,7 +17,9 @@ class DataCanonizationSQLAlchemyRepository(
     SQLAlchemyRepository[DataCanonizationDTO, domain_entities.DataCanonization],
 ):
     def __init__(self):
-        super().__init__(DataCanonizationFactory, DataCanonizationMapper, DataCanonizationDTO)
+        super().__init__(
+            DataCanonizationFactory, DataCanonizationMapper, DataCanonizationDTO
+        )
 
 
 class DataCanonizationStepSQLAlchemyRepository(
@@ -22,4 +27,6 @@ class DataCanonizationStepSQLAlchemyRepository(
     SQLAlchemyRepository[DataCanonizationStepDTO, domain_entities.IntakeStep],
 ):
     def __init__(self):
-        super().__init__(DataCanonizationFactory, DataCanonizationStepMapper, DataCanonizationStepDTO)
+        super().__init__(
+            DataCanonizationFactory, DataCanonizationStepMapper, DataCanonizationStepDTO
+        )

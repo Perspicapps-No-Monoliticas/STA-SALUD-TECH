@@ -6,7 +6,9 @@ from modules.data_canonization.application.commands import StartDataCanonization
 from modules.data_canonization.infraestrucuture.schema.v1.commands import (
     CommandStartDataCanonization,
 )
-from modules.data_canonization.infraestrucuture.schema.v1.common import StartDataCanonizationPayload
+from modules.data_canonization.infraestrucuture.schema.v1.common import (
+    StartDataCanonizationPayload,
+)
 from . import constants
 
 

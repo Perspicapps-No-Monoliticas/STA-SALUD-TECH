@@ -8,7 +8,9 @@ class CreateDataCanonizationBaseHandler(CommandHandler):
 
     def __init__(self):
         self._repository_factory: RepositoryFactory = RepositoryFactory()
-        self._data_canonization_factory: DataCanonizationFactory = DataCanonizationFactory()
+        self._data_canonization_factory: DataCanonizationFactory = (
+            DataCanonizationFactory()
+        )
         super().__init__()
 
     @property
