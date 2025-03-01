@@ -65,14 +65,15 @@ def suscribirse_a_eventos_ingestion_creada(app=None):
     cliente = None
     try:
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')                        
-        consumidor = cliente.subscribe(EVENTO_INTEGRACION_INGESTION_CREADO,  consumer_type=_pulsar.ConsumerType.Shared,subscription_name='sta-sub-eventos', schema=AvroSchema(EventDataSourceCreated))
+        consumidor = cliente.subscribe(EVENTO_INTEGRACION_INGESTION_CREADO,  consumer_type=_pulsar.ConsumerType.Shared,subscription_name='sta-sub-eventos')
 
         while True:
             mensaje = consumidor.receive()
+            print(f'Evento recibido EN PULSAR ingestion_creada: { mensaje.value()}')    
             datos = mensaje.value().data
             print(f'Evento recibido EN PULSAR ingestion_creada: {datos}')    
-            print(f'Evento recibido EN PULSAR ingestion_creada: {mensaje}')       
-            ejecutar_proyeccion(ProyeccionRegulacionesLista(datos.id, EVENTO_INTEGRACION_INGESTION_CREADO, datos.region, mensaje, datos.created_at, datos.updated_at), app=app)                 
+            print(f'Evento recibido EN PULSAR ingestion_creada: {mensaje.value()}')       
+            ejecutar_proyeccion(ProyeccionRegulacionesLista(datos.id, EVENTO_INTEGRACION_INGESTION_CREADO, datos), app=app)                 
             consumidor.acknowledge(mensaje)     
 
         cliente.close()
@@ -94,7 +95,7 @@ def suscribirse_a_eventos_anonimizacion_finalizada_v1(app=None):
             mensaje = consumidor.receive()
             datos = mensaje.value().data
             print(f'Evento recibido EN PULSAR ingestion_creada: {datos}')       
-            ejecutar_proyeccion(ProyeccionRegulacionesLista(datos.id, EVENTO_INTEGRACION_ANONIMIZACION_FINALIZADO, 'PENDING', 'V_1', datos.created_at, [], datos.updated_at), app=app)                 
+            ejecutar_proyeccion(ProyeccionRegulacionesLista(datos.id, EVENTO_INTEGRACION_ANONIMIZACION_FINALIZADO, datos), app=app)    
             consumidor.acknowledge(mensaje)     
 
         cliente.close()

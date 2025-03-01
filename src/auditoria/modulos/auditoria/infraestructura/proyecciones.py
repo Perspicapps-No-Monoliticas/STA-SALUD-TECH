@@ -18,13 +18,10 @@ class ProyeccionRegulacion(Proyeccion, ABC):
 
 class ProyeccionRegulacionesLista(ProyeccionRegulacion):
     print("ENTRA PROYECCION REGULACIONES")
-    def __init__(self, id_evento, nombre, region, payload, fecha_creacion, fecha_actualizacion):
+    def __init__(self, id_evento, nombre_evento, payload):
         self.id_evento = id_evento
-        self.nombre = nombre
-        self.region = region
+        self.nombre_evento = nombre_evento
         self.payload = payload     
-        self.fecha_creacion = fecha_creacion
-        self.fecha_actualizacion = fecha_actualizacion
     
     def ejecutar(self, db=None):
         if not db:
@@ -33,15 +30,12 @@ class ProyeccionRegulacionesLista(ProyeccionRegulacion):
         
         fabrica_repositorio = FabricaRepositorio()
         repositorio = fabrica_repositorio.crear_objeto(RepositorioRegulaciones)
-        print("aca es la proyeccion algo debe hacer Y PERSISTE ALGO, REVISAR")
+        print("aca es la proyeccion Y PERSISTE ALGO, REVISAR")
         repositorio.agregar(
             Regulacion(
                 id=str(self.id_evento), 
-                nombre=str(self.nombre), 
-                region=str(self.region), 
-                payload=str(self.payload), 
-                fecha_creacion=self.fecha_creacion, 
-                fecha_actualizacion=self.fecha_actualizacion))
+                nombre=str(self.id_evento),
+                payload=str(self.payload)))
         db.session.commit()
 
 class ProyeccionRegulacionHandler(ProyeccionHandler):
