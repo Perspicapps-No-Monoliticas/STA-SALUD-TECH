@@ -167,3 +167,29 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  anonimizacion:
+    build: ./src/anonimizacion
+    container_name: anonimizacion-container
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8001
+    environment:
+      - BROKER_HOST=broker
+    networks:
+      - pulsar
+    depends_on:
+      broker:
+        condition: service_healthy
+    ports:
+      - "8001:8001"
+
+  consumidor:
+    build: ./src/consumidor
+    container_name: consumidor-container
+    environment:
+      - BROKER_HOST=broker
+    networks:
+      - pulsar
+    depends_on:
+      broker:
+        condition: service_healthy
+    restart: on-failure
