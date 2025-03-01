@@ -4,6 +4,8 @@ networks:
     driver: bridge
   ingestion_net:
     driver: bridge
+  auditoria_net:
+    driver: bridge
   canonization_net:
     driver: bridge
 services:
@@ -36,7 +38,12 @@ services:
     networks:
       - pulsar
     command: >
-      bash -c "bin/pulsar initialize-cluster-metadata \ --cluster cluster-a \ --zookeeper zookeeper:2181 \ --configuration-store zookeeper:2181 \ --web-service-url http://broker:8080 \ --broker-service-url pulsar://broker:6650"
+      bin/pulsar initialize-cluster-metadata
+      --cluster cluster-a
+      --zookeeper zookeeper:2181
+      --configuration-store zookeeper:2181
+      --web-service-url http://broker:8080
+      --broker-service-url pulsar://broker:6650
     depends_on:
       zookeeper:
         condition: service_healthy
@@ -64,7 +71,8 @@ services:
     # Map the local directory to the container to avoid bookie startup failure due to insufficient container disks.
     volumes:
       - ./data/bookkeeper:/pulsar/data/bookkeeper
-    command: bash -c "bin/apply-config-from-env.py conf/bookkeeper.conf && exec bin/pulsar bookie"
+    command: >
+      bash -c "bin/apply-config-from-env.py conf/bookkeeper.conf && exec bin/pulsar bookie"
 
   # Start broker
   broker:
@@ -206,6 +214,76 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  anonimizacion:
+    build: ./src/anonimizacion
+    container_name: anonimizacion-container
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8001
+    environment:
+      - BROKER_HOST=broker
+    networks:
+      - pulsar
+    depends_on:
+      broker:
+        condition: service_healthy
+    ports:
+      - "8001:8001"
+
+  consumidor:
+    build: ./src/consumidor
+    container_name: consumidor-container
+    environment:
+      - BROKER_HOST=broker
+    networks:
+      - pulsar
+    depends_on:
+      broker:
+        condition: service_healthy
+    restart: on-failure
+
+  # Servicio de Auditoria    
+  auditoria:
+    build: ./src/auditoria
+    container_name: auditoria-container
+    command: flask --app api run --host=0.0.0.0 --port=8002 --debugger   
+    working_dir: /app
+    environment:
+      - BROKER_HOST=broker
+      - DB_USERNAME=auditoria
+      - DB_PASSWORD=admin
+      - DB_HOSTNAME=auditoria_db
+      - DB_NAME=postgres_auditoria_db
+      - PULSAR_BROKER_URL=pulsar://broker:6650
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+    networks:
+      - pulsar
+      - auditoria_net
+    depends_on:
+      auditoria_db:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
+    ports:
+      - "8002:8002"     
+  auditoria_db:
+    image: postgres:latest
+    container_name: auditoria_db
+    environment:
+      - POSTGRES_USER=auditoria
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=postgres_auditoria_db
+    restart: on-failure
+    networks:
+      - auditoria_net
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   canonization:
     build: ./src/canonization
     command: uvicorn main:app --host 0.0.0.0 --port 8005

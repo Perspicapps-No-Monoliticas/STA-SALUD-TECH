@@ -1,0 +1,8 @@
+from pydispatch import dispatcher
+
+from aplicacion.pipeline import PipelineAnonimizacion
+
+dispatcher.connect(PipelineAnonimizacion.handle_tokenizado_iniciado, signal='TokenizadoIniciadoDominio')
+dispatcher.connect(PipelineAnonimizacion.handle_tokenizado_realizado, signal='TokenizadoRealizadoDominio')
+dispatcher.connect(PipelineAnonimizacion.handle_anonimizado_por_script_realizado, signal='AnonimizadoScriptDominio')
+dispatcher.connect(PipelineAnonimizacion.handle_anonimizado_por_modelo_realizado, signal='AnonimizadoModeloDominio')

@@ -1,0 +1,3 @@
+
+EVENTO_INTEGRACION_ANONIMIZACION_INICIADO = 'anonimizacion_iniciada_v1'
+EVENTO_INTEGRACION_ANONIMIZACION_FINALIZADO = 'anonimizacion_finalizada_v1'
