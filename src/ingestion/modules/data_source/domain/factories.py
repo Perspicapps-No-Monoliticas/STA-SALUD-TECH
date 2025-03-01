@@ -3,8 +3,8 @@ from dataclasses import dataclass
 from seedwork.domain.factories import Factory
 from seedwork.domain.repositories import Mapper
 from seedwork.domain.entities import Entity
-from .entities import DataSource
 from .exceptions import ObjectTypeDoesNotExistInDataSourceDomain
+from .entities import DataSource
 from .rules import HasCredentials, ValidDataSourceType
 
 
@@ -12,12 +12,13 @@ from .rules import HasCredentials, ValidDataSourceType
 class _DataSourceFactory(Factory):
 
     def create_object(self, obj: any, mapper: Mapper):
-        if not obj:
-            return None
+
         if isinstance(obj, list):
             return [self.create_object(item, mapper) for item in obj]
         if isinstance(obj, Entity):
             return mapper.entity_to_dto(obj)
+        if obj is None:
+            return None
         data_source: DataSource = mapper.dto_to_entity(obj)
         # Check all required bussines rules
         self.check_rule(HasCredentials(data_source.credentials))
