@@ -41,17 +41,17 @@ class ProcessIngestionService(DomainProcessIngestionService):
         self.data_intake_mapper: DataIntakeMapper = DataIntakeMapper()
         super().__init__()
 
-    def process_ingestion(self, ingestion_uuid: uuid.UUID, coreography_id: uuid.UUID):
+    def process_ingestion(self, ingestion_uuid: uuid.UUID, correlation_id: uuid.UUID):
         print(f"Processing ingestion {ingestion_uuid}")
         #  Change status of ingestion
         data_intake: DataIntake = self.data_intake_repository.get_by_id(ingestion_uuid)
-        data_intake.start_ingestion(coreography_id)
+        data_intake.start_ingestion(correlation_id)
         UnitOfWorkPort.register_batch(self.data_intake_repository.update, data_intake)
         _save_uow()
         data_intake: DataIntake = self.data_intake_repository.get_by_id(ingestion_uuid)
         print(f"Data ingestion {data_intake.id} started")
         time.sleep(random.randint(1, 10))
-        data_intake.finish_ingestions(coreography_id)
+        data_intake.finish_ingestions(correlation_id)
         UnitOfWorkPort.register_batch(self.data_intake_repository.update, data_intake)
         print(f"Data ingestion {data_intake.id} ended")
         _save_uow()

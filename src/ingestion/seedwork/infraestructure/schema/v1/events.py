@@ -8,5 +8,5 @@ class IntegrationEvent(Message):
 
 
 class IntegrationForCoreographyEvent(IntegrationEvent):
-    coreography_id: str
+    correlation_id: str
     data: Message

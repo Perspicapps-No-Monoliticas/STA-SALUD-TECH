@@ -15,19 +15,19 @@ from .base import CreateDataIntakeBaseHandler
 @dataclass
 class StartDataIntakeCommand(Command):
     provider_id: uuid.UUID
-    coreography_id: uuid.UUID
+    correlation_id: uuid.UUID
 
     @classmethod
     def from_dto(cls, dto: DataIntakeDTO):
         return cls(
             provider_id=dto.provider_id,
-            coreography_id=dto.coreography_id,
+            correlation_id=dto.correlation_id,
         )
 
     def to_dto(self) -> DataIntakeDTO:
         return DataIntakeDTO(
             provider_id=self.provider_id,
-            coreography_id=self.coreography_id,
+            correlation_id=self.correlation_id,
         )
 
 
@@ -37,7 +37,7 @@ class StartDataIntakeCommandHandler(CreateDataIntakeBaseHandler):
         data_intake: DataIntake = self.data_intake_factory.create_object(
             data_intake_dto, DataIntakeMapper()
         )
-        data_intake.create_data_intake(data_intake, command.coreography_id)
+        data_intake.create_data_intake(data_intake, command.correlation_id)
 
         repository = self.repository_factory.create_object(
             DataIntakeRepository.__class__
@@ -50,7 +50,7 @@ class StartDataIntakeCommandHandler(CreateDataIntakeBaseHandler):
         except Exception as e:
             UnitOfWorkPort.rollback()
             raise e
-        start_ingestion_task.delay(str(data_intake.id), str(command.coreography_id))
+        start_ingestion_task.delay(str(data_intake.id), str(command.correlation_id))
 
 
 @execute_command.register(StartDataIntakeCommand)
