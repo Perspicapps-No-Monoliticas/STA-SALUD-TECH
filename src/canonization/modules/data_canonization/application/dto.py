@@ -29,3 +29,4 @@ class DataCanonizationDTO(DTO):
     total_records: int = field(default_factory=int)
     repository_in_path: str = field(default_factory=str)
     steps: DataCanonizationStepDTO = field(default_factory=list)
+    correlation_id: uuid.UUID = field(default_factory=uuid.uuid4)

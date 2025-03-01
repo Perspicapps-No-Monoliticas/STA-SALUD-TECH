@@ -4,7 +4,7 @@ from seedwork.domain.factories import Factory
 from seedwork.domain.repositories import Mapper
 from seedwork.domain.entities import Entity
 from .exceptions import ObjectTypeDoesNotExistInDataCanonizationDomain
-from .entities import DataCanonization, IntakeStep
+from .entities import DataCanonization, CanonizationStep
 
 
 @dataclass
@@ -35,7 +35,7 @@ class _DataCanonizationStepFactory(Factory):
             return mapper.entity_to_dto(obj)
         if obj is None:
             return None
-        data_canonization_step: IntakeStep = mapper.dto_to_entity(obj)
+        data_canonization_step: CanonizationStep = mapper.dto_to_entity(obj)
         # Check all required bussines rules
 
         return data_canonization_step
@@ -48,8 +48,8 @@ class DataCanonizationFactory(Factory):
         if mapper.get_type() == DataCanonization.__class__:
             data_canonization_factory = _DataCanonizationFactory()
             return data_canonization_factory.create_object(obj, mapper)
-        if mapper.get_type() == IntakeStep.__class__:
-            intake_step_factory = _DataCanonizationStepFactory()
-            return intake_step_factory.create_object(obj, mapper)
+        if mapper.get_type() == CanonizationStep.__class__:
+            canonization_step_factory = _DataCanonizationStepFactory()
+            return canonization_step_factory.create_object(obj, mapper)
         else:
             raise ObjectTypeDoesNotExistInDataCanonizationDomain()
