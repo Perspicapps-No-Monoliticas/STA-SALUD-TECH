@@ -6,10 +6,10 @@ from seedwork.domain.events import DomainEvent
 
 
 @dataclass
-class DataintakeStarted(DomainEvent):
-    provider_id: uuid.UUID
+class DataintakeCreated(DomainEvent):
     data_intake_id: uuid.UUID
     created_at: datetime
+    coreography_id: uuid.UUID
 
 
 @dataclass
@@ -18,3 +18,11 @@ class DataIntakeStepStarted(DomainEvent):
     provider_id: uuid.UUID
     data_intake_id_step_id: uuid.UUID
     created_at: datetime
+
+
+@dataclass
+class DataIntakeStarted(DataintakeCreated): ...
+
+
+@dataclass
+class DataIntakeFinished(DataIntakeStarted): ...

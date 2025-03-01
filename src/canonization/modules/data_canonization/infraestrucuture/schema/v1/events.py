@@ -12,3 +12,7 @@ class EventDataCanonizationCreatedPayload(StartDataCanonizationPayload):
 
 class EventDataCanonizationCreated(IntegrationEvent):
     data = EventDataCanonizationCreatedPayload()
+
+
+class EventDataCanonizationCompleted(IntegrationEvent):
+    data = EventDataCanonizationCreatedPayload()

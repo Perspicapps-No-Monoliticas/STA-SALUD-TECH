@@ -53,7 +53,7 @@ class StartDataCanonizationCommandHandler(CreateDataCanonizationBaseHandler):
         try:
             UnitOfWorkPort.savepoint()
             UnitOfWorkPort.commit()
-            print(f"Data intake {data_canonization.id} created")
+            print(f"Data canonization {data_canonization.id} created")
         except Exception as e:
             UnitOfWorkPort.rollback()
             raise e

@@ -17,7 +17,7 @@ from seedwork.application.commands import execute_command
 from . import constants
 
 
-class CreateDataSourceConsumer(TopicConsumer):
+class CreateDataSourceCommandConsumer(TopicConsumer):
     TOPIC = constants.CREATE_DATA_SOURCE_V1_TOPIC
     SUBSCRIPTION_NAME = "data-source-creation-command"
     SCHEMA = AvroSchema(CommandCreateDataSource)
@@ -39,5 +39,5 @@ class CreateDataSourceConsumer(TopicConsumer):
 
 
 def init_consumers():
-    consumers = [CreateDataSourceConsumer()]
+    consumers = [CreateDataSourceCommandConsumer()]
     start_threads_for_all_consumers(consumers)

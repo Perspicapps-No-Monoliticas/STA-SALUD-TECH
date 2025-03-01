@@ -13,3 +13,8 @@ DB_NAME = os.getenv("DB_NAME", "ingestion")
 
 DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 BROKER_URL = os.getenv("PULSAR_BROKER_URL", default="pulsar://localhost:6650")
+
+COUNTRY_CODE = os.getenv("COUNTRY_CODE", "US")
+REDDIS_HOST = os.getenv("REDDIS_HOST", "localhost")
+REDDIS_PORT = os.getenv("REDDIS_PORT", "6379")
+CELERY_BROKER_URL = f"redis://{REDDIS_HOST}:{REDDIS_PORT}"

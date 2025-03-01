@@ -29,7 +29,7 @@ class DataCanonizationDetailSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class IntakeInitSchema(BaseModel):
+class CanonizationInitSchema(BaseModel):
     provider_id: uuid.UUID
     anonimization_id: uuid.UUID
     ingestion_id: uuid.UUID

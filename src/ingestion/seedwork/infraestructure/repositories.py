@@ -7,11 +7,11 @@ from seedwork.domain.factories import Factory
 from seedwork.domain.repositories import Mapper
 
 
-EnttyDTOType = TypeVar("EnttyDTOType")
+EntityDTOType = TypeVar("EnttyDTOType")
 EntityType = TypeVar("EntityType")
 
 
-class SQLAlchemyRepository(Repository, Generic[EnttyDTOType, EntityType]):
+class SQLAlchemyRepository(Repository, Generic[EntityDTOType, EntityType]):
 
     def __init__(
         self, entity_factory: Factory, entity_mapper: Mapper, alchemy_model: "Base"
@@ -21,7 +21,7 @@ class SQLAlchemyRepository(Repository, Generic[EnttyDTOType, EntityType]):
         self.alchemy_model = alchemy_model
         super().__init__()
 
-    def get_by_id_raw(self, enity_id: uuid.UUID) -> Optional[EnttyDTOType]:
+    def get_by_id_raw(self, enity_id: uuid.UUID) -> Optional[EntityDTOType]:
         enity_dto = (
             db.query(self.alchemy_model)
             .filter(self.alchemy_model.id == enity_id)
@@ -35,19 +35,26 @@ class SQLAlchemyRepository(Repository, Generic[EnttyDTOType, EntityType]):
         return self.entity_factory.create_object(enity_dto, self.entity_mapper)
 
     def add(self, data_source: EntityType):
-        enity_dto: EnttyDTOType = self.entity_factory.create_object(
+        enity_dto: EntityDTOType = self.entity_factory.create_object(
             data_source, self.entity_mapper
         )
         db.add(enity_dto)
 
     def update(self, data_source: EntityType):
-        db.add(data_source)
+        original_dto = self.get_by_id_raw(data_source.id)
+        entity_dto = self.entity_factory.create_object(data_source, self.entity_mapper)
+        db.merge(entity_dto)
 
     def delete(self, data_source: EntityType):
-        db.delete(data_source)
+        entity_dto = self.entity_factory.create_object(data_source, self.entity_mapper)
+        db.delete(entity_dto)
 
     def get_all(self):
-        return db.query(self.alchemy_model).all()
+        query = db.query(self.alchemy_model).all()
+        result = [
+            self.entity_factory.create_object(dto, self.entity_mapper) for dto in query
+        ]
+        return result
 
     def get_paginated(self, page: int, per_page: int) -> List[EntityType]:
         offset = (page - 1) * per_page

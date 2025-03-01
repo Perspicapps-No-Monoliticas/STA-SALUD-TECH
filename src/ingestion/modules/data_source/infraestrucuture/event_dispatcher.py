@@ -46,9 +46,3 @@ class DataSourceCreatedDispatcher(Dispatcher):
 def publish_data_source_created(event: DataSourceCreated):
     dispatcher = DataSourceCreatedDispatcher()
     dispatcher.handle(event)
-
-
-@dispatch_event.register(DataSourceCreated)
-def publish_data_source_created(event: DataSourceUpdated):
-    dispatcher = DataSourceCreatedDispatcher()
-    dispatcher.handle(event)

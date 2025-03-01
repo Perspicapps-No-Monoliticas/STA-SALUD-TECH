@@ -24,7 +24,7 @@ class DataCanonizationSQLAlchemyRepository(
 
 class DataCanonizationStepSQLAlchemyRepository(
     DataCanonizationStepRepository,
-    SQLAlchemyRepository[DataCanonizationStepDTO, domain_entities.IntakeStep],
+    SQLAlchemyRepository[DataCanonizationStepDTO, domain_entities.CanonizationStep],
 ):
     def __init__(self):
         super().__init__(

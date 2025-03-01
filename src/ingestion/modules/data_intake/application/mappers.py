@@ -101,6 +101,7 @@ class CreateIntakeDTOJsonMapper(Mapper):
         validated_data = IntakeInitSchema(**external)
         data_source_dto = DataIntakeDTO(
             provider_id=validated_data.provider_id,
+            coreography_id=validated_data.coreography_id,
         )
 
         return data_source_dto

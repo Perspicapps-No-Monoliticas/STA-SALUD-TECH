@@ -3,12 +3,12 @@ from dataclasses import dataclass, field
 import uuid
 
 from seedwork.domain.entities import RootAgregation, Entity
-from .value_objects import DataCanonizationStatus, IntakeSpecs
+from .value_objects import DataCanonizationStatus, CanonizationSpecs
 from .events import DataCanonizationStarted
 
 
 @dataclass
-class IntakeStep(Entity):
+class CanonizationStep(Entity):
     data_canonization_id: uuid.UUID = field(default=None)
     ai_model_id: uuid.UUID = field(default=None)
     total_records: int = field(default=None)
@@ -21,8 +21,8 @@ class DataCanonization(RootAgregation):
     anonimization_id: uuid.UUID = field(default=None)
     ingestion_id: uuid.UUID = field(default=None)
     status: DataCanonizationStatus = field(default=None)
-    specs: IntakeSpecs = field(default=None)
-    steps: List[IntakeStep] = field(default=None)
+    specs: CanonizationSpecs = field(default=None)
+    steps: List[CanonizationStep] = field(default=None)
 
     def create_data_canonization(self, data_canonization: "DataCanonization"):
         self.provider_id = data_canonization.provider_id

@@ -1,3 +1,6 @@
+from seedwork.infraestructure.celery import app as celery_app
+
+__all__ = ["celery_app"]
 from seedwork.presentation.api import create_router
 
 from .data_intake import data_intake_router

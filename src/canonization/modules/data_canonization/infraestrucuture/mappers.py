@@ -1,5 +1,5 @@
-from modules.data_canonization.domain.entities import DataCanonization, IntakeStep
-from modules.data_canonization.domain.value_objects import IntakeSpecs
+from modules.data_canonization.domain.entities import DataCanonization, CanonizationStep
+from modules.data_canonization.domain.value_objects import CanonizationSpecs
 from seedwork.domain.repositories import Mapper
 from .dto import (
     DataCanonization as DataCanonizationDTO,
@@ -42,12 +42,12 @@ class DataCanonizationMapper(Mapper):
             created_at=dto.created_at,
             updated_at=dto.updated_at,
             status=dto.status,
-            specs=IntakeSpecs(
+            specs=CanonizationSpecs(
                 total_records=dto.total_records,
                 repository_in_path=dto.repository_in_path,
             ),
             steps=[
-                IntakeStep(
+                CanonizationStep(
                     id=step.id,
                     created_at=step.created_at,
                     updated_at=step.updated_at,
@@ -66,9 +66,9 @@ class DataCanonizationMapper(Mapper):
 
 class DataCanonizationStepMapper(Mapper):
     def get_type(self) -> type:
-        return IntakeStep.__class__
+        return CanonizationStep.__class__
 
-    def entity_to_dto(self, entity: IntakeStep) -> DataCanonizationStepDTO:
+    def entity_to_dto(self, entity: CanonizationStep) -> DataCanonizationStepDTO:
         return DataCanonizationStepDTO(
             id=entity.id,
             data_canonization_id=entity.data_canonization_id,
@@ -78,8 +78,8 @@ class DataCanonizationStepMapper(Mapper):
             total_records=entity.total_records,
         )
 
-    def dto_to_entity(self, dto: DataCanonizationStepDTO) -> IntakeStep:
-        return IntakeStep(
+    def dto_to_entity(self, dto: DataCanonizationStepDTO) -> CanonizationStep:
+        return CanonizationStep(
             id=dto.id,
             data_canonization_id=dto.data_canonization_id,
             created_at=dto.created_at,

@@ -4,7 +4,7 @@ import uuid
 from pulsar.schema import AvroSchema
 import pulsar
 
-from modules.data_intake.infraestrucuture.schema.v1.commands import (
+from modules.data_intake.infraestructure.schema.v1.commands import (
     CommandStartDataIntake,
 )
 from modules.data_intake.application.commands.start_new_ingestion import (
@@ -28,6 +28,7 @@ class CreateDataIntakeConsumer(TopicConsumer):
         logging.info(f"Processing message {message.message_id()}")
         command = StartDataIntakeCommand(
             provider_id=uuid.UUID(payload.data.provider_id),
+            coreography_id=uuid.UUID(payload.data.coreography_id),
         )
         execute_command(command)
 

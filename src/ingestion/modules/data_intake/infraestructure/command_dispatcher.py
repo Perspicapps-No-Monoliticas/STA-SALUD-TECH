@@ -3,10 +3,10 @@ from pulsar.schema import AvroSchema
 from seedwork.application.commands import dispatch_command
 from seedwork.infraestructure.dispatcher import Dispatcher
 from modules.data_intake.application.commands import StartDataIntakeCommand
-from modules.data_intake.infraestrucuture.schema.v1.commands import (
+from modules.data_intake.infraestructure.schema.v1.commands import (
     CommandStartDataIntake,
 )
-from modules.data_intake.infraestrucuture.schema.v1.common import StartDataIntakePayload
+from modules.data_intake.infraestructure.schema.v1.common import StartDataIntakePayload
 from . import constants
 
 
@@ -15,6 +15,7 @@ class DataIntakeDispatcher(Dispatcher):
     def publish_start_data_intake(self, command: StartDataIntakeCommand):
         payload = StartDataIntakePayload(
             provider_id=str(command.provider_id),
+            coreography_id=str(command.coreography_id),
         )
         integration_command = CommandStartDataIntake(data=payload)
         self.publish_to_broker(
