@@ -67,7 +67,7 @@ class RepositorioEventosRegulacionSQLAlchemy(RepositorioEventosRegulaciones):
         evento_dto.id = str(evento.id)
         evento_dto.id_entidad = str(evento.id_regulacion)
         evento_dto.fecha_evento = evento.fecha_creacion
-        evento_dto.version = str(regulacion_evento.specversion)
+        evento_dto.payload = str(regulacion_evento.specpayload)
         evento_dto.tipo_evento = evento.__class__.__name__
         evento_dto.formato_contenido = 'JSON'
         evento_dto.nombre_servicio = str(regulacion_evento.service_name)

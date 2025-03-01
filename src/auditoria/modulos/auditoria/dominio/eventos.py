@@ -11,7 +11,7 @@ class EventoRegulacion(EventoDominio):
 class RegulacionCreada(EventoRegulacion):
     id_regulacion: uuid.UUID = None
     nombre: str = None
-    version: str = None
+    payload: str = None
     region: str = None
     requisitos: list[ov.Requisito] = field(default_factory=list[ov.Requisito])
     fecha_creacion: datetime = None

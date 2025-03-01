@@ -28,7 +28,7 @@ def regulacion_usando_comando():
         comando = CrearRegulacion(regulacion_dto.id,
                                   regulacion_dto.nombre, 
                                   regulacion_dto.region,
-                                  regulacion_dto.version,
+                                  regulacion_dto.payload,
                                   regulacion_dto.fecha_actualizacion,
                                   regulacion_dto.requisitos)
         

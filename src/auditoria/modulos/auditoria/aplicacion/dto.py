@@ -12,7 +12,7 @@ class RegulacionDTO(DTO):
     id: str = field(default_factory=str)
     nombre: str = field(default_factory=str)
     region: str = field(default_factory=str)
-    version: str = field(default_factory=str)
+    payload: str = field(default_factory=str)
     fecha_actualizacion: str = field(default_factory=str)
     fecha_creacion: str = field(default_factory=str)
     requisitos: list[RequisitoDTO] = field(default_factory=list)

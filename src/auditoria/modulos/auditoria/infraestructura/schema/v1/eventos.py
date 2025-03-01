@@ -12,7 +12,7 @@ class RegulacionCreadaPayload(Record):
     id_regulacion = String()
     nombre = String()
     region = String()
-    version = String()
+    payload = String()
     requisitos = Array(Requisito())
     fecha_creacion = Long()       
 
@@ -23,7 +23,7 @@ class EventoRegulacionCreada(EventoIntegracion):
     id = String(default=str(uuid.uuid4()))
     time = Long()
     ingestion = Long(default=time_millis())
-    specversion = String()
+    specpayload = String()
     type = String()
     datacontenttype = String()
     service_name = String()

@@ -18,12 +18,11 @@ class ProyeccionRegulacion(Proyeccion, ABC):
 
 class ProyeccionRegulacionesLista(ProyeccionRegulacion):
     print("ENTRA PROYECCION REGULACIONES")
-    def __init__(self, id_regulacion, nombre, region, version, fecha_creacion, requisitos, fecha_actualizacion):
-        self.id_regulacion = id_regulacion
+    def __init__(self, id_evento, nombre, region, payload, fecha_creacion, fecha_actualizacion):
+        self.id_evento = id_evento
         self.nombre = nombre
         self.region = region
-        self.version = version     
-        self.requisitos = requisitos
+        self.payload = payload     
         self.fecha_creacion = fecha_creacion
         self.fecha_actualizacion = fecha_actualizacion
     
@@ -37,11 +36,10 @@ class ProyeccionRegulacionesLista(ProyeccionRegulacion):
         print("aca es la proyeccion algo debe hacer Y PERSISTE ALGO, REVISAR")
         repositorio.agregar(
             Regulacion(
-                id=str(self.id_regulacion), 
+                id=str(self.id_evento), 
                 nombre=str(self.nombre), 
                 region=str(self.region), 
-                version=str(self.version), 
-                requisitos=self.requisitos,
+                payload=str(self.payload), 
                 fecha_creacion=self.fecha_creacion, 
                 fecha_actualizacion=self.fecha_actualizacion))
         db.session.commit()

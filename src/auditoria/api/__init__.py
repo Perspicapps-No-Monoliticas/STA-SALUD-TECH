@@ -24,8 +24,9 @@ def comenzar_consumidor(app):
     import modulos.auditoria.infraestructura.consumidores as auditorias
 
     # Suscripción a eventos
-    threading.Thread(target=auditorias.suscribirse_a_eventos, args=[app]).start()     
+    #threading.Thread(target=auditorias.suscribirse_a_eventos, args=[app]).start()     
     threading.Thread(target=auditorias.suscribirse_a_eventos_ingestion_creada, args=[app]).start()   
+    threading.Thread(target=auditorias.suscribirse_a_eventos_anonimizacion_finalizada_v1, args=[app]).start()   
 
     # Suscripción a comandos
     threading.Thread(target=auditorias.suscribirse_a_comandos, args=[app]).start()    
@@ -66,7 +67,7 @@ def create_app(configuracion={}):
     @app.route("/spec")
     def spec():
         swag = swagger(app)
-        swag['info']['version'] = "1.0"
+        swag['info']['payload'] = "1.0"
         swag['info']['title'] = "My API"
         return jsonify(swag)
 

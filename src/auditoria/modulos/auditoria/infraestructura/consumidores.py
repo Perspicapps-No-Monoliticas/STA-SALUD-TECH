@@ -1,4 +1,4 @@
-from modulos.auditoria.infraestructura.constantes import EVENTO_INTEGRACION_ANONIMIZACION_INICIADO, EVENTO_INTEGRACION_INGESTION_CREADO
+from modulos.auditoria.infraestructura.constantes import EVENTO_INTEGRACION_ANONIMIZACION_INICIADO, EVENTO_INTEGRACION_INGESTION_CREADO, EVENTO_INTEGRACION_ANONIMIZACION_FINALIZADO
 import pulsar,_pulsar  
 from pulsar.schema import *
 import uuid
@@ -28,7 +28,7 @@ def suscribirse_a_eventos(app=None):
             print(f'Evento recibido EN PULSAR REGULacion: {datos}')
 
             # TODO Identificar el tipo de CRUD del evento: Creacion, actualización o eliminación.
-            ejecutar_proyeccion(ProyeccionRegulacionesLista(datos.id_regulacion, datos.nombre, datos.region, datos.version, datos.fecha_creacion, 
+            ejecutar_proyeccion(ProyeccionRegulacionesLista(datos.id_regulacion, datos.nombre, datos.region, datos.payload, datos.fecha_creacion, 
                                                             datos.requisitos, datos.fecha_creacion), app=app)
             
             consumidor.acknowledge(mensaje)     
@@ -70,12 +70,9 @@ def suscribirse_a_eventos_ingestion_creada(app=None):
         while True:
             mensaje = consumidor.receive()
             datos = mensaje.value().data
-            print(f'Evento recibido EN PULSAR ingestion_creada: {datos}')       
-            ejecutar_proyeccion(ProyeccionRegulacionesLista(datos.id, EVENTO_INTEGRACION_INGESTION_CREADO, 'PENDING', 'V_1', datos.created_at, 
-                                                            [], datos.updated_at), app=app)     
-
-            # TODO Identificar el tipo de CRUD del evento: Creacion, actualización o eliminación.
-            
+            print(f'Evento recibido EN PULSAR ingestion_creada: {datos}')    
+            print(f'Evento recibido EN PULSAR ingestion_creada: {mensaje}')       
+            ejecutar_proyeccion(ProyeccionRegulacionesLista(datos.id, EVENTO_INTEGRACION_INGESTION_CREADO, datos.region, mensaje, datos.created_at, datos.updated_at), app=app)                 
             consumidor.acknowledge(mensaje)     
 
         cliente.close()
@@ -84,4 +81,28 @@ def suscribirse_a_eventos_ingestion_creada(app=None):
         traceback.print_exc()
         if cliente:
             cliente.close()
+            
+            
+def suscribirse_a_eventos_anonimizacion_finalizada_v1(app=None):
+    print("SUSCRBIRSE A ESUCHAR LOS EVENTOS DE finalizada_v1")
+    cliente = None
+    try:
+        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')                        
+        consumidor = cliente.subscribe(EVENTO_INTEGRACION_ANONIMIZACION_FINALIZADO,  consumer_type=_pulsar.ConsumerType.Shared,subscription_name='sta-sub-eventos')
+
+        while True:
+            mensaje = consumidor.receive()
+            datos = mensaje.value().data
+            print(f'Evento recibido EN PULSAR ingestion_creada: {datos}')       
+            ejecutar_proyeccion(ProyeccionRegulacionesLista(datos.id, EVENTO_INTEGRACION_ANONIMIZACION_FINALIZADO, 'PENDING', 'V_1', datos.created_at, [], datos.updated_at), app=app)                 
+            consumidor.acknowledge(mensaje)     
+
+        cliente.close()
+    except:
+        logging.error('ERROR: Suscribiendose al tópico de eventos finalizada_v1')
+        traceback.print_exc()
+        if cliente:
+            cliente.close()            
+            
+            
                  

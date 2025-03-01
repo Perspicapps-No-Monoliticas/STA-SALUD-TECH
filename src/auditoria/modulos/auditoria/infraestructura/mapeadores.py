@@ -12,10 +12,10 @@ from pulsar.schema import *
 
 class MapadeadorEventosRegulacion(Mapeador):
 
-    # Versiones aceptadas
-    versions = ('v1',)
+    # payloades aceptadas
+    payloads = ('v1',)
 
-    LATEST_VERSION = versions[0]
+    LATEST_payload = payloads[0]
 
     def __init__(self):
         self.router = {
@@ -25,13 +25,13 @@ class MapadeadorEventosRegulacion(Mapeador):
     def obtener_tipo(self) -> type:
         return EventoRegulacion.__class__
 
-    def es_version_valida(self, version):
-        for v in self.versions:
-            if v == version:
+    def es_payload_valida(self, payload):
+        for v in self.payloads:
+            if v == payload:
                 return True
         return False
 
-    def _entidad_a_regulacion_creada(self, entidad: RegulacionCreada, version=LATEST_VERSION):
+    def _entidad_a_regulacion_creada(self, entidad: RegulacionCreada, payload=LATEST_payload):
         print(f"ENTRA A RegulacionCreadaPayloadd{entidad}")
         def v1(evento):
             from .schema.v1.eventos import RegulacionCreadaPayload, EventoRegulacionCreada            
@@ -40,7 +40,7 @@ class MapadeadorEventosRegulacion(Mapeador):
             payload = RegulacionCreadaPayload(
                 id_regulacion=str(evento.id_regulacion), 
                 nombre=str(evento.nombre),           
-                version=str(evento.version),           
+                payload=str(evento.payload),           
                 region=str(evento.region),        
                 requisitos=requisitos,              
                 fecha_creacion=int(unix_time_millis(evento.fecha_creacion))
@@ -48,7 +48,7 @@ class MapadeadorEventosRegulacion(Mapeador):
             evento_integracion = EventoRegulacionCreada(id=str(evento.id))
             evento_integracion.id = str(evento.id)
             evento_integracion.time = int(unix_time_millis(evento.fecha_creacion))
-            evento_integracion.specversion = str(version)
+            evento_integracion.specpayload = str(payload)
             evento_integracion.type = 'RegulacionCreada'
             evento_integracion.datacontenttype = 'AVRO'
             evento_integracion.service_name = 'sta'
@@ -56,13 +56,13 @@ class MapadeadorEventosRegulacion(Mapeador):
             print("RETORNA RegulacionCreadaPayload")
             return evento_integracion
                     
-        if not self.es_version_valida(version):
-            raise Exception(f'No se sabe procesar la version {version}')
+        if not self.es_payload_valida(payload):
+            raise Exception(f'No se sabe procesar la payload {payload}')
 
-        if version == 'v1':
+        if payload == 'v1':
             return v1(entidad)       
 
-    def entidad_a_dto(self, entidad: EventoRegulacion, version=LATEST_VERSION) -> RegulacionDTO:
+    def entidad_a_dto(self, entidad: EventoRegulacion, payload=LATEST_payload) -> RegulacionDTO:
         if not entidad:
             raise NoExisteImplementacionParaTipoFabricaExcepcion
         func = self.router.get(entidad.__class__, None)
@@ -70,9 +70,9 @@ class MapadeadorEventosRegulacion(Mapeador):
         if not func:
             raise NoExisteImplementacionParaTipoFabricaExcepcion
 
-        return func(entidad, version=version)
+        return func(entidad, payload=payload)
 
-    def dto_a_entidad(self, dto: RegulacionDTO, version=LATEST_VERSION) -> Regulacion:
+    def dto_a_entidad(self, dto: RegulacionDTO, payload=LATEST_payload) -> Regulacion:
         raise NotImplementedError
 
 
@@ -110,7 +110,7 @@ class MapeadorRegulacion(Mapeador):
         regulacion_dto.id = str(entidad.id)
         regulacion_dto.nombre = str(entidad.nombre)
         regulacion_dto.region = str(entidad.region)
-        regulacion_dto.version = str(entidad.version)
+        regulacion_dto.payload = str(entidad.payload)
         regulacion_dto.fecha_creacion = entidad.fecha_creacion
         regulacion_dto.fecha_actualizacion = entidad.fecha_actualizacion        
 

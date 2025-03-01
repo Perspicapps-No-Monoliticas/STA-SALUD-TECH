@@ -15,7 +15,7 @@ class CrearRegulacion(Comando): #ESTE ES EL COMANDO
     id: str
     nombre: str
     region: str    
-    version: str 
+    payload: str 
     fecha_actualizacion: str 
     requisitos: list[RequisitoDTO]
 
@@ -24,7 +24,7 @@ class CrearRegulacionHandler(CrearRegulacionBaseHandler): #ESTE ES EL HANDLER
     
     def handle(self, comando: CrearRegulacion): #ACA RECIBE EL COMANDO POR PARAMETRO
 
-        regulacion_dto = RegulacionDTO(id=comando.id, nombre=comando.nombre, region=comando.region, version= comando.version, 
+        regulacion_dto = RegulacionDTO(id=comando.id, nombre=comando.nombre, region=comando.region, payload= comando.payload, 
                                        fecha_actualizacion= comando.fecha_actualizacion, requisitos=comando.requisitos)
         regulacion: Regulacion = self.fabrica_auditorias.crear_objeto(regulacion_dto, MapeadorRegulacion())
         regulacion.crear_regulacion(regulacion)
