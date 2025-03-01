@@ -1,5 +1,5 @@
-from src.dominio.entidades import ImagenMedica
-from src.dominio.eventos import AnonimizadoPorScriptRealizado
+from dominio.entidades import ImagenMedica
+from dominio.eventos import AnonimizadoPorScriptRealizado
 from pydispatch import dispatcher
 import time
 

@@ -1,6 +1,13 @@
 from dataclasses import dataclass
-from src.dominio.entidades import ImagenMedica
-from src.seedwork.dominio.eventos import EventoDominio
+from dominio.entidades import ImagenMedica
+from seedwork.dominio.eventos import EventoDominio
+
+@dataclass
+class TokenizadoIniciado(EventoDominio):
+    img: ImagenMedica = None
+
+    def __str__(self):
+        return self.__class__.__name__
 
 @dataclass
 class TokenizadoRealizado(EventoDominio):
