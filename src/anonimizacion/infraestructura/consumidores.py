@@ -20,20 +20,21 @@ def suscribirse_a_eventos():
         while True:
             mensaje = consumidor.receive()
             print(f'Evento recibido: {mensaje.value().data}')
-            
-            payload = InformacionMedicaDTO(
-                correlation_id=mensaje.value().correlation_id,
-                data_ingestion_id=mensaje.data.id_ingestion, 
-                status=mensaje.data.status, 
-                provider_id=mensaje.data.id_proveedor, 
-                repository_out_path=mensaje.data.repository_out_path, 
-                created_at=mensaje.data.created_at, 
-                updated_at=mensaje.data.updated_at, 
-                country_iso=mensaje.data.country_iso
+            payload: DataIngestionFinished = mensaje.value()
+
+            data = InformacionMedicaDTO(
+                correlation_id=payload.correlation_id,
+                data_ingestion_id=payload.data.id_ingestion, 
+                status=payload.data.status, 
+                provider_id=payload.data.id_proveedor, 
+                repository_out_path=payload.data.repository_out_path, 
+                created_at=payload.data.created_at, 
+                updated_at=payload.data.updated_at, 
+                country_iso=payload.data.country_iso
             )
 
             # Process the anonymization
-            comando = AnonimizarInformacionMedica(payload)
+            comando = AnonimizarInformacionMedica(data)
             ejecutar_commando(comando)
             consumidor.acknowledge(mensaje)     
 
