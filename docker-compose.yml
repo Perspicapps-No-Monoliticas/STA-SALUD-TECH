@@ -4,6 +4,8 @@ networks:
     driver: bridge
   ingestion_net:
     driver: bridge
+  canonization_net:
+    driver: bridge
 services:
   # Start zookeeper
   zookeeper:
@@ -155,6 +157,70 @@ services:
       - POSTGRES_DB=postgres_ingestion_db
     networks:
       - ingestion_net
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  canonization:
+    build: ./src/canonization
+    command: uvicorn main:app --host 0.0.0.0 --port 8005
+    container_name: canonization-container
+    environment:
+      - DB_USER=canonization
+      - DB_PASSWORD=admin
+      - DB_HOST=canonization_db
+      - DB_PORT=5432
+      - DB_NAME=postgres_canonization_db
+      - PULSAR_BROKER_URL=pulsar://broker:6650
+    networks:
+      - pulsar
+      - canonization_net
+    depends_on:
+      canonization_db:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
+    ports:
+      - "8005:8005"
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8005/canonization/health || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  canonization_consumer:
+    build: ./src/canonization
+    command: python start_consumers.py
+    container_name: canonization-consumer-container
+    environment:
+      - DB_USER=canonization
+      - DB_PASSWORD=admin
+      - DB_HOST=canonization_db
+      - DB_PORT=5432
+      - DB_NAME=postgres_canonization_db
+      - PULSAR_BROKER_URL=pulsar://broker:6650
+    networks:
+      - pulsar
+      - canonization_net
+    depends_on:
+      canonization_db:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
+      canonization:
+        condition: service_healthy
+    restart: on-failure
+  canonization_db:
+    image: postgres:latest
+    container_name: canonization_db
+    environment:
+      - POSTGRES_USER=canonization
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=postgres_canonization_db
+    networks:
+      - canonization_net
     restart: on-failure
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
