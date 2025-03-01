@@ -1,7 +1,7 @@
 from pulsar.schema import AvroSchema
 
 from modules.data_source.infraestrucuture.repositories import (
-    DataSurceSQLAlchemyRepository,
+    DataSourceSQLAlchemyRepository,
 )
 from modules.data_source.infraestrucuture.schema.v1.events import (
     EventDataSourceCreated,
@@ -18,7 +18,7 @@ from . import constants
 
 class DataSourceCreatedDispatcher(Dispatcher):
     def handle(self, event: DataSourceCreated):
-        data_source_dto = DataSurceSQLAlchemyRepository().get_by_id_raw(
+        data_source_dto = DataSourceSQLAlchemyRepository().get_by_id_raw(
             event.data_source_id
         )
         payload = EventDataSourceCreatedPayload(
