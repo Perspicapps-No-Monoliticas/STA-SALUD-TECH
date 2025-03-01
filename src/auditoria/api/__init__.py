@@ -27,6 +27,11 @@ def comenzar_consumidor(app):
     #threading.Thread(target=auditorias.suscribirse_a_eventos, args=[app]).start()     
     threading.Thread(target=auditorias.suscribirse_a_eventos_ingestion_creada, args=[app]).start()   
     threading.Thread(target=auditorias.suscribirse_a_eventos_anonimizacion_finalizada_v1, args=[app]).start()   
+    threading.Thread(target=auditorias.suscribirse_a_eventos_anonimizacion_iniciado, args=[app]).start()   
+    threading.Thread(target=auditorias.suscribirse_a_comandos_inicio_ingestion, args=[app]).start()   
+    threading.Thread(target=auditorias.suscribirse_a_comandos_inicio_creacion_datasource, args=[app]).start()   
+    
+    
 
     # Suscripción a comandos
     threading.Thread(target=auditorias.suscribirse_a_comandos, args=[app]).start()    

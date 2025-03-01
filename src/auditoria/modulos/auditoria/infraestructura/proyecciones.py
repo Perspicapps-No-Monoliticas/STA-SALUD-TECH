@@ -11,15 +11,14 @@ import logging
 import traceback
 from abc import ABC, abstractmethod
 
-class ProyeccionRegulacion(Proyeccion, ABC):
+class ProyeccionAuditoria(Proyeccion, ABC):
     @abstractmethod
     def ejecutar(self):
         ...
 
-class ProyeccionRegulacionesLista(ProyeccionRegulacion):
+class ProyeccionAuditoriaLista(ProyeccionAuditoria):
     print("ENTRA PROYECCION REGULACIONES")
-    def __init__(self, id_evento, nombre_evento, payload):
-        self.id_evento = id_evento
+    def __init__(self, nombre_evento, payload):        
         self.nombre_evento = nombre_evento
         self.payload = payload     
     
@@ -33,14 +32,13 @@ class ProyeccionRegulacionesLista(ProyeccionRegulacion):
         print("aca es la proyeccion Y PERSISTE ALGO, REVISAR")
         repositorio.agregar(
             Regulacion(
-                id=str(self.id_evento), 
-                nombre=str(self.id_evento),
+                nombre=str(self.nombre_evento),
                 payload=str(self.payload)))
         db.session.commit()
 
-class ProyeccionRegulacionHandler(ProyeccionHandler):
+class ProyeccionAuditoriaHandler(ProyeccionHandler):
     
-    def handle(self, proyeccion: ProyeccionRegulacion):
+    def handle(self, proyeccion: ProyeccionAuditoria):
 
         # TODO El evento de creación no viene con todos los datos de itinerarios, esto tal vez pueda ser una extensión
         # Asi mismo estamos dejando la funcionalidad de persistencia en el mismo método de recepción. Piense que componente
@@ -50,7 +48,7 @@ class ProyeccionRegulacionHandler(ProyeccionHandler):
         proyeccion.ejecutar(db=db)
         
 
-@proyeccion.register(ProyeccionRegulacionesLista)
+@proyeccion.register(ProyeccionAuditoriaLista)
 def ejecutar_proyeccion_regulacion(proyeccion, app=None):
     print("REGISTRAR PROYECCION REGULACIONES")
     if not app:
@@ -58,7 +56,7 @@ def ejecutar_proyeccion_regulacion(proyeccion, app=None):
         return
     try:
         with app.app_context():
-            handler = ProyeccionRegulacionHandler()
+            handler = ProyeccionAuditoriaHandler()
             handler.handle(proyeccion)
             
     except:
