@@ -4,6 +4,8 @@ networks:
     driver: bridge
   ingestion_net:
     driver: bridge
+  auditoria_net:
+    driver: bridge
 services:
   # Start zookeeper
   zookeeper:
@@ -86,7 +88,7 @@ services:
       - managedLedgerDefaultWriteQuorum=1
       - managedLedgerDefaultAckQuorum=1
       - advertisedAddress=broker
-      - advertisedListeners=external:pulsar://broker:6650
+      - advertisedListeners=local:pulsar://broker:6650,external:pulsar://127.0.0.1:6650
       - PULSAR_MEM=-Xms512m -Xmx512m -XX:MaxDirectMemorySize=256m
       - isAllowAutoUpdateSchema=true
     depends_on:
@@ -167,3 +169,72 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  anonimizacion:
+    build: ./src/anonimizacion
+    container_name: anonimizacion-container
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8001
+    environment:
+      - BROKER_HOST=broker
+    networks:
+      - pulsar
+    depends_on:
+      broker:
+        condition: service_healthy
+    ports:
+      - "8001:8001"
+
+  consumidor:
+    build: ./src/consumidor
+    container_name: consumidor-container
+    environment:
+      - BROKER_HOST=broker
+    networks:
+      - pulsar
+    depends_on:
+      broker:
+        condition: service_healthy
+    restart: on-failure
+
+  # Servicio de Auditoria    
+  auditoria:
+    build: ./src/auditoria
+    container_name: auditoria-container
+    command: flask --app api run --host=0.0.0.0 --port=8002 --debugger   
+    working_dir: /app
+    environment:
+      - BROKER_HOST=broker
+      - DB_USERNAME=root
+      - DB_PASSWORD=adminadmin
+      - DB_HOSTNAME=auditoria_db
+      - DB_NAME=auditoria
+      - PULSAR_BROKER_URL=pulsar://broker:6650
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+    networks:
+      - pulsar
+      - auditoria_net
+    depends_on:
+      auditoria_db:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
+    ports:
+      - "8002:8002"   
+  # MySQL
+  auditoria_db:
+    image: mysql:8
+    container_name: auditoria_db
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_DATABASE=auditoria_db
+      - MYSQL_ROOT_PASSWORD=adminadmin
+    networks:
+      - auditoria_net
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      #- ./init.sql:/docker-entrypoint-initdb.d/init.sql  
