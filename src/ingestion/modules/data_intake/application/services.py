@@ -7,7 +7,7 @@ from modules.data_intake.domain.services import (
     ProcessIngestionService as DomainProcessIngestionService,
 )
 from modules.data_intake.domain.factories import DataIntakeFactory
-from modules.data_intake.infraestructure.factories import RepositoryFactory
+from modules.data_intake.infrastructure.factories import RepositoryFactory
 from modules.data_intake.domain.repositories import (
     DataIntakeRepository,
     DataIntakeStepRepository,
@@ -15,7 +15,7 @@ from modules.data_intake.domain.repositories import (
 from .mappers import DataIntakeMapper
 
 
-from seedwork.infraestructure.uow import UnitOfWorkPort
+from seedwork.infrastructure.uow import UnitOfWorkPort
 
 
 def _save_uow():

@@ -217,6 +217,8 @@ services:
       - DB_PORT=5432
       - DB_NAME=postgres_canonization_db
       - PULSAR_BROKER_URL=pulsar://broker:6650
+      - REDIS_HOST=canonization_redis
+      - REDIS_PORT=6379
     networks:
       - pulsar
       - canonization_net
@@ -224,6 +226,8 @@ services:
       canonization_db:
         condition: service_healthy
       broker:
+        condition: service_healthy
+      canonization_redis:
         condition: service_healthy
     ports:
       - "8005:8005"
@@ -244,6 +248,8 @@ services:
       - DB_PORT=5432
       - DB_NAME=postgres_canonization_db
       - PULSAR_BROKER_URL=pulsar://broker:6650
+      - REDIS_HOST=canonization_redis
+      - REDIS_PORT=6379
     networks:
       - pulsar
       - canonization_net
@@ -253,6 +259,8 @@ services:
       broker:
         condition: service_healthy
       canonization:
+        condition: service_healthy
+      canonization_redis:
         condition: service_healthy
     restart: on-failure
   canonization_db:
@@ -267,6 +275,41 @@ services:
     restart: on-failure
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  canonization_worker:
+    build: ./src/canonization
+    command: celery -A celery_worker worker --loglevel=info
+    container_name: canonization-worker-container
+    environment:
+      - DB_USER=canonization
+      - DB_PASSWORD=admin
+      - DB_HOST=canonization_db
+      - DB_PORT=5432
+      - DB_NAME=postgres_canonization_db
+      - PULSAR_BROKER_URL=pulsar://broker:6650
+      - REDIS_HOST=canonization_redis
+      - REDIS_PORT=6379
+    networks:
+      - pulsar
+      - canonization_net
+    depends_on:
+      canonization_db:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
+      canonization_redis:
+        condition: service_healthy
+    restart: on-failure
+  canonization_redis:
+    image: redis:latest
+    container_name: canonization_redis
+    networks:
+      - canonization_net
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping" ]
       interval: 10s
       timeout: 5s
       retries: 5

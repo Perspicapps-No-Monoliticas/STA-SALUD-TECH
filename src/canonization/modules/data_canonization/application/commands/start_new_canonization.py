@@ -5,9 +5,10 @@ from modules.data_canonization.application.dto import DataCanonizationDTO
 from modules.data_canonization.domain.entities import DataCanonization
 from modules.data_canonization.application.mappers import DataCanonizationMapper
 from modules.data_canonization.domain.repositories import DataCanonizationRepository
+from modules.data_canonization.infrastructure.tasks import start_canonization_task
 
 from seedwork.application.commands import Command, execute_command
-from seedwork.infraestructure.uow import UnitOfWorkPort
+from seedwork.infrastructure.uow import UnitOfWorkPort
 from .base import CreateDataCanonizationBaseHandler
 
 
@@ -17,6 +18,7 @@ class StartDataCanonizationCommand(Command):
     anonimization_id: uuid.UUID
     ingestion_id: uuid.UUID
     repository_in_path: str
+    correlation_id: uuid.UUID
 
     @classmethod
     def from_dto(cls, dto: DataCanonizationDTO):
@@ -25,6 +27,7 @@ class StartDataCanonizationCommand(Command):
             anonimization_id=dto.anonimization_id,
             ingestion_id=dto.ingestion_id,
             repository_in_path=dto.repository_in_path,
+            correlation_id=dto.correlation_id,
         )
 
     def to_dto(self) -> DataCanonizationDTO:
@@ -33,6 +36,7 @@ class StartDataCanonizationCommand(Command):
             anonimization_id=self.anonimization_id,
             ingestion_id=self.ingestion_id,
             repository_in_path=self.repository_in_path,
+            correlation_id=self.correlation_id,
         )
 
 
@@ -44,7 +48,7 @@ class StartDataCanonizationCommandHandler(CreateDataCanonizationBaseHandler):
                 data_canonization_dto, DataCanonizationMapper()
             )
         )
-        data_canonization.create_data_canonization(data_canonization)
+        data_canonization.create_data_canonization(command.correlation_id)
 
         repository = self.repository_factory.create_object(
             DataCanonizationRepository.__class__
@@ -57,7 +61,10 @@ class StartDataCanonizationCommandHandler(CreateDataCanonizationBaseHandler):
         except Exception as e:
             UnitOfWorkPort.rollback()
             raise e
-        # TODO: Should trigger a celery taks or something similar
+        print(f"Data canonization  task {data_canonization.id} queued")
+        start_canonization_task.delay(
+            str(data_canonization.id), str(command.correlation_id)
+        )
 
 
 @execute_command.register(StartDataCanonizationCommand)

@@ -6,7 +6,7 @@ from modules.data_intake.domain.events import (
     DataIntakeStarted,
     DataIntakeFinished,
 )
-from seedwork.infraestructure.dispatcher import dispatch_event
+from seedwork.infrastructure.dispatcher import dispatch_event
 from seedwork.domain.events import DomainEvent
 
 

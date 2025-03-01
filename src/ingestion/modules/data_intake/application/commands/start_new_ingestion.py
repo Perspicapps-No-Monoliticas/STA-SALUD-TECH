@@ -5,10 +5,10 @@ from modules.data_intake.application.dto import DataIntakeDTO
 from modules.data_intake.domain.entities import DataIntake
 from modules.data_intake.application.mappers import DataIntakeMapper
 from modules.data_intake.domain.repositories import DataIntakeRepository
-from modules.data_intake.infraestructure.tasks import start_ingestion_task
+from modules.data_intake.infrastructure.tasks import start_ingestion_task
 
 from seedwork.application.commands import Command, execute_command
-from seedwork.infraestructure.uow import UnitOfWorkPort
+from seedwork.infrastructure.uow import UnitOfWorkPort
 from .base import CreateDataIntakeBaseHandler
 
 

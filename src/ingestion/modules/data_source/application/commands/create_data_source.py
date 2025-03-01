@@ -7,7 +7,7 @@ from modules.data_source.application.mappers import DataSourceMapper
 from modules.data_source.domain.repositories import DataSourceRepository
 
 from seedwork.application.commands import Command, execute_command
-from seedwork.infraestructure.uow import UnitOfWorkPort
+from seedwork.infrastructure.uow import UnitOfWorkPort
 from .base import CreateDataSourceBaseHandler
 
 

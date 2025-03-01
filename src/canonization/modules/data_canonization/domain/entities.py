@@ -1,10 +1,15 @@
 from typing import List
 from dataclasses import dataclass, field
 import uuid
+from datetime import datetime
 
 from seedwork.domain.entities import RootAgregation, Entity
 from .value_objects import DataCanonizationStatus, CanonizationSpecs
-from .events import DataCanonizationStarted
+from .events import (
+    DataCanonizationCreated,
+    DataCanonizationStarted,
+    DataCanonizationFinished,
+)
 
 
 @dataclass
@@ -24,14 +29,32 @@ class DataCanonization(RootAgregation):
     specs: CanonizationSpecs = field(default=None)
     steps: List[CanonizationStep] = field(default=None)
 
-    def create_data_canonization(self, data_canonization: "DataCanonization"):
-        self.provider_id = data_canonization.provider_id
-        self.status = data_canonization.status
-        self.specs = data_canonization.specs
-        self.steps = data_canonization.steps
+    def create_data_canonization(self, correlation_id: uuid.UUID):
+        self.status = DataCanonizationStatus.CREATED
+        self.add_event(
+            DataCanonizationCreated(
+                data_canonization_id=self.id,
+                correlation_id=correlation_id,
+                created_at=datetime.now(),
+            )
+        )
 
+    def start_canonization(self, correlation_id: uuid.UUID):
+        self.status = DataCanonizationStatus.IN_PROGRESS
         self.add_event(
             DataCanonizationStarted(
                 data_canonization_id=self.id,
+                correlation_id=correlation_id,
+                created_at=datetime.now(),
+            )
+        )
+
+    def finish_canonization(self, correlation_id: uuid.UUID):
+        self.status = DataCanonizationStatus.COMPLETED
+        self.add_event(
+            DataCanonizationFinished(
+                data_canonization_id=self.id,
+                correlation_id=correlation_id,
+                created_at=datetime.now(),
             )
         )

@@ -34,3 +34,4 @@ class CanonizationInitSchema(BaseModel):
     anonimization_id: uuid.UUID
     ingestion_id: uuid.UUID
     repository_in_path: str
+    correlation_id: uuid.UUID

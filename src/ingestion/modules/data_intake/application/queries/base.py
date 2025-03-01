@@ -2,7 +2,7 @@ from seedwork.application.queries import QueryHandler
 
 
 from modules.data_intake.domain.factories import DataIntakeFactory
-from modules.data_intake.infraestructure.factories import RepositoryFactory
+from modules.data_intake.infrastructure.factories import RepositoryFactory
 
 
 class DataIntakeeQueryBaseHandler(QueryHandler):

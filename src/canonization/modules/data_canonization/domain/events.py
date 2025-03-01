@@ -1,17 +1,23 @@
 from dataclasses import dataclass
 import uuid
+from datetime import datetime
 
 from seedwork.domain.events import DomainEvent
 
 
 @dataclass
-class DataCanonizationStarted(DomainEvent):
+class DataCanonizationCreated(DomainEvent):
     data_canonization_id: uuid.UUID
+    created_at: datetime
+    correlation_id: uuid.UUID
 
 
 @dataclass
-class DataCanonizationFinished(DomainEvent):
-    data_canonization_id: uuid.UUID
+class DataCanonizationStarted(DataCanonizationCreated): ...
+
+
+@dataclass
+class DataCanonizationFinished(DataCanonizationCreated): ...
 
 
 @dataclass

@@ -61,8 +61,7 @@ class DataCanonizationMapper(RepMapper):
             ingestion_id=entity.ingestion_id,
             status=entity.status or DataCanonizationStatus.CREATED,
             total_records=entity.specs.total_records or 0,
-            repository_in_path=entity.specs.repository_in_path
-            or f"{entity.provider_id}/ingestion/{entity.created_at}",
+            repository_in_path=entity.specs.repository_in_path,
             steps=[
                 DataCanonizationStepDTO(
                     id=step.id,
@@ -116,6 +115,7 @@ class CreateCanonizationDTOJsonMapper(Mapper):
             anonimization_id=validated_data.anonimization_id,
             ingestion_id=validated_data.ingestion_id,
             repository_in_path=validated_data.repository_in_path,
+            correlation_id=validated_data.correlation_id,
         )
 
         return data_canonization_dto
@@ -126,4 +126,5 @@ class CreateCanonizationDTOJsonMapper(Mapper):
             anonimization_id=dto.anonimization_id,
             ingestion_id=dto.ingestion_id,
             repository_in_path=dto.repository_in_path,
+            correlation_id=dto.correlation_id,
         ).model_dump()
