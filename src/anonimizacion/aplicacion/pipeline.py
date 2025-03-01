@@ -1,16 +1,23 @@
-from src.infraestructura.tokenizador import Tokenizador
-from src.infraestructura.script_anonimizador import ScriptAnonimizador
-from src.infraestructura.modelo_ia_anonimizador import ModeloIAAnonimizador
-from src.seedwork.aplicacion.handlers import Handler
+from infraestructura import constantes
+from infraestructura.schema.v1.eventos import AnonimizacionFinalizadaPayload, AnonimizacionIniciadaPayload, EventoAnonimizacionFinalizada, EventoAnonimizacionIniciada
+from infraestructura.script_anonimizador import ScriptAnonimizador
+from infraestructura.modelo_ia_anonimizador import ModeloIAAnonimizador
+from infraestructura.despachadores import Despachador
+from seedwork.aplicacion.handlers import Handler
 
 class PipelineAnonimizacion(Handler):
 
-    def __init__(self,):
-        self.tokenizer = Tokenizador()
-
-    def procesar(self, medical_image) -> str:
-        self.tokenizer.generar_token(medical_image)
-        return medical_image.token
+    @staticmethod
+    def handle_tokenizado_iniciado(evento):
+        print(f'Tokenizado iniciado: {evento}')
+        despachador = Despachador()
+        payload = AnonimizacionIniciadaPayload(
+            id_ingestion=str(evento.img.id_ingestion), 
+            id_proveedor=str(evento.img.id_proveedor), 
+            nombre_evento=EventoAnonimizacionIniciada.__name__
+        )
+        evento = EventoAnonimizacionIniciada(data=payload)
+        despachador.publicar_evento(evento, constantes.EVENTO_INTEGRACION_ANONIMIZACION_INICIADO)
 
     @staticmethod
     def handle_tokenizado_realizado(evento):
@@ -25,4 +32,11 @@ class PipelineAnonimizacion(Handler):
     @staticmethod
     def handle_anonimizado_por_modelo_realizado(evento):
         print(f'Anonimizado por modelo realizado: {evento}')
-              
+        despachador = Despachador()
+        payload = AnonimizacionFinalizadaPayload(
+            id_ingestion=str(evento.img.id_ingestion), 
+            id_proveedor=str(evento.img.id_proveedor), 
+            nombre_evento=EventoAnonimizacionFinalizada.__name__
+        )
+        evento = EventoAnonimizacionFinalizada(data=payload)
+        despachador.publicar_evento(evento, constantes.EVENTO_INTEGRACION_ANONIMIZACION_FINALIZADO)

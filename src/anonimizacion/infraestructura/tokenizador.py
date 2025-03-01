@@ -1,14 +1,15 @@
 import hashlib
 import uuid
 import datetime
-from src.dominio.eventos import TokenizadoRealizado
-from src.dominio.entidades import ImagenMedica
+from dominio.eventos import TokenizadoIniciado, TokenizadoRealizado
+from dominio.entidades import ImagenMedica
 from pydispatch import dispatcher
 
 class Tokenizador:
     
     def generar_token(self, medical_image: ImagenMedica):
         try:
+            dispatcher.send(signal='TokenizadoIniciadoDominio', evento=TokenizadoIniciado(img=medical_image))
             # Create a unique token based on image content hash and timestamp
             timestamp = datetime.datetime.now().isoformat()
             #content_hash = hashlib.sha256(medical_image.content).hexdigest()
@@ -21,7 +22,7 @@ class Tokenizador:
             medical_image.token = token
 
             # Emit a signal to indicate tokenization is complete
-            dispatcher.send(signal='TokenizadoDominio', evento=TokenizadoRealizado(token=token, img=medical_image))
+            dispatcher.send(signal='TokenizadoRealizadoDominio', evento=TokenizadoRealizado(token=token, img=medical_image))
         
         except Exception as e:
             print(f"Tokenization failed: {str(e)}")

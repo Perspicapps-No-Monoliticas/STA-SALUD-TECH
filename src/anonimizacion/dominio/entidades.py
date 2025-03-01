@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, Optional, List
-from src.seedwork.dominio.entidades import Entidad
+import uuid
+from seedwork.dominio.entidades import Entidad
 
 @dataclass
 class MetadatosImagen(Entidad):
@@ -13,11 +14,13 @@ class MetadatosImagen(Entidad):
 @dataclass
 class ImagenMedica(Entidad):
     #content: bytes
+    id_ingestion: uuid.UUID = None
+    id_proveedor: uuid.UUID = None
     filename: str = ""
     metadata: MetadatosImagen = None
     
     def __str__(self) -> str:
         return self.filename.upper()
-    
+
     def obtener_metadatos(self) -> MetadatosImagen:
         return self.metadata
