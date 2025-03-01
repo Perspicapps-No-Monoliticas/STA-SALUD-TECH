@@ -14,3 +14,15 @@ class ImagenMedicaDTO(DTO):
     id_proveedor: uuid.UUID = field(default_factory=uuid.uuid4)
     filename: str = field(default_factory=str)
     metadata: MetadatosImagenDTO = field(default_factory=MetadatosImagenDTO)
+
+@dataclass(frozen=True)
+class InformacionMedicaDTO(DTO):
+    correlation_id: str = ""
+    token: str = ""
+    data_ingestion_id: str
+    status: str
+    provider_id: str = ""
+    repository_out_path: Optional[str] = None
+    created_at: str = ""
+    updated_at: str = ""
+    country_iso: str = ""
