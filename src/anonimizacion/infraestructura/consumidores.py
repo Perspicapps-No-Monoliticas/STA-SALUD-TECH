@@ -5,7 +5,7 @@ import traceback
 
 from infraestructura import constantes
 from infraestructura.schema.v1.eventos import EventDataSourceCreated
-import utils
+from infraestructura import utils
 
 def suscribirse_a_eventos():
     cliente = None

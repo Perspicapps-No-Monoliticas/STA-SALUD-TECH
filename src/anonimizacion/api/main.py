@@ -1,23 +1,27 @@
 from typing import Union
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, APIRouter, HTTPException, Response
 from aplicacion.comandos.realizar_anonimizado import AnonimizarImage
 from aplicacion.dto import ImagenMedicaDTO
 from dominio.entidades import ImagenMedica, MetadatosImagen
 from seedwork.aplicacion.comandos import ejecutar_commando
 
 app = FastAPI()
+prefix_router = APIRouter(prefix="/anonimizacion")
 
-@app.get("/")
+@prefix_router.get("/")
 def read_root():
     return {"Hello": "World"}
 
+@prefix_router.get("/ping")
+def ping():
+    return "pong"
 
-@app.get("/items/{item_id}")
+@prefix_router.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
 
 
-@app.post("/anonymize/")
+@prefix_router.post("/anonymize/")
 async def anonymize_image(
     file: ImagenMedicaDTO
 ):
@@ -37,3 +41,5 @@ async def anonymize_image(
     except Exception as e:
         print(f"anonymize_image failed: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+app.include_router(prefix_router)
