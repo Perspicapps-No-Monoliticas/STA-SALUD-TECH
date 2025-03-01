@@ -4,6 +4,8 @@ networks:
     driver: bridge
   ingestion_net:
     driver: bridge
+  canonization_net:
+    driver: bridge
 services:
   # Start zookeeper
   zookeeper:
