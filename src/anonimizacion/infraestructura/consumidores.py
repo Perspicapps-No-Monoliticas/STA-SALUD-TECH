@@ -5,7 +5,6 @@ import traceback
 
 from aplicacion.comandos.realizar_anonimizado import AnonimizarInformacionMedica
 from aplicacion.dto import InformacionMedicaDTO
-from infraestructura import constantes
 from infraestructura.schema.v1.eventos import DataIngestionFinished
 from infraestructura import utils
 from seedwork.aplicacion.comandos import ejecutar_commando
@@ -14,7 +13,7 @@ def suscribirse_a_eventos():
     cliente = None
     try:
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        consumidor = cliente.subscribe(constantes.EVENTO_INTEGRACION_INGESTION_CREADO, 
+        consumidor = cliente.subscribe(f"{utils.country_code()}-data-ingestion-finished-v1", 
                                        consumer_type=_pulsar.ConsumerType.Shared,subscription_name='sta-sub-eventos', 
                                        schema=AvroSchema(DataIngestionFinished))
 

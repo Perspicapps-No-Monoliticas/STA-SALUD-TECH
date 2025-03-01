@@ -28,8 +28,8 @@ class ImagenMedica(Entidad):
 @dataclass
 class InformacionMedica(Entidad):
     token: str = ""
-    data_ingestion_id: str
-    status: str
+    data_ingestion_id: str = ""
+    status: str = ""
     provider_id: str = ""
     repository_out_path: Optional[str] = None
     created_at: str = ""
