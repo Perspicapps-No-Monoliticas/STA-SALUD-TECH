@@ -63,3 +63,9 @@ def dar_todas_regulaciones_usando_query():
         return [
          map_regulacion.dto_a_externo(data_source)  for data_source in query_resultado.resultado
     ]
+        
+@bp.route('/health', methods=('GET',))
+def ping():
+    return "pong"
+        
+    
