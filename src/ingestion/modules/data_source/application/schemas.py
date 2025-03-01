@@ -19,7 +19,6 @@ class DataSourceCreationSchema(BaseModel):
     credentials: CredentialSchema
     model_config = ConfigDict(from_attributes=True)
     provider_id: uuid.UUID
-    model_config = ConfigDict(from_attributes=True)
 
 
 class DataSourceDetailSchema(DataSourceCreationSchema):

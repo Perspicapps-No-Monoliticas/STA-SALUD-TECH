@@ -1,5 +1,3 @@
-from pulsar import schema
-
 from seedwork.infraestructure.schema.v1.commands import IntegrationCommand
 from .common import CreateDataSourcePayload
 
