@@ -9,7 +9,7 @@ from seedwork.domain.events import DomainEvent
 class DataintakeCreated(DomainEvent):
     data_intake_id: uuid.UUID
     created_at: datetime
-    coreography_id: uuid.UUID
+    correlation_id: uuid.UUID
 
 
 @dataclass

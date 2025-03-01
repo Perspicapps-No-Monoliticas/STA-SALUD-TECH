@@ -42,6 +42,11 @@ class ProcessIngestionService(DomainProcessIngestionService):
         super().__init__()
 
     def process_ingestion(self, ingestion_uuid: uuid.UUID, correlation_id: uuid.UUID):
+        # Connect evetns
+
+        from modules.data_intake.application.handle_domain_events import init_producers
+
+        init_producers()
         print(f"Processing ingestion {ingestion_uuid}")
         #  Change status of ingestion
         data_intake: DataIntake = self.data_intake_repository.get_by_id(ingestion_uuid)

@@ -29,4 +29,4 @@ class DataIntakeDetailSchema(BaseModel):
 
 class IntakeInitSchema(BaseModel):
     provider_id: uuid.UUID
-    coreography_id: uuid.UUID
+    correlation_id: uuid.UUID

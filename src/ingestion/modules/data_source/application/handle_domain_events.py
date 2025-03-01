@@ -1,3 +1,5 @@
+import sys
+
 # Listen to local event and publish to pulsar
 from pydispatch import dispatcher
 

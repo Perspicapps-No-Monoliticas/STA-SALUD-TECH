@@ -15,7 +15,7 @@ class DataIntakeDispatcher(Dispatcher):
     def publish_start_data_intake(self, command: StartDataIntakeCommand):
         payload = StartDataIntakePayload(
             provider_id=str(command.provider_id),
-            coreography_id=str(command.coreography_id),
+            correlation_id=str(command.correlation_id),
         )
         integration_command = CommandStartDataIntake(data=payload)
         self.publish_to_broker(

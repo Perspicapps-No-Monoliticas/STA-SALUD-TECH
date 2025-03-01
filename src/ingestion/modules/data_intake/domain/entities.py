@@ -22,7 +22,7 @@ class DataIntake(RootAgregation):
     specs: IntakeSpecs = field(default=None)
     history: List[IntakeStep] = field(default=None)
 
-    def create_data_intake(self, data_intake: "DataIntake", coreography_id: uuid.UUID):
+    def create_data_intake(self, data_intake: "DataIntake", correlation_id: uuid.UUID):
         self.provider_id = data_intake.provider_id
         self.status = data_intake.status
         self.specs = data_intake.specs
@@ -32,28 +32,28 @@ class DataIntake(RootAgregation):
             DataintakeCreated(
                 data_intake_id=self.id,
                 created_at=self.created_at,
-                coreography_id=coreography_id,
+                correlation_id=correlation_id,
             )
         )
 
-    def start_ingestion(self, coreography_id: uuid.UUID):
+    def start_ingestion(self, correlation_id: uuid.UUID):
         self.status = DataIntakeStatus.IN_PROGRESS
         self.updated_at = datetime.now()
         self.add_event(
             DataIntakeStarted(
                 data_intake_id=self.id,
                 created_at=self.created_at,
-                coreography_id=coreography_id,
+                correlation_id=correlation_id,
             )
         )
 
-    def finish_ingestions(self, coreography_id: uuid.UUID):
+    def finish_ingestions(self, correlation_id: uuid.UUID):
         self.status = DataIntakeStatus.COMPLETED
         self.updated_at = datetime.now()
         self.add_event(
             DataIntakeFinished(
                 data_intake_id=self.id,
                 created_at=self.created_at,
-                coreography_id=coreography_id,
+                correlation_id=correlation_id,
             )
         )

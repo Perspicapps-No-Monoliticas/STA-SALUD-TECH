@@ -28,7 +28,7 @@ class CreateDataIntakeConsumer(TopicConsumer):
         logging.info(f"Processing message {message.message_id()}")
         command = StartDataIntakeCommand(
             provider_id=uuid.UUID(payload.data.provider_id),
-            coreography_id=uuid.UUID(payload.data.coreography_id),
+            correlation_id=uuid.UUID(payload.data.correlation_id),
         )
         execute_command(command)
 

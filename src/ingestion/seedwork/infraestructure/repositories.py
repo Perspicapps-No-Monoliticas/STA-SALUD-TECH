@@ -41,7 +41,6 @@ class SQLAlchemyRepository(Repository, Generic[EntityDTOType, EntityType]):
         db.add(enity_dto)
 
     def update(self, data_source: EntityType):
-        original_dto = self.get_by_id_raw(data_source.id)
         entity_dto = self.entity_factory.create_object(data_source, self.entity_mapper)
         db.merge(entity_dto)
 
