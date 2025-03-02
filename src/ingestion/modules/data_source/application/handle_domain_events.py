@@ -1,8 +1,10 @@
+import sys
+
 # Listen to local event and publish to pulsar
 from pydispatch import dispatcher
 
 from modules.data_source.domain.events import DataSourceCreated
-from seedwork.infraestructure.dispatcher import dispatch_event
+from seedwork.infrastructure.dispatcher import dispatch_event
 from seedwork.domain.events import DomainEvent
 
 

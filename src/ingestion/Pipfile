@@ -12,6 +12,7 @@ pulsar-client = {extras = ["avro"], version = "*"}
 pydispatcher = "*"
 psycopg2-binary = "*"
 uvicorn = "*"
+celery = {extras = ["redis"], version = "*"}
 
 [dev-packages]
 black = "*"

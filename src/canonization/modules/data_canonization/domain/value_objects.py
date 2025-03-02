@@ -12,6 +12,6 @@ class DataCanonizationStatus(str, Enum):
 
 
 @dataclass(frozen=True)
-class IntakeSpecs(ValueObject):
+class CanonizationSpecs(ValueObject):
     total_records: int
     repository_in_path: str

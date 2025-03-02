@@ -118,6 +118,8 @@ services:
       - DB_PORT=5432
       - DB_NAME=postgres_ingestion_db
       - PULSAR_BROKER_URL=pulsar://broker:6650
+      - REDIS_HOST=ingestion_redis
+      - REDIS_PORT=6379
     networks:
       - pulsar
       - ingestion_net
@@ -125,6 +127,8 @@ services:
       ingestion_db:
         condition: service_healthy
       broker:
+        condition: service_healthy
+      ingestion_redis:
         condition: service_healthy
     ports:
       - "8000:8000"
@@ -136,7 +140,7 @@ services:
       retries: 5
   ingestion_consumer:
     build: ./src/ingestion
-    command: python start_consumers.py
+    command: python -u start_consumers.py
     container_name: ingestion-consumer-container
     environment:
       - DB_USER=ingestion
@@ -145,6 +149,8 @@ services:
       - DB_PORT=5432
       - DB_NAME=postgres_ingestion_db
       - PULSAR_BROKER_URL=pulsar://broker:6650
+      - REDIS_HOST=ingestion_redis
+      - REDIS_PORT=6379
     networks:
       - pulsar
       - ingestion_net
@@ -154,6 +160,8 @@ services:
       broker:
         condition: service_healthy
       ingestion:
+        condition: service_healthy
+      ingestion_redis:
         condition: service_healthy
     restart: on-failure
   ingestion_db:
@@ -168,6 +176,41 @@ services:
     restart: on-failure
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  ingestion_worker:
+    build: ./src/ingestion
+    command: celery -A celery_worker worker --loglevel=info
+    container_name: ingestion-worker-container
+    environment:
+      - DB_USER=ingestion
+      - DB_PASSWORD=admin
+      - DB_HOST=ingestion_db
+      - DB_PORT=5432
+      - DB_NAME=postgres_ingestion_db
+      - PULSAR_BROKER_URL=pulsar://broker:6650
+      - REDIS_HOST=ingestion_redis
+      - REDIS_PORT=6379
+    networks:
+      - pulsar
+      - ingestion_net
+    depends_on:
+      ingestion_db:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
+      ingestion_redis:
+        condition: service_healthy
+    restart: on-failure
+  ingestion_redis:
+    image: redis:latest
+    container_name: ingestion_redis
+    networks:
+      - ingestion_net
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -199,47 +242,47 @@ services:
     restart: on-failure
 
   # Servicio de Auditoria    
-  auditoria:
-    build: ./src/auditoria
-    container_name: auditoria-container
-    command: flask --app api run --host=0.0.0.0 --port=8002 --debugger   
-    working_dir: /app
-    environment:
-      - BROKER_HOST=broker
-      - DB_USERNAME=auditoria
-      - DB_PASSWORD=admin
-      - DB_HOSTNAME=auditoria_db
-      - DB_NAME=postgres_auditoria_db
-      - PULSAR_BROKER_URL=pulsar://broker:6650
-      - PYTHONPATH=/app
-      - PYTHONUNBUFFERED=1
-    networks:
-      - pulsar
-      - auditoria_net
-    depends_on:
-      auditoria_db:
-        condition: service_healthy
-      broker:
-        condition: service_healthy
-    ports:
-      - "8002:8002"     
-  auditoria_db:
-    image: postgres:latest
-    container_name: auditoria_db
-    environment:
-      - POSTGRES_USER=auditoria
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=postgres_auditoria_db
-    restart: on-failure
-    networks:
-      - auditoria_net
-    ports:
-      - '5432:5432'
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  # auditoria:
+  #   build: ./src/auditoria
+  #   container_name: auditoria-container
+  #   command: flask --app api run --host=0.0.0.0 --port=8002 --debugger   
+  #   working_dir: /app
+  #   environment:
+  #     - BROKER_HOST=broker
+  #     - DB_USERNAME=auditoria
+  #     - DB_PASSWORD=admin
+  #     - DB_HOSTNAME=auditoria_db
+  #     - DB_NAME=postgres_auditoria_db
+  #     - PULSAR_BROKER_URL=pulsar://broker:6650
+  #     - PYTHONPATH=/app
+  #     - PYTHONUNBUFFERED=1
+  #   networks:
+  #     - pulsar
+  #     - auditoria_net
+  #   depends_on:
+  #     auditoria_db:
+  #       condition: service_healthy
+  #     broker:
+  #       condition: service_healthy
+  #   ports:
+  #     - "8002:8002"     
+  # auditoria_db:
+  #   image: postgres:latest
+  #   container_name: auditoria_db
+  #   environment:
+  #     - POSTGRES_USER=auditoria
+  #     - POSTGRES_PASSWORD=admin
+  #     - POSTGRES_DB=postgres_auditoria_db
+  #   restart: on-failure
+  #   networks:
+  #     - auditoria_net
+  #   ports:
+  #     - '5432:5432'
+  #   healthcheck:
+  #     test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
 
   canonization:
     build: ./src/canonization
@@ -252,6 +295,8 @@ services:
       - DB_PORT=5432
       - DB_NAME=postgres_canonization_db
       - PULSAR_BROKER_URL=pulsar://broker:6650
+      - REDIS_HOST=canonization_redis
+      - REDIS_PORT=6379
     networks:
       - pulsar
       - canonization_net
@@ -259,6 +304,8 @@ services:
       canonization_db:
         condition: service_healthy
       broker:
+        condition: service_healthy
+      canonization_redis:
         condition: service_healthy
     ports:
       - "8005:8005"
@@ -270,7 +317,7 @@ services:
       retries: 5
   canonization_consumer:
     build: ./src/canonization
-    command: python start_consumers.py
+    command: python -u start_consumers.py
     container_name: canonization-consumer-container
     environment:
       - DB_USER=canonization
@@ -279,6 +326,8 @@ services:
       - DB_PORT=5432
       - DB_NAME=postgres_canonization_db
       - PULSAR_BROKER_URL=pulsar://broker:6650
+      - REDIS_HOST=canonization_redis
+      - REDIS_PORT=6379
     networks:
       - pulsar
       - canonization_net
@@ -288,6 +337,8 @@ services:
       broker:
         condition: service_healthy
       canonization:
+        condition: service_healthy
+      canonization_redis:
         condition: service_healthy
     restart: on-failure
   canonization_db:
@@ -302,6 +353,41 @@ services:
     restart: on-failure
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  canonization_worker:
+    build: ./src/canonization
+    command: celery -A celery_worker worker --loglevel=info
+    container_name: canonization-worker-container
+    environment:
+      - DB_USER=canonization
+      - DB_PASSWORD=admin
+      - DB_HOST=canonization_db
+      - DB_PORT=5432
+      - DB_NAME=postgres_canonization_db
+      - PULSAR_BROKER_URL=pulsar://broker:6650
+      - REDIS_HOST=canonization_redis
+      - REDIS_PORT=6379
+    networks:
+      - pulsar
+      - canonization_net
+    depends_on:
+      canonization_db:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
+      canonization_redis:
+        condition: service_healthy
+    restart: on-failure
+  canonization_redis:
+    image: redis:latest
+    container_name: canonization_redis
+    networks:
+      - canonization_net
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping" ]
       interval: 10s
       timeout: 5s
       retries: 5

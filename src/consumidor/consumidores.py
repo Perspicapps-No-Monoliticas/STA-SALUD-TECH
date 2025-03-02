@@ -12,7 +12,7 @@ def suscribirse_a_eventos():
     cliente = None
     try:
         cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        consumidor = cliente.subscribe('eventos-anonimizacion-iniciada', consumer_type=_pulsar.ConsumerType.Shared,subscription_name='sta-sub-eventos', schema=AvroSchema(EventoAnonimizacionIniciada))
+        consumidor = cliente.subscribe('anonimizacion_finalizada_v1', consumer_type=_pulsar.ConsumerType.Shared,subscription_name='sta-sub-eventos', schema=AvroSchema(EventoAnonimizacionFinalizada))
 
         while True:
             mensaje = consumidor.receive()
