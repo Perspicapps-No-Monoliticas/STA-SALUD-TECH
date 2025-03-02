@@ -10,7 +10,7 @@ from modules.data_canonization.infrastructure.schema.v1.commands import (
     CommandStartDataCanonization,
 )
 from modules.data_canonization.infrastructure.schema.v1.events import (
-    EventDataAnonimizationCompleted,
+    EventoAnonimizacionFinalizada,
     AnonimizacionFinalizadaPayload,
 )
 from modules.data_canonization.application.commands.start_new_canonization import (
@@ -45,8 +45,8 @@ class CreateDataCanonizationConsumer(TopicConsumer):
 
 class ListenToAnonimizationCompletedConsumer(TopicConsumer):
     TOPIC = constants.ANONIMIZATION_COMPLETED_V1_TOPIC
-    SUBSCRIPTION_NAME = "anonimization-completed-event"
-    SCHEMA = AvroSchema(EventDataAnonimizationCompleted)
+    SUBSCRIPTION_NAME = "canonization-anonimization-completed"
+    SCHEMA = AvroSchema(EventoAnonimizacionFinalizada)
 
     def process_message(self, message: pulsar.Message):
         payload: AnonimizacionFinalizadaPayload = message.value()

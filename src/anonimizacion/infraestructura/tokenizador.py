@@ -9,7 +9,7 @@ class Tokenizador:
     
     def generar_token(self, medical_image: InformacionMedicaDTO):
         try:
-            dispatcher.send(signal='TokenizadoIniciadoDominio', evento=TokenizadoIniciado(img=medical_image))
+            dispatcher.send(signal='TokenizadoIniciadoDominio', evento=TokenizadoIniciado(data=medical_image))
             # Create a unique token based on image content hash and timestamp
             timestamp = datetime.datetime.now().isoformat()
             content_hash = hashlib.sha256(medical_image.repository_out_path.encode()).hexdigest()

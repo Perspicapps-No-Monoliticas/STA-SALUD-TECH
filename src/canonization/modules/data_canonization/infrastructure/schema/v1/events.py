@@ -1,6 +1,7 @@
 from pulsar import schema
 
 from seedwork.infrastructure.schema.v1.events import IntegrationForCoreographyEvent
+from seedwork.infrastructure.schema.v1.messages import Message
 from .common import StartDataCanonizationPayload
 
 
@@ -32,5 +33,5 @@ class AnonimizacionFinalizadaPayload(schema.Record):
     ruta_repositorio = schema.String()
 
 
-class EventDataAnonimizationCompleted(IntegrationForCoreographyEvent):
+class EventoAnonimizacionFinalizada(Message):
     data = AnonimizacionFinalizadaPayload()

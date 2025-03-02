@@ -1,15 +1,14 @@
-from typing import Optional
 from pulsar.schema import Record, String
 from seedwork.infraestructura.schema.v1.eventos import EventoIntegracion, IntegrationForCoreographyEvent
 
 class DataIngestionPayload(Record):
-    data_ingestion_id: str
-    provider_id: str
-    status: str
-    repository_out_path: Optional[str]
-    created_at: str
-    updated_at: str
-    country_iso: str
+    data_ingestion_id = String()
+    provider_id = String()
+    status = String()
+    repository_out_path = String()
+    created_at = String()
+    updated_at = String()
+    country_iso = String()
 
 class AnonimizacionIniciadaPayload(Record):
     id_ingestion = String()

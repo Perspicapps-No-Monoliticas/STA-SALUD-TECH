@@ -4,7 +4,7 @@ from seedwork.dominio.eventos import EventoDominio
 
 @dataclass
 class TokenizadoIniciado(EventoDominio):
-    img: ImagenMedica = None
+    data: InformacionMedica = None
 
     def __str__(self):
         return self.__class__.__name__

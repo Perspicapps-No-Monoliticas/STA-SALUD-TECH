@@ -6,13 +6,13 @@ from seedwork.infrastructure.schema.v1.events import IntegrationForCoreographyEv
 
 
 class DataIngestionPayload(schema.Record):
-    data_ingestion_id: str
-    provider_id: str
-    status: str
-    repository_out_path: Optional[str]
-    created_at: str
-    updated_at: str
-    country_iso: str
+    data_ingestion_id = schema.String()
+    provider_id = schema.String()
+    status = schema.String()
+    repository_out_path = schema.String()
+    created_at = schema.String()
+    updated_at = schema.String()
+    country_iso = schema.String()
 
 
 class DataIngestionCreated(IntegrationForCoreographyEvent):
