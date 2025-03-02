@@ -1,8 +1,19 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: pulsar-config
+  name: sta-config
   namespace: sta-salud
 data:
   BROKER_HOST: "broker"
   PULSAR_BROKER_URL: "pulsar://broker:6650"
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+  INGESTION_DB_HOST: "ingestion-db"
+  INGESTION_DB_PORT: "5432"
+  INGESTION_DB_NAME: "postgres_ingestion_db"
+  AUDITORIA_DB_HOST: "auditoria-db"
+  AUDITORIA_DB_PORT: "5432"
+  AUDITORIA_DB_NAME: "postgres_auditoria_db"
+  CANONIZATION_DB_HOST: "canonization-db"
+  CANONIZATION_DB_PORT: "5432"
+  CANONIZATION_DB_NAME: "postgres_canonization_db"
