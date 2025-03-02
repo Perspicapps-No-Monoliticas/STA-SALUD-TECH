@@ -1,14 +1,15 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 import os
+from dotenv import load_dotenv
 
 db = None
-
-DB_USERNAME = os.getenv('DB_USERNAME', default="ingestion")
+load_dotenv()
+DB_USERNAME = os.getenv('DB_USERNAME', default="auditoria")
 DB_PASSWORD = os.getenv('DB_PASSWORD', default="admin")
 DB_HOSTNAME = os.getenv('DB_HOSTNAME', default="localhost")
 DB_PORT = os.getenv('DB_PORT', default="5432")
-DB_NAME = os.getenv('DB_PORT', default="postgres_auditoria_db")
+DB_NAME = os.getenv('DB_NAME', default="postgres_auditoria_db")
 
 class DatabaseConfigException(Exception):
     def __init__(self, message='Configuration file is Null or malformed'):

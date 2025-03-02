@@ -1,7 +1,9 @@
 import os
-
+import sys
 from flask import Flask, jsonify
 from flask_swagger import swagger
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Identifica el directorio base
 basedir = os.path.abspath(os.path.dirname(__file__))
