@@ -1,57 +1,70 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: servicio-auditoria
+  name: auditoria-service
   namespace: sta-salud
   annotations:
     cloud.google.com/backend-config: '{"default": "auditoria-config"}'
 spec:
+  selector:
+    app: auditoria
   type: NodePort
   ports:
     - port: 80
       targetPort: 8002
       protocol: TCP
       nodePort: 31021
-  selector:
-    app: auditoria
+
 ---
+# AUDITORIA DB
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auditoria
+  name:  auditoria-db
   namespace: sta-salud
+  labels:
+    app: auditoria-db
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: auditoria
+      app:  auditoria-db
   template:
     metadata:
       labels:
-        app: auditoria
+        app:  auditoria-db
     spec:
       containers:
-      - name: postgres
+      - name: auditoria-db
         image: postgres:latest
+        ports:
+        - containerPort: 5432
         env:
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
-              name: db-secrets
-              key: db-user
+              name: sta-db-secrets
+              key: auditoria-db-user
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: db-secrets
-              key: db-password
+              name: sta-db-secrets
+              key: auditoria-db-password
         - name: POSTGRES_DB
-          value: "postgres_auditoria_db"
+          valueFrom:
+            configMapKeyRef:
+              name: sta-config
+              key: AUDITORIA_DB_NAME
+
 ---
+# AUDITORIA APP
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: auditoria
   namespace: sta-salud
+  labels:
+    app: auditoria
 spec:
   replicas: 1
   selector:
@@ -72,24 +85,33 @@ spec:
         - name: DB_USER
           valueFrom:
             secretKeyRef:
-              name: db-secrets
-              key: db-user
+              name: sta-db-secrets
+              key: auditoria-db-user
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: db-secrets
-              key: db-password
+              name: sta-db-secrets
+              key: auditoria-db-password
         - name: DB_HOST
-          value: "auditoria-db"
+          valueFrom:
+            configMapKeyRef:
+              name: sta-config
+              key: AUDITORIA_DB_HOST
         - name: DB_PORT
-          value: "5432"
+          valueFrom:
+            configMapKeyRef:
+              name: sta-config
+              key: AUDITORIA_DB_PORT
         - name: DB_NAME
-          value: "postgres_auditoria_db"
+          valueFrom:
+            configMapKeyRef:
+              name: sta-config
+              key: AUDITORIA_DB_NAME
         - name: PULSAR_BROKER_URL
           valueFrom:
             configMapKeyRef:
-              name: pulsar-config
-              key: BROKER_HOST
+              name: sta-config
+              key: PULSAR_BROKER_URL
 ---      
 # HEALTHCHECK
 apiVersion: cloud.google.com/v1
@@ -99,6 +121,6 @@ metadata:
 spec:
   healthCheck:
     checkIntervalSec: 60
-    port: 8000
+    port: 8002
     type: HTTP
     requestPath: /auditoria/health
