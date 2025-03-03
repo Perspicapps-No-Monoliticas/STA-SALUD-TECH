@@ -12,7 +12,7 @@ class DataCanonization(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, index=True)
     provider_id = Column(UUID(as_uuid=True), index=True)
     ingestion_id = Column(UUID(as_uuid=True), index=True)
-    anonimization_id = Column(UUID(as_uuid=True), index=True)
+    anonimization_id = Column(String, index=True)
     created_at = Column(DateTime)
     updated_at = Column(DateTime)
     status = Column(String)

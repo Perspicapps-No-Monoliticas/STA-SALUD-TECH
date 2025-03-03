@@ -1,8 +1,7 @@
-from typing import Optional
-
 from pulsar import schema
 
 from seedwork.infrastructure.schema.v1.events import IntegrationForCoreographyEvent
+from seedwork.infrastructure.schema.v1.header import EventHeader
 
 
 class DataIngestionPayload(schema.Record):
@@ -15,13 +14,16 @@ class DataIngestionPayload(schema.Record):
     country_iso = schema.String()
 
 
-class DataIngestionCreated(IntegrationForCoreographyEvent):
+class DataIngestionCreated(IntegrationForCoreographyEvent, schema.Record):
     data = DataIngestionPayload()
+    header = EventHeader()
 
 
-class DataIngestionStarted(IntegrationForCoreographyEvent):
+class DataIngestionStarted(IntegrationForCoreographyEvent, schema.Record):
     data = DataIngestionPayload()
+    header = EventHeader()
 
 
-class DataIngestionFinished(IntegrationForCoreographyEvent):
+class DataIngestionFinished(IntegrationForCoreographyEvent, schema.Record):
     data = DataIngestionPayload()
+    header = EventHeader()

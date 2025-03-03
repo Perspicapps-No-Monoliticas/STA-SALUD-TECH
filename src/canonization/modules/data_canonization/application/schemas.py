@@ -18,7 +18,7 @@ class DataCanonizationStepSchema(BaseModel):
 class DataCanonizationDetailSchema(BaseModel):
     id: uuid.UUID
     provider_id: uuid.UUID
-    anonimization_id: uuid.UUID
+    anonimization_id: str
     ingestion_id: uuid.UUID
     created_at: datetime
     updated_at: datetime
@@ -31,7 +31,7 @@ class DataCanonizationDetailSchema(BaseModel):
 
 class CanonizationInitSchema(BaseModel):
     provider_id: uuid.UUID
-    anonimization_id: uuid.UUID
+    anonimization_id: str
     ingestion_id: uuid.UUID
     repository_in_path: str
     correlation_id: uuid.UUID

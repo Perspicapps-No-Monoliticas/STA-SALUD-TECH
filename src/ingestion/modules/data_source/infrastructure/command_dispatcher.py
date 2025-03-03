@@ -6,7 +6,7 @@ from modules.data_source.application.commands import CreateDataSource
 from modules.data_source.infrastructure.schema.v1.commands import (
     CommandCreateDataSource,
 )
-from modules.data_source.infrastructure.schema.v1.common import (
+from modules.data_source.infrastructure.schema.v1.commands import (
     CredentialsPayload,
     CreateDataSourcePayload,
 )

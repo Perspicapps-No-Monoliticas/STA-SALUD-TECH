@@ -229,17 +229,17 @@ services:
     ports:
       - "8001:8001"
 
-  consumidor:
-    build: ./src/consumidor
-    container_name: consumidor-container
-    environment:
-      - BROKER_HOST=broker
-    networks:
-      - pulsar
-    depends_on:
-      broker:
-        condition: service_healthy
-    restart: on-failure
+  # consumidor:
+  #   build: ./src/consumidor
+  #   container_name: consumidor-container
+  #   environment:
+  #     - BROKER_HOST=broker
+  #   networks:
+  #     - pulsar
+  #   depends_on:
+  #     broker:
+  #       condition: service_healthy
+  #   restart: on-failure
 
   # Servicio de Auditoria
   auditoria:

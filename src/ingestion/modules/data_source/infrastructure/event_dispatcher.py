@@ -5,9 +5,9 @@ from modules.data_source.infrastructure.repositories import (
 )
 from modules.data_source.infrastructure.schema.v1.events import (
     EventDataSourceCreated,
+    CredentialsPayload,
     EventDataSourceCreatedPayload,
 )
-from modules.data_source.infrastructure.schema.v1.common import CredentialsPayload
 from modules.data_source.domain.events import (
     DataSourceCreated,
     DataSourceUpdated,

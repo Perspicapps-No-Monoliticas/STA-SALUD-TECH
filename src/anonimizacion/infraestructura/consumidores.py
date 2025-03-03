@@ -17,7 +17,7 @@ def suscribirse_a_eventos():
         consumidor = cliente.subscribe(
             f"{utils.country_code()}-data-ingestion-finished-v1",
             consumer_type=_pulsar.ConsumerType.Shared,
-            subscription_name="anonimization-component",
+            subscription_name="anonimization-listen-ingestion-finished",
             schema=AvroSchema(DataIngestionFinished),
         )
 
@@ -28,7 +28,7 @@ def suscribirse_a_eventos():
             print(f"Payload: {payload.__dict__}")
 
             data = InformacionMedicaDTO(
-                correlation_id=payload.correlation_id,
+                correlation_id=payload.header.correlation_id,
                 data_ingestion_id=payload.data.data_ingestion_id,
                 status=payload.data.status,
                 provider_id=payload.data.provider_id,

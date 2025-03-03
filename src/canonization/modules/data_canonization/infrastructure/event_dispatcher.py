@@ -1,8 +1,7 @@
 from typing import Type
 
-from pulsar.schema import AvroSchema
+from pulsar.schema import AvroSchema, Record
 
-from seedwork.infrastructure.schema.v1.events import IntegrationEvent
 from .repositories import (
     DataCanonizationSQLAlchemyRepository,
 )
@@ -19,12 +18,13 @@ from modules.data_canonization.domain.events import (
 )
 from seedwork.infrastructure.dispatcher import Dispatcher, dispatch_event
 from seedwork.infrastructure.varaibles import COUNTRY_CODE
+from seedwork.infrastructure.schema.v1.header import EventHeader
 from . import constants
 
 
 class DatacanonizationEventDispatcher(Dispatcher):
 
-    def __init__(self, schema: Type[IntegrationEvent], topic: str):
+    def __init__(self, schema: Type[Record], topic: str):
         super().__init__()
         self.schema = schema
         self.topic = topic
@@ -49,9 +49,10 @@ class DatacanonizationEventDispatcher(Dispatcher):
             created_at=data_canonization_dto.created_at.isoformat(),
             updated_at=data_canonization_dto.updated_at.isoformat(),
         )
+        header = EventHeader(corellation_id=event.correlation_id)
         integration_event = self.schema(
             data=payload,
-            correlation_id=event.correlation_id,
+            header=header,
         )
         self.publish_to_broker(
             message=integration_event,

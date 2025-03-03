@@ -2,7 +2,8 @@ from typing import Type
 
 from pulsar.schema import AvroSchema
 
-from seedwork.infrastructure.schema.v1.events import IntegrationEvent
+from seedwork.infrastructure.schema.v1.events import IntegrationForCoreographyEvent
+from seedwork.infrastructure.schema.v1.header import EventHeader
 from .repositories import (
     DataIntakeSQLAlchemyRepository,
 )
@@ -24,7 +25,7 @@ from . import constants
 
 class DataingestionEventDispatcher(Dispatcher):
 
-    def __init__(self, schema: Type[IntegrationEvent], topic: str):
+    def __init__(self, schema: Type[IntegrationForCoreographyEvent], topic: str):
         super().__init__()
         self.schema = schema
         self.topic = topic
@@ -45,8 +46,7 @@ class DataingestionEventDispatcher(Dispatcher):
             updated_at=data_intake_dto.updated_at.isoformat(),
         )
         integration_event = self.schema(
-            data=payload,
-            correlation_id=event.correlation_id,
+            data=payload, header=EventHeader(correlation_id=str(event.correlation_id))
         )
         self.publish_to_broker(
             message=integration_event,
