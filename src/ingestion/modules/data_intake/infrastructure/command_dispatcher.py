@@ -6,7 +6,7 @@ from modules.data_intake.application.commands import StartDataIntakeCommand
 from modules.data_intake.infrastructure.schema.v1.commands import (
     CommandStartDataIntake,
 )
-from modules.data_intake.infrastructure.schema.v1.common import StartDataIntakePayload
+from modules.data_intake.infrastructure.schema.v1.commands import StartDataIntakePayload
 from . import constants
 
 

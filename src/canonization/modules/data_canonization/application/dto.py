@@ -22,7 +22,7 @@ class DataCanonizationDTO(DTO):
     id: uuid.UUID = field(default_factory=uuid.uuid4)
     provider_id: uuid.UUID = field(default_factory=uuid.uuid4)
     ingestion_id: uuid.UUID = field(default_factory=uuid.uuid4)
-    anonimization_id: uuid.UUID = field(default_factory=uuid.uuid4)
+    anonimization_id: str = field(default_factory=lambda: str(uuid.uuid4()))
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
     status: str = field(default_factory=str)

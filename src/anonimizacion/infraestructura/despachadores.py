@@ -6,6 +6,7 @@ from infraestructura import utils
 from infraestructura.schema.v1.eventos import AnonimizacionFinalizadaPayload, AnonimizacionIniciadaPayload, EventoAnonimizacionFinalizada, EventoAnonimizacionIniciada
 from dominio.eventos import TokenizadoIniciado, TokenizadoRealizado,AnonimizadoPorModeloRealizado
 from seedwork.dominio.eventos import EventoDominio
+from seedwork.infraestructura.schema.v1.header import EventHeader
 
 class Despachador:
     def _publicar_mensaje(self, mensaje, topico, schema):
@@ -27,7 +28,8 @@ class Despachador:
                 region=str(evento.data.country_iso),
                 ruta_repositorio=str(evento.data.repository_out_path)
             )
-            evento_integracion = EventoAnonimizacionFinalizada(data=payload)
+            header = EventHeader(correlation_id=str(evento.data.correlation_id))
+            evento_integracion = EventoAnonimizacionFinalizada(data=payload, header=header)
             self._publicar_mensaje(evento_integracion, topico, AvroSchema(evento_integracion.__class__))
         else:
             print(f"Evento no soportado: {evento}")

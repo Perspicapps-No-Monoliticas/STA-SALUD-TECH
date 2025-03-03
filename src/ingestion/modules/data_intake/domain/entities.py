@@ -27,6 +27,11 @@ class DataIntake(RootAgregation):
         self.status = data_intake.status
         self.specs = data_intake.specs
         self.history = data_intake.history
+        self.status = DataIntakeStatus.CREATED
+        self.specs = IntakeSpecs(
+            total_records=0,
+            repository_out_path=f"{self.provider_id}/ingestion/{self.created_at}",
+        )
 
         self.add_event(
             DataintakeCreated(

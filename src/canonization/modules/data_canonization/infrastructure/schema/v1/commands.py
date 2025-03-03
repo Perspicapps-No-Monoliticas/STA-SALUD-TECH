@@ -1,7 +1,17 @@
+from pulsar import schema
+
 from seedwork.infrastructure.schema.v1.commands import IntegrationCommand
-from .common import StartDataCanonizationPayload
+from seedwork.infrastructure.schema.v1.header import CommandHeader
 
 
-class CommandStartDataCanonization(IntegrationCommand):
+class StartDataCanonizationPayload(schema.Record):
+    provider_id = schema.String()
+    anonimization_id = schema.String()
+    ingestion_id = schema.String()
+    repository_in_path = schema.String()
+    correlation_id = schema.String()
+
+
+class CommandStartDataCanonization(IntegrationCommand, schema.Record):
     data = StartDataCanonizationPayload()
-    specversion = "1.0"
+    header = CommandHeader()

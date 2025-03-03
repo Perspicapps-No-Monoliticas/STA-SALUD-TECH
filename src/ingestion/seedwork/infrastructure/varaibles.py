@@ -17,4 +17,4 @@ BROKER_URL = os.getenv("PULSAR_BROKER_URL", default="pulsar://localhost:6650")
 COUNTRY_CODE = os.getenv("COUNTRY_CODE", "US")
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT = os.getenv("REDIS_PORT", "6379")
-CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}"
+CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"

@@ -5,8 +5,6 @@ from seedwork.infrastructure.dispatcher import Dispatcher
 from modules.data_canonization.application.commands import StartDataCanonizationCommand
 from modules.data_canonization.infrastructure.schema.v1.commands import (
     CommandStartDataCanonization,
-)
-from modules.data_canonization.infrastructure.schema.v1.common import (
     StartDataCanonizationPayload,
 )
 from . import constants

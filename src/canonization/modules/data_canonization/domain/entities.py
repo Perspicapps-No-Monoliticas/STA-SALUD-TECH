@@ -23,7 +23,7 @@ class CanonizationStep(Entity):
 @dataclass
 class DataCanonization(RootAgregation):
     provider_id: uuid.UUID = field(default=None)
-    anonimization_id: uuid.UUID = field(default=None)
+    anonimization_id: str = field(default=None)
     ingestion_id: uuid.UUID = field(default=None)
     status: DataCanonizationStatus = field(default=None)
     specs: CanonizationSpecs = field(default=None)

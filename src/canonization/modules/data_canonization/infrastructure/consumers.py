@@ -35,7 +35,7 @@ class CreateDataCanonizationConsumer(TopicConsumer):
         logging.info(f"Processing message {message.message_id()}")
         command = StartDataCanonizationCommand(
             provider_id=uuid.UUID(payload.data.provider_id),
-            anonimization_id=uuid.UUID(payload.data.anonimization_id),
+            anonimization_id=payload.data.anonimization_id,
             ingestion_id=uuid.UUID(payload.data.ingestion_id),
             repository_in_path=payload.data.repository_in_path,
             correlation_id=uuid.UUID(payload.data.correlation_id),
@@ -53,7 +53,7 @@ class ListenToAnonimizationCompletedConsumer(TopicConsumer):
         logging.info(f"Processing message {message.message_id()}")
         command = StartDataCanonizationCommand(
             provider_id=uuid.UUID(payload.data.id_proveedor),
-            anonimization_id=uuid.UUID(payload.data.id_anonimizacion),
+            anonimization_id=payload.data.id_anonimizacion,
             ingestion_id=uuid.UUID(payload.data.id_ingestion),
             repository_in_path=payload.data.ruta_repositorio,
             correlation_id=uuid.UUID(payload.data.id_correlacion),

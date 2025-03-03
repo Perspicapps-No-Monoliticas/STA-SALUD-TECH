@@ -15,7 +15,7 @@ from .base import CreateDataCanonizationBaseHandler
 @dataclass
 class StartDataCanonizationCommand(Command):
     provider_id: uuid.UUID
-    anonimization_id: uuid.UUID
+    anonimization_id: str
     ingestion_id: uuid.UUID
     repository_in_path: str
     correlation_id: uuid.UUID
