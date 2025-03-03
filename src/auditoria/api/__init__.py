@@ -5,7 +5,6 @@ from flask_swagger import swagger
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# Identifica el directorio base
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 def registrar_handlers():
@@ -26,17 +25,8 @@ def comenzar_consumidor(app):
     import modulos.auditoria.infraestructura.consumidores as auditorias
 
     # Suscripción a eventos
-    #threading.Thread(target=auditorias.suscribirse_a_eventos, args=[app]).start()     
-    threading.Thread(target=auditorias.suscribirse_a_eventos_ingestion_creada, args=[app]).start()   
-    threading.Thread(target=auditorias.suscribirse_a_eventos_anonimizacion_finalizada_v1, args=[app]).start()   
-    threading.Thread(target=auditorias.suscribirse_a_eventos_anonimizacion_iniciado, args=[app]).start()   
-    threading.Thread(target=auditorias.suscribirse_a_comandos_inicio_ingestion, args=[app]).start()   
-    threading.Thread(target=auditorias.suscribirse_a_comandos_inicio_creacion_datasource, args=[app]).start()   
-    
-    
-
-    # Suscripción a comandos
-    threading.Thread(target=auditorias.suscribirse_a_comandos, args=[app]).start()    
+    #threading.Thread(target=auditorias.suscribirse_a_eventos, args=[app]).start()
+    threading.Thread(target=auditorias.realizar_suscripcion, args=[app]).start()
 
 def create_app(configuracion={}):
     # Init la aplicacion de Flask

@@ -14,6 +14,7 @@ class ObtenerTodasRegulacionHandler(RegulacionQueryBaseHandler):
     def handle(self, query: ObtenerTodasRegulacion) -> QueryResultado:        
         vista = self.fabrica_vista.crear_objeto(Regulacion)          
         result = vista.obtener_todas()           
+        print(F"REGISTROS DE bd {result}")
         regulacion =  self.fabrica_auditorias.crear_objeto(result, MapeadorRegulacion())
         return QueryResultado(resultado=regulacion)
 

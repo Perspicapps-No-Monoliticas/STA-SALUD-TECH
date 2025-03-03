@@ -29,7 +29,6 @@ class ProyeccionAuditoriaLista(ProyeccionAuditoria):
         
         fabrica_repositorio = FabricaRepositorio()
         repositorio = fabrica_repositorio.crear_objeto(RepositorioRegulaciones)
-        print("aca es la proyeccion Y PERSISTE ALGO, REVISAR")
         repositorio.agregar(
             Regulacion(
                 nombre=str(self.nombre_evento),
