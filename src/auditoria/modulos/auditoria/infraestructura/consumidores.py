@@ -33,15 +33,21 @@ def realizar_suscripcion(app=None):
                         
             for topico, consumer in consumidores.items():
                 try:
-                    msg = consumer.receive(timeout_millis=1000)                   
-                    #####
-                    contenido = msg.data()  # Se recibe en formato binario (bytes)
-                    print(f"Mensaje recibido EN BINARIO DINAMICO : {topic}")
-                    ejecutar_proyeccion(ProyeccionAuditoriaLista(topic, contenido), app=app)               
-                    consumer.acknowledge(msg) 
-                    #####       
+                    msg = consumer.receive(timeout_millis=1000)                                       
+                    contenido = msg.data() 
+                    print(f"Mensaje recibido: {topico}")
+                    print(f"Contenido recibido: {contenido}")
+                    esquema_avro = obtener_esquema(topico)
+                    if esquema_avro:
+                        try:
+                            with io.BytesIO(contenido) as bio:
+                                evento = fastavro.schemaless_reader(bio, esquema_avro) 
+                                ejecutar_proyeccion(ProyeccionAuditoriaLista(topico, evento), app=app)
+                        except Exception as e:
+                            print(f"Error al decodificar AVRO: {e}")             
+                    consumer.acknowledge(msg)     
                 except pulsar.Timeout:
-                    pass  # No hay mensajes nuevos aún
+                    pass
             time.sleep(10)
     except KeyboardInterrupt:
         print("Cerrando consumidor...")
@@ -68,5 +74,18 @@ def suscribir_topico(cliente, topic, app=None):
         logging.error(f'ERROR: Suscribiendose al topico {topic}')
         logging.error(f'ERROR: Suscribiendose al {e}')
         traceback.print_exc()
+        
+def obtener_esquema(topic):
+    topico_limpio = topic.replace("persistent://", "")
+    print(f"TOPICO LIMPIO ES {topico_limpio}")
+    url = f"{ADMIN_URL}/schemas/{topico_limpio}/schema"
+    print(f"LA URL ES {url}")
+    response = requests.get(url)
+    if response.status_code == 200:
+        print(f"el DATA es {response.json()}")
+        esquema_json = response.json().get("data")
+        print(f"el esquema es {esquema_json}")
+        return json.loads(esquema_json)
+    return None
 
 
