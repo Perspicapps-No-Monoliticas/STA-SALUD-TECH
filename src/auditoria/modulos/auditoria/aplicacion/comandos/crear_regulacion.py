@@ -1,5 +1,5 @@
 from seedwork.aplicacion.comandos import Comando
-from modulos.auditoria.aplicacion.dto import RequisitoDTO, RegulacionDTO
+from modulos.auditoria.aplicacion.dto import RegulacionDTO
 from .base import CrearRegulacionBaseHandler
 from dataclasses import dataclass, field
 from seedwork.aplicacion.comandos import ejecutar_commando as comando
@@ -17,7 +17,6 @@ class CrearRegulacion(Comando): #ESTE ES EL COMANDO
     region: str    
     payload: str 
     fecha_actualizacion: str 
-    requisitos: list[RequisitoDTO]
 
 
 class CrearRegulacionHandler(CrearRegulacionBaseHandler): #ESTE ES EL HANDLER
@@ -25,7 +24,7 @@ class CrearRegulacionHandler(CrearRegulacionBaseHandler): #ESTE ES EL HANDLER
     def handle(self, comando: CrearRegulacion): #ACA RECIBE EL COMANDO POR PARAMETRO
 
         regulacion_dto = RegulacionDTO(id=comando.id, nombre=comando.nombre, region=comando.region, payload= comando.payload, 
-                                       fecha_actualizacion= comando.fecha_actualizacion, requisitos=comando.requisitos)
+                                       fecha_actualizacion= comando.fecha_actualizacion)
         regulacion: Regulacion = self.fabrica_auditorias.crear_objeto(regulacion_dto, MapeadorRegulacion())
         regulacion.crear_regulacion(regulacion)
         repositorio = self.fabrica_repositorio.crear_objeto(RepositorioRegulaciones)

@@ -4,12 +4,6 @@ from dataclasses import dataclass, field
 from seedwork.dominio.objetos_valor import ObjetoValor
 
 @dataclass(frozen=True)
-class Requisito(ObjetoValor):
-    codigo: str
-    descripcion: str
-    obligatorio: bool
-
-@dataclass(frozen=True)
 class Nombre():
     nombre: str
 

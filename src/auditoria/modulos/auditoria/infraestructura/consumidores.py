@@ -13,7 +13,6 @@ from seedwork.infraestructura.proyecciones import ejecutar_proyeccion
 import threading
 
 ADMIN_URL = f'http://{utils.broker_host()}:8080/admin/v2'
-print(f"LA URL ESSSSSSSSSSS: {ADMIN_URL}")
 
 def realizar_suscripcion(app=None):
     consumidores = {}   
@@ -38,18 +37,8 @@ def realizar_suscripcion(app=None):
                     #####
                     contenido = msg.data()  # Se recibe en formato binario (bytes)
                     print(f"Mensaje recibido EN BINARIO DINAMICO : {topic}")
-                    print(f"contenido EN BINARIO DINAMICO : {contenido}")
-                    print(f"contenido EN DECODE : {contenido.decode('utf-8')}")
-                    esquema_avro = obtener_esquema(topic)
-                    print(f"Se obtiene el esquema :")
-                    if esquema_avro:
-                     try:
-                        with io.BytesIO(contenido) as bio:
-                            evento = fastavro.schemaless_reader(bio, esquema_avro) 
-                            ejecutar_proyeccion(ProyeccionAuditoriaLista(topic, evento), app=app)
-                     except Exception as e:
-                        print(f"Error al decodificar AVRO: {e}")
-                     consumer.acknowledge(msg) 
+                    ejecutar_proyeccion(ProyeccionAuditoriaLista(topic, contenido), app=app)               
+                    consumer.acknowledge(msg) 
                     #####       
                 except pulsar.Timeout:
                     pass  # No hay mensajes nuevos aún
@@ -57,34 +46,7 @@ def realizar_suscripcion(app=None):
     except KeyboardInterrupt:
         print("Cerrando consumidor...")
         client.close()
-        
-def realizar_suscripcion1(app=None):
-    consumidores = {}   
-        
-    client = pulsar.Client(f'pulsar://{utils.broker_host()}:6650', operation_timeout_seconds=30)
-    try:
-        while True:
-            print(f"BUSCANDO TOPICOS CADA 10 SEGUNDOS")
-            topicos_actuales = set(obtener_topicos())
-            print(f"    LOS TOPICOS ENCONTRADOS SON {topicos_actuales}")
-            for topic in topicos_actuales:                
-                if topic not in consumidores:
-                    try:
-                        print(f"             INSCRIBIENDO A TOPICO {topic}")
-                        consumidor = suscribir_topico(client, topic)
-                        if consumidor:
-                            consumidores[topic] = consumidor
-                            thread = threading.Thread(target=consumir_topico, args=(topic, consumidor), daemon=True)
-                            thread.start()
-                    except:
-                        logging.error(f'ERROR: Suscribiendose al topioco: {topic}')
-            time.sleep(10)
-    except KeyboardInterrupt:
-        print("Cerrando consumidor...")
-        client.close()
 
-
-# Obtener lista de tópicos disponibles en el namespace
 def obtener_topicos():
     NAMESPACE = "public/default"
     url = f"{ADMIN_URL}/persistent/{NAMESPACE}"
@@ -92,15 +54,14 @@ def obtener_topicos():
         response = requests.get(url)
         if response.status_code == 200:
             return response.json()
-        print(f"Error obteniendo tópicos: {response.text}")
     except requests.RequestException as e:
-        print(f"Error de conexión con Pulsar Admin: {e}")
+        print(f"Error obteniendo topicos: {e}")
     return []
 
 def suscribir_topico(cliente, topic, app=None):
     print(f"SUSCRIBIENDOSE A TOPICO : {topic}")
     try:
-        consumidor = cliente.subscribe(topic, subscription_name="auto-suscripcion", consumer_type=pulsar.ConsumerType.Shared)
+        consumidor = cliente.subscribe(topic, subscription_name="auditoria-suscripcion", consumer_type=pulsar.ConsumerType.Shared)
         print(f"SUSCRITO CON EXITO A TOPICO : {topic}")          
         return consumidor               
     except Exception as e:
@@ -108,36 +69,4 @@ def suscribir_topico(cliente, topic, app=None):
         logging.error(f'ERROR: Suscribiendose al {e}')
         traceback.print_exc()
 
-def consumir_topico(topic, consumidor, app=None):
-    try:
-        while True:
-                print(f"CONSUMIENDO TOPICO : {topic}")
-                mensaje = consumidor.receive(timeout_millis=500)                
-                contenido = mensaje.data()  # Se recibe en formato binario (bytes)
-                print(f"Mensaje recibido EN BINARIO DINAMICO : {topic}")
-                esquema_avro = obtener_esquema(topic)
-                print(f"Se obtiene el esquema :")
-                if esquema_avro:
-                    try:
-                        with io.BytesIO(contenido) as bio:
-                            evento = fastavro.schemaless_reader(bio, esquema_avro) 
-                            ejecutar_proyeccion(ProyeccionAuditoriaLista(topic, evento), app=app)
-                    except Exception as e:
-                        print(f"Error al decodificar AVRO: {e}")
-                    consumidor.acknowledge(mensaje)             
-    except Exception as e:
-        print(" NO HAY MENSAJES PARA LEER: {e}")
 
-
-def obtener_esquema(topic):
-    topico_limpio = topic.replace("persistent://", "")
-    print(f"TOPICO LIMPIO ES {topico_limpio}")
-    url = f"{ADMIN_URL}/schemas/{topico_limpio}/schema"
-    print(f"LA URL ES {url}")
-    response = requests.get(url)
-    if response.status_code == 200:
-        print(f"el DATA es {response.json()}")
-        esquema_json = response.json().get("data")
-        print(f"el esquema es {esquema_json}")
-        return json.loads(esquema_json)
-    return None

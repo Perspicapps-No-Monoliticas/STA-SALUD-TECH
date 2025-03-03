@@ -4,17 +4,11 @@ from seedwork.infraestructura.schema.v1.eventos import EventoIntegracion
 from seedwork.infraestructura.utils import time_millis
 import uuid
 
-class Requisito(Record):
-    codigo = String()
-    descripcion = String()
-    obligatorio = Boolean()
-
 class RegulacionCreadaPayload(Record):
     id_regulacion = String()
     nombre = String()
     region = String()
     payload = String()
-    requisitos = Array(Requisito())
     fecha_creacion = Long()       
 
 class EventoRegulacionCreada(EventoIntegracion):

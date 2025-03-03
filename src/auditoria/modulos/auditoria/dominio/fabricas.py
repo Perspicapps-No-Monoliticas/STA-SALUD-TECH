@@ -1,5 +1,4 @@
 from .entidades import Regulacion
-from .reglas import MinimoUnRequisito
 from .excepciones import TipoObjetoNoExisteEnDominioAuditoriasExcepcion
 from seedwork.dominio.repositorios import Mapeador
 from seedwork.dominio.fabricas import Fabrica
@@ -18,7 +17,7 @@ class _FabricaRegulacion(Fabrica):
             return mapeador.entidad_a_dto(obj)
         else:            
             regulacion: Regulacion = mapeador.dto_a_entidad(obj)
-            self.validar_regla(MinimoUnRequisito(regulacion.requisitos))            
+            #self.validar_regla(MinimoUnRequisito(regulacion.requisitos)) Valoidar reglas  
             return regulacion
 
 @dataclass

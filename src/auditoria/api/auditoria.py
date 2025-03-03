@@ -12,7 +12,7 @@ from seedwork.aplicacion.queries import ejecutar_query
 
 bp = api.crear_blueprint('auditoria', '/auditoria')
 
-@bp.route('/regulacion', methods=('POST',))
+@bp.route('/accion', methods=('POST',))
 def regulacion_usando_comando():
     try:
         session['uow_metodo'] = 'pulsar'
@@ -24,18 +24,15 @@ def regulacion_usando_comando():
                                   regulacion_dto.nombre, 
                                   regulacion_dto.region,
                                   regulacion_dto.payload,
-                                  regulacion_dto.fecha_actualizacion,
-                                  regulacion_dto.requisitos)
+                                  regulacion_dto.fecha_actualizacion)
         ejecutar_commando(comando)
-        print("==================TERMINA============================")
         return Response('{}', status=202, mimetype='application/json')
     except ExcepcionDominio as e:
         return Response(json.dumps(dict(error=str(e))), status=400, mimetype='application/json')
     
-@bp.route('/regulacion/<id>', methods=('GET',))
+@bp.route('/accion/<id>', methods=('GET',))
 def dar_regulacion_usando_query(id=None):
     if id:
-        print("==========ENTRA ENDOPINT CONSULTAR REGULACION ============")
         query_resultado = ejecutar_query(ObtenerRegulacion(id))
         map_regulacion = MapeadorRegulacionDTOJson()
         if not query_resultado.resultado:
@@ -45,12 +42,10 @@ def dar_regulacion_usando_query(id=None):
     else:
         return [{'message': 'GET!'}]
 
-@bp.route('/regulacion', methods=('GET',))
+@bp.route('/accion', methods=('GET',))
 def dar_todas_regulaciones_usando_query():
-        print("==========ENTRA ENDOPINT CONSULTAR TODAS ============")   
         query_resultado = ejecutar_query(ObtenerTodasRegulacion())
         map_regulacion = MapeadorRegulacionDTOJson()
-        print("==========CASO TERMINA============") 
         if not query_resultado.resultado:
          return {}
         return [map_regulacion.dto_a_externo(data_source)  for data_source in query_resultado.resultado]

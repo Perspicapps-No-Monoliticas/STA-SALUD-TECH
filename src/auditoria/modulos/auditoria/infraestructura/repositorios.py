@@ -31,8 +31,6 @@ class RepositorioRegulacionesSQLAlchemy(RepositorioRegulaciones):
         print("AGRGAR REGISTRO EN LA bd sin hacer commit") 
         regulacion_dto = self.fabrica_auditorias.crear_objeto(regulacion, MapeadorRegulacion())
         print("PERSISTE EN BASE DE DATOS2") 
-        for req in regulacion_dto.requisitos:
-             db.session.add(req)
         db.session.add(regulacion_dto)
 
     def actualizar(self, regulacion: Regulacion):

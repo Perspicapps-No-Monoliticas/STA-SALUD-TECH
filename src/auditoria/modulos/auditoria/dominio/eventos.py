@@ -13,5 +13,4 @@ class RegulacionCreada(EventoRegulacion):
     nombre: str = None
     payload: str = None
     region: str = None
-    requisitos: list[ov.Requisito] = field(default_factory=list[ov.Requisito])
     fecha_creacion: datetime = None

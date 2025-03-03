@@ -1,12 +1,7 @@
 from dataclasses import dataclass, field
 from seedwork.aplicacion.dto import DTO
 
-@dataclass(frozen=True)
-class RequisitoDTO(DTO):
-     codigo: str = field(default_factory=str)
-     descripcion: str = field(default_factory=str)
-     obligatorio: str = field(default_factory=bool)     
-
+ 
 @dataclass(frozen=True)
 class RegulacionDTO(DTO):
     id: str = field(default_factory=str)
@@ -15,4 +10,3 @@ class RegulacionDTO(DTO):
     payload: str = field(default_factory=str)
     fecha_actualizacion: str = field(default_factory=str)
     fecha_creacion: str = field(default_factory=str)
-    requisitos: list[RequisitoDTO] = field(default_factory=list)

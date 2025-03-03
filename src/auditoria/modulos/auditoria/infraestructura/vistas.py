@@ -16,5 +16,5 @@ class VistaRegulacion(Vista):
     
     def obtener_todas(self) -> [Regulacion]:
         map_regulacion = MapeadorRegulacion()
-        regulaciones_dto = db.session.query(RegulacionDTO).all()    
+        regulaciones_dto = db.session.query(RegulacionDTO).all()            
         return map_regulacion.dto_a_entidad(regulaciones_dto)

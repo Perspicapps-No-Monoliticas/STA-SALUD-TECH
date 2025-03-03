@@ -1,12 +1,10 @@
 
 from seedwork.dominio.repositorios import Mapeador
 from seedwork.infraestructura.utils import unix_time_millis
-from modulos.auditoria.dominio.objetos_valor import  Requisito
 from modulos.auditoria.dominio.entidades import  Regulacion
 from modulos.auditoria.dominio.eventos import RegulacionCreada, EventoRegulacion
 
 from .dto import Regulacion as RegulacionDTO
-from .dto import Requisito as RequisitoDTO
 from .excepciones import NoExisteImplementacionParaTipoFabricaExcepcion
 from pulsar.schema import *
 
@@ -35,14 +33,12 @@ class MapadeadorEventosRegulacion(Mapeador):
         print(f"ENTRA A RegulacionCreadaPayloadd{entidad}")
         def v1(evento):
             from .schema.v1.eventos import RegulacionCreadaPayload, EventoRegulacionCreada            
-            requisitos = [{"codigo": req.codigo, "descripcion": req.descripcion, "obligatorio": req.obligatorio} for req in evento.requisitos] if evento.requisitos else []
 
             payload = RegulacionCreadaPayload(
                 id_regulacion=str(evento.id_regulacion), 
                 nombre=str(evento.nombre),           
                 payload=str(evento.payload),           
-                region=str(evento.region),        
-                requisitos=requisitos,              
+                region=str(evento.region),                   
                 fecha_creacion=int(unix_time_millis(evento.fecha_creacion))
             )
             evento_integracion = EventoRegulacionCreada(id=str(evento.id))
@@ -79,28 +75,6 @@ class MapadeadorEventosRegulacion(Mapeador):
 class MapeadorRegulacion(Mapeador):
     _FORMATO_FECHA = '%Y-%m-%dT%H:%M:%SZ'
 
-    def _procesar_requisito_dto(self, requisitos_dto: list) -> list[Requisito]:
-        reqs = list()
-        for req in requisitos_dto:
-            requisito = Requisito()
-            requisito.codigo=req.codigo
-            requisito.descripcion=req.descripcion
-            requisito.obligatorio=req.obligatorio
-            reqs.append(requisito)
-
-        return reqs
-
-    def _procesar_requisito(self, requisito: any) -> list[RequisitoDTO]:
-        requisitos_dto = list()
-
-        requisito_dto = RequisitoDTO()
-        requisito_dto.codigo = requisito.codigo
-        requisito_dto.descripcion = requisito.descripcion
-        requisito_dto.obligatorio = requisito.obligatorio
-
-        requisitos_dto.append(requisito_dto)
-        return requisitos_dto
-
     def obtener_tipo(self) -> type:
         return Regulacion.__class__
 
@@ -114,20 +88,8 @@ class MapeadorRegulacion(Mapeador):
         regulacion_dto.fecha_creacion = entidad.fecha_creacion
         regulacion_dto.fecha_actualizacion = entidad.fecha_actualizacion        
 
-        requisitos_dto = list()
-        
-        for requisito in entidad.requisitos:
-            requisitos_dto.extend(self._procesar_requisito(requisito))
-
-        regulacion_dto.requisitos = requisitos_dto
-
         return regulacion_dto
 
     def dto_a_entidad(self, dto: RegulacionDTO) -> Regulacion:
         regulacion = Regulacion(dto.id, dto.fecha_creacion, dto.fecha_actualizacion)
-        regulacion.requisitos = list()
-
-        requisitos_dto: list[RequisitoDTO] = dto.requisitos
-        regulacion.requisitos.extend(self._procesar_requisito_dto(requisitos_dto))
-        
         return regulacion
