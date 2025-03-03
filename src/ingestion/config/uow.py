@@ -1,4 +1,4 @@
-from seedwork.infraestructure.uow import UnitOfWork, Batch
+from seedwork.infrastructure.uow import UnitOfWork, Batch
 from .db import db
 
 

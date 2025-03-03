@@ -1,7 +1,7 @@
 from seedwork.application.commands import CommandHandler
 
 from modules.data_source.domain.factories import DataSourceFactory
-from modules.data_source.infraestrucuture.factories import RepositoryFactory
+from modules.data_source.infrastructure.factories import RepositoryFactory
 
 
 class CreateDataSourceBaseHandler(CommandHandler):

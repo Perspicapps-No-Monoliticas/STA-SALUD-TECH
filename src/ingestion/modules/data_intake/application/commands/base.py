@@ -1,7 +1,7 @@
 from seedwork.application.commands import CommandHandler
 
 from modules.data_intake.domain.factories import DataIntakeFactory
-from modules.data_intake.infraestrucuture.factories import RepositoryFactory
+from modules.data_intake.infrastructure.factories import RepositoryFactory
 
 
 class CreateDataIntakeBaseHandler(CommandHandler):

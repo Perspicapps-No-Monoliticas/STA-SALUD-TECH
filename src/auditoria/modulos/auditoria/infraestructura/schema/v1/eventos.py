@@ -1,19 +1,14 @@
 from pulsar.schema import *
+from pulsar import schema
 from seedwork.infraestructura.schema.v1.eventos import EventoIntegracion
 from seedwork.infraestructura.utils import time_millis
 import uuid
-
-class Requisito(Record):
-    codigo = String()
-    descripcion = String()
-    obligatorio = Boolean()
 
 class RegulacionCreadaPayload(Record):
     id_regulacion = String()
     nombre = String()
     region = String()
-    version = String()
-    requisitos = Array(Requisito())
+    payload = String()
     fecha_creacion = Long()       
 
 class EventoRegulacionCreada(EventoIntegracion):
@@ -23,7 +18,7 @@ class EventoRegulacionCreada(EventoIntegracion):
     id = String(default=str(uuid.uuid4()))
     time = Long()
     ingestion = Long(default=time_millis())
-    specversion = String()
+    specpayload = String()
     type = String()
     datacontenttype = String()
     service_name = String()
@@ -66,3 +61,7 @@ class EventoAnonimizacionFinalizada(EventoIntegracion):
 
 class EventDataSourceCreated(EventoIntegracion):
     data = EventDataSourceCreatedPayload()
+
+
+    
+ 

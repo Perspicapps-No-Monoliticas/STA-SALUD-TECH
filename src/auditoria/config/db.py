@@ -1,14 +1,16 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 import os
+from dotenv import load_dotenv
 
 db = None
-
-DB_USERNAME = os.getenv('DB_USERNAME', default="root")
-DB_PASSWORD = os.getenv('DB_PASSWORD', default="adminadmin")
+load_dotenv()
+DB_USERNAME = os.getenv('DB_USERNAME', default="auditoria")
+DB_PASSWORD = os.getenv('DB_PASSWORD', default="admin")
 DB_HOSTNAME = os.getenv('DB_HOSTNAME', default="localhost")
-DB_NAME     = os.getenv('DB_NAME', default="auditoria_db")
-print(f"DB_NAME {DB_NAME}")
+DB_PORT = os.getenv('DB_PORT', default="5432")
+DB_NAME = os.getenv('DB_NAME', default="postgres_auditoria_db")
+
 class DatabaseConfigException(Exception):
     def __init__(self, message='Configuration file is Null or malformed'):
         self.message = message
@@ -21,8 +23,8 @@ def database_connection(config, basedir=os.path.abspath(os.path.dirname(__file__
     
     if config.get('TESTING', False) == True:
         return f'sqlite:///{os.path.join(basedir, "database.db")}'
-    else:
-        return f'mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOSTNAME}/{DB_NAME}'
+    else:        
+        return (f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOSTNAME}:{DB_PORT}/{DB_NAME}")
 
 
 def init_db(app: Flask):

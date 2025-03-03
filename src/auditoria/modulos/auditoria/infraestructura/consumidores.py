@@ -1,87 +1,72 @@
-from modulos.auditoria.infraestructura.constantes import EVENTO_INTEGRACION_ANONIMIZACION_INICIADO, EVENTO_INTEGRACION_INGESTION_CREADO
-import pulsar,_pulsar  
+import pulsar,_pulsar
 from pulsar.schema import *
-import uuid
 import time
-import logging
-import traceback
-import datetime
-
-from modulos.auditoria.infraestructura.schema.v1.eventos import EventoRegulacionCreada, EventDataSourceCreated
-from modulos.auditoria.infraestructura.schema.v1.comandos import ComandoCrearRegulacion
-
-
-from modulos.auditoria.infraestructura.proyecciones import ProyeccionRegulacionesLista
-from seedwork.infraestructura.proyecciones import ejecutar_proyeccion
+import fastavro
+import json
+from modulos.auditoria.infraestructura.proyecciones import *
 from seedwork.infraestructura import utils
+import requests
+import io
+import fastavro
+import json
+from seedwork.infraestructura.proyecciones import ejecutar_proyeccion
+import threading
 
-def suscribirse_a_eventos(app=None):
-    print("SUSCRBIRSE A ESUCHAR LOS EVENTOS DE PULSAR AL INICAR LA APP REGULACIONES")
-    cliente = None
+ADMIN_URL = f'http://{utils.broker_host()}:8080/admin/v2'
+
+def realizar_suscripcion(app=None):
+    consumidores = {}   
+        
+    client = pulsar.Client(f'pulsar://{utils.broker_host()}:6650', operation_timeout_seconds=30)
     try:
-        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        consumidor = cliente.subscribe('eventos-regulacion', consumer_type=_pulsar.ConsumerType.Shared,subscription_name='sta-sub-eventos', schema=AvroSchema(EventoRegulacionCreada))
-
         while True:
-            mensaje = consumidor.receive()
-            datos = mensaje.value().data
-            print(f'Evento recibido EN PULSAR REGULacion: {datos}')
+            print(f"BUSCANDO TOPICOS CADA 10 SEGUNDOS")
+            topicos_actuales = set(obtener_topicos())
+            print(f"    LOS TOPICOS ENCONTRADOS SON {topicos_actuales}")
+            for topic in topicos_actuales:                
+                if topic not in consumidores:
+                    try:
+                        print(f"             INSCRIBIENDO A TOPICO {topic}")
+                        consumidores[topic] = suscribir_topico(client, topic)
+                    except:
+                        logging.error(f'ERROR: Suscribiendose al topioco: {topic}')
+                        
+            for topico, consumer in consumidores.items():
+                try:
+                    msg = consumer.receive(timeout_millis=1000)                   
+                    #####
+                    contenido = msg.data()  # Se recibe en formato binario (bytes)
+                    print(f"Mensaje recibido EN BINARIO DINAMICO : {topic}")
+                    ejecutar_proyeccion(ProyeccionAuditoriaLista(topic, contenido), app=app)               
+                    consumer.acknowledge(msg) 
+                    #####       
+                except pulsar.Timeout:
+                    pass  # No hay mensajes nuevos aún
+            time.sleep(10)
+    except KeyboardInterrupt:
+        print("Cerrando consumidor...")
+        client.close()
 
-            # TODO Identificar el tipo de CRUD del evento: Creacion, actualización o eliminación.
-            ejecutar_proyeccion(ProyeccionRegulacionesLista(datos.id_regulacion, datos.nombre, datos.region, datos.version, datos.fecha_creacion, 
-                                                            datos.requisitos, datos.fecha_creacion), app=app)
-            
-            consumidor.acknowledge(mensaje)     
-
-        cliente.close()
-    except:
-        logging.error('ERROR: Suscribiendose al tópico de eventos!#1')
-        traceback.print_exc()
-        if cliente:
-            cliente.close()
-
-def suscribirse_a_comandos(app=None):
-    cliente = None
+def obtener_topicos():
+    NAMESPACE = "public/default"
+    url = f"{ADMIN_URL}/persistent/{NAMESPACE}"
     try:
-        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')
-        consumidor = cliente.subscribe('comandos-regulacion', consumer_type=_pulsar.ConsumerType.Shared, subscription_name='sta-sub-comandos', schema=AvroSchema(ComandoCrearRegulacion))
+        response = requests.get(url)
+        if response.status_code == 200:
+            return response.json()
+    except requests.RequestException as e:
+        print(f"Error obteniendo topicos: {e}")
+    return []
 
-        while True:
-            mensaje = consumidor.receive()
-            print(f'Comando recibido: {mensaje.value().data}')
-
-            consumidor.acknowledge(mensaje)     
-            
-        cliente.close()
-    except:
-        logging.error('ERROR: Suscribiendose al tópico de comandos en Regulacion Consumidor!')
-        traceback.print_exc()
-        if cliente:
-            cliente.close()
-            
-            
-def suscribirse_a_eventos_ingestion_creada(app=None):
-    print("SUSCRBIRSE A ESUCHAR LOS EVENTOS DE ingestion_creada")
-    cliente = None
+def suscribir_topico(cliente, topic, app=None):
+    print(f"SUSCRIBIENDOSE A TOPICO : {topic}")
     try:
-        cliente = pulsar.Client(f'pulsar://{utils.broker_host()}:6650')                        
-        consumidor = cliente.subscribe(EVENTO_INTEGRACION_INGESTION_CREADO,  consumer_type=_pulsar.ConsumerType.Shared,subscription_name='sta-sub-eventos', schema=AvroSchema(EventDataSourceCreated))
-
-        while True:
-            mensaje = consumidor.receive()
-            datos = mensaje.value().data
-            print(f'Evento recibido EN PULSAR ingestion_creada: {datos}')       
-            ejecutar_proyeccion(ProyeccionRegulacionesLista(datos.id, EVENTO_INTEGRACION_INGESTION_CREADO, 'PENDING', 'V_1', datos.created_at, 
-                                                            [], datos.updated_at), app=app)     
-
-            # TODO Identificar el tipo de CRUD del evento: Creacion, actualización o eliminación.
-            
-            consumidor.acknowledge(mensaje)     
-
-        cliente.close()
-    except:
-        logging.error('ERROR: Suscribiendose al tópico de eventos ingestion_creada')
+        consumidor = cliente.subscribe(topic, subscription_name="auditoria-suscripcion", consumer_type=pulsar.ConsumerType.Shared)
+        print(f"SUSCRITO CON EXITO A TOPICO : {topic}")          
+        return consumidor               
+    except Exception as e:
+        logging.error(f'ERROR: Suscribiendose al topico {topic}')
+        logging.error(f'ERROR: Suscribiendose al {e}')
         traceback.print_exc()
-        if cliente:
-            cliente.close()
-                 
+
+

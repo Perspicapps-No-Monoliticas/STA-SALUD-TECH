@@ -11,21 +11,16 @@ import logging
 import traceback
 from abc import ABC, abstractmethod
 
-class ProyeccionRegulacion(Proyeccion, ABC):
+class ProyeccionAuditoria(Proyeccion, ABC):
     @abstractmethod
     def ejecutar(self):
         ...
 
-class ProyeccionRegulacionesLista(ProyeccionRegulacion):
+class ProyeccionAuditoriaLista(ProyeccionAuditoria):
     print("ENTRA PROYECCION REGULACIONES")
-    def __init__(self, id_regulacion, nombre, region, version, fecha_creacion, requisitos, fecha_actualizacion):
-        self.id_regulacion = id_regulacion
-        self.nombre = nombre
-        self.region = region
-        self.version = version     
-        self.requisitos = requisitos
-        self.fecha_creacion = fecha_creacion
-        self.fecha_actualizacion = fecha_actualizacion
+    def __init__(self, nombre_evento, payload):        
+        self.nombre_evento = nombre_evento
+        self.payload = payload     
     
     def ejecutar(self, db=None):
         if not db:
@@ -34,21 +29,17 @@ class ProyeccionRegulacionesLista(ProyeccionRegulacion):
         
         fabrica_repositorio = FabricaRepositorio()
         repositorio = fabrica_repositorio.crear_objeto(RepositorioRegulaciones)
-        print("aca es la proyeccion algo debe hacer Y PERSISTE ALGO, REVISAR")
+        print(f"Agregar.. {self.nombre_evento}")
+        print(f"Payload.. {self.payload}")
         repositorio.agregar(
             Regulacion(
-                id=str(self.id_regulacion), 
-                nombre=str(self.nombre), 
-                region=str(self.region), 
-                version=str(self.version), 
-                requisitos=self.requisitos,
-                fecha_creacion=self.fecha_creacion, 
-                fecha_actualizacion=self.fecha_actualizacion))
+                nombre=str(self.nombre_evento),
+                payload=str(self.payload)))
         db.session.commit()
 
-class ProyeccionRegulacionHandler(ProyeccionHandler):
+class ProyeccionAuditoriaHandler(ProyeccionHandler):
     
-    def handle(self, proyeccion: ProyeccionRegulacion):
+    def handle(self, proyeccion: ProyeccionAuditoria):
 
         # TODO El evento de creación no viene con todos los datos de itinerarios, esto tal vez pueda ser una extensión
         # Asi mismo estamos dejando la funcionalidad de persistencia en el mismo método de recepción. Piense que componente
@@ -58,7 +49,7 @@ class ProyeccionRegulacionHandler(ProyeccionHandler):
         proyeccion.ejecutar(db=db)
         
 
-@proyeccion.register(ProyeccionRegulacionesLista)
+@proyeccion.register(ProyeccionAuditoriaLista)
 def ejecutar_proyeccion_regulacion(proyeccion, app=None):
     print("REGISTRAR PROYECCION REGULACIONES")
     if not app:
@@ -66,7 +57,7 @@ def ejecutar_proyeccion_regulacion(proyeccion, app=None):
         return
     try:
         with app.app_context():
-            handler = ProyeccionRegulacionHandler()
+            handler = ProyeccionAuditoriaHandler()
             handler.handle(proyeccion)
             
     except:

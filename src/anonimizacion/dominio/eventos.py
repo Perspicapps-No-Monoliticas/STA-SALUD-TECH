@@ -1,10 +1,10 @@
 from dataclasses import dataclass
-from dominio.entidades import ImagenMedica
+from dominio.entidades import ImagenMedica, InformacionMedica
 from seedwork.dominio.eventos import EventoDominio
 
 @dataclass
 class TokenizadoIniciado(EventoDominio):
-    img: ImagenMedica = None
+    data: InformacionMedica = None
 
     def __str__(self):
         return self.__class__.__name__
@@ -12,7 +12,7 @@ class TokenizadoIniciado(EventoDominio):
 @dataclass
 class TokenizadoRealizado(EventoDominio):
     token: str = ""
-    img: ImagenMedica = None
+    data: InformacionMedica = None
 
     def __str__(self):
         return self.__class__.__name__
@@ -20,7 +20,7 @@ class TokenizadoRealizado(EventoDominio):
 @dataclass
 class AnonimizadoPorScriptRealizado(EventoDominio):
     token: str = ""
-    img: ImagenMedica = None
+    data: InformacionMedica = None
 
     def __str__(self):
         return self.__class__.__name__
@@ -28,7 +28,7 @@ class AnonimizadoPorScriptRealizado(EventoDominio):
 @dataclass
 class AnonimizadoPorModeloRealizado(EventoDominio):
     token: str = ""
-    img: ImagenMedica = None
+    data: InformacionMedica = None
 
     def __str__(self):
         return self.__class__.__name__

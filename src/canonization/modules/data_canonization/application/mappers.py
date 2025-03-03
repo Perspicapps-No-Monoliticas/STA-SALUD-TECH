@@ -2,17 +2,17 @@ from typing import Dict
 
 from seedwork.application.dto import Mapper
 from seedwork.domain.repositories import Mapper as RepMapper
-from modules.data_canonization.domain.entities import DataCanonization, IntakeStep
+from modules.data_canonization.domain.entities import DataCanonization, CanonizationStep
 from modules.data_canonization.domain.value_objects import (
     DataCanonizationStatus,
-    IntakeSpecs,
+    CanonizationSpecs,
 )
 
 from .dto import DataCanonizationDTO, DataCanonizationStepDTO
 from .schemas import (
     DataCanonizationStepSchema,
     DataCanonizationDetailSchema,
-    IntakeInitSchema,
+    CanonizationInitSchema,
 )
 
 
@@ -61,8 +61,7 @@ class DataCanonizationMapper(RepMapper):
             ingestion_id=entity.ingestion_id,
             status=entity.status or DataCanonizationStatus.CREATED,
             total_records=entity.specs.total_records or 0,
-            repository_in_path=entity.specs.repository_in_path
-            or f"{entity.provider_id}/ingestion/{entity.created_at}",
+            repository_in_path=entity.specs.repository_in_path,
             steps=[
                 DataCanonizationStepDTO(
                     id=step.id,
@@ -86,12 +85,12 @@ class DataCanonizationMapper(RepMapper):
             anonimization_id=dto.anonimization_id,
             ingestion_id=dto.ingestion_id,
             status=dto.status,
-            specs=IntakeSpecs(
+            specs=CanonizationSpecs(
                 total_records=dto.total_records,
                 repository_in_path=dto.repository_in_path,
             ),
             steps=[
-                IntakeStep(
+                CanonizationStep(
                     id=step.id,
                     status=step.status,
                     created_at=step.created_at,
@@ -108,22 +107,24 @@ class DataCanonizationMapper(RepMapper):
         return DataCanonization.__class__
 
 
-class CreateIntakeDTOJsonMapper(Mapper):
+class CreateCanonizationDTOJsonMapper(Mapper):
     def external_to_dto(self, external: Dict) -> DataCanonizationDTO:
-        validated_data = IntakeInitSchema(**external)
+        validated_data = CanonizationInitSchema(**external)
         data_canonization_dto = DataCanonizationDTO(
             provider_id=validated_data.provider_id,
             anonimization_id=validated_data.anonimization_id,
             ingestion_id=validated_data.ingestion_id,
             repository_in_path=validated_data.repository_in_path,
+            correlation_id=validated_data.correlation_id,
         )
 
         return data_canonization_dto
 
     def dto_to_external(self, dto: DataCanonizationDTO) -> Dict:
-        return IntakeInitSchema(
+        return CanonizationInitSchema(
             provider_id=dto.provider_id,
             anonimization_id=dto.anonimization_id,
             ingestion_id=dto.ingestion_id,
             repository_in_path=dto.repository_in_path,
+            correlation_id=dto.correlation_id,
         ).model_dump()
