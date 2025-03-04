@@ -1,9 +1,10 @@
 import os
-
+import sys
 from flask import Flask, jsonify
 from flask_swagger import swagger
 
-# Identifica el directorio base
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 def registrar_handlers():
@@ -24,11 +25,8 @@ def comenzar_consumidor(app):
     import modulos.auditoria.infraestructura.consumidores as auditorias
 
     # Suscripción a eventos
-    threading.Thread(target=auditorias.suscribirse_a_eventos, args=[app]).start()     
-    threading.Thread(target=auditorias.suscribirse_a_eventos_ingestion_creada, args=[app]).start()   
-
-    # Suscripción a comandos
-    threading.Thread(target=auditorias.suscribirse_a_comandos, args=[app]).start()    
+    #threading.Thread(target=auditorias.suscribirse_a_eventos, args=[app]).start()
+    threading.Thread(target=auditorias.realizar_suscripcion, args=[app]).start()
 
 def create_app(configuracion={}):
     # Init la aplicacion de Flask
@@ -66,7 +64,7 @@ def create_app(configuracion={}):
     @app.route("/spec")
     def spec():
         swag = swagger(app)
-        swag['info']['version'] = "1.0"
+        swag['info']['payload'] = "1.0"
         swag['info']['title'] = "My API"
         return jsonify(swag)
 

@@ -17,7 +17,7 @@ from seedwork.presentation.api import create_router
 from seedwork.application.queries import execute_query
 
 # Ensure dispatch_command are registered for the commands
-import modules.data_source.infraestrucuture.command_dispatcher  # type: ignore
+import modules.data_source.infrastructure.command_dispatcher  # type: ignore
 
 data_source_router = create_router("/data-sources")
 

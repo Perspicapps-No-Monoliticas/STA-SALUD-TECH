@@ -1,7 +1,12 @@
 import pulsar
 from pulsar.schema import AvroSchema
+from aplicacion.dto import InformacionMedicaDTO
+from dominio.entidades import InformacionMedica
 from infraestructura import utils
-
+from infraestructura.schema.v1.eventos import AnonimizacionFinalizadaPayload, AnonimizacionIniciadaPayload, EventoAnonimizacionFinalizada, EventoAnonimizacionIniciada
+from dominio.eventos import TokenizadoIniciado, TokenizadoRealizado,AnonimizadoPorModeloRealizado
+from seedwork.dominio.eventos import EventoDominio
+from seedwork.infraestructura.schema.v1.header import EventHeader
 
 class Despachador:
     def _publicar_mensaje(self, mensaje, topico, schema):
@@ -10,15 +15,21 @@ class Despachador:
         publicador.send(mensaje)
         cliente.close()
 
-    def publicar_evento(self, evento_integracion, topico):
+    def publicar_evento(self, evento: EventoDominio, topico):
         # TODO Debe existir un forma de crear el Payload en Avro con base al tipo del evento
-        self._publicar_mensaje(evento_integracion, topico, AvroSchema(evento_integracion.__class__))
-
-    #def publicar_comando(self, comando, topico):
-    #    # TODO Debe existir un forma de crear el Payload en Avro con base al tipo del comando
-    #    payload = ComandoCrearReservaPayload(
-    #        id_usuario=str(comando.id_usuario)
-    #        # agregar itinerarios
-    #    )
-    #    comando_integracion = ComandoCrearReserva(data=payload)
-    #    self._publicar_mensaje(comando_integracion, topico, AvroSchema(ComandoCrearReserva))
+        if isinstance(evento,TokenizadoIniciado):
+            pass
+        elif isinstance(evento,AnonimizadoPorModeloRealizado): 
+            payload = AnonimizacionFinalizadaPayload(
+                id_correlacion = str(evento.data.correlation_id),
+                id_anonimizacion=str(evento.data.token),
+                id_ingestion=str(evento.data.data_ingestion_id), 
+                id_proveedor=str(evento.data.provider_id),
+                region=str(evento.data.country_iso),
+                ruta_repositorio=str(evento.data.repository_out_path)
+            )
+            header = EventHeader(correlation_id=str(evento.data.correlation_id))
+            evento_integracion = EventoAnonimizacionFinalizada(data=payload, header=header)
+            self._publicar_mensaje(evento_integracion, topico, AvroSchema(evento_integracion.__class__))
+        else:
+            print(f"Evento no soportado: {evento}")

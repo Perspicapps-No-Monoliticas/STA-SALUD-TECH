@@ -8,3 +8,26 @@ class ComandoCrearRegulacionPayload(ComandoIntegracion):
 
 class ComandoCrearRegulacion(ComandoIntegracion):
     data = ComandoCrearRegulacionPayload()
+    
+class StartDataIntakePayload(Record):
+    provider_id = String()  
+        
+class CommandStartDataIntake(ComandoIntegracion):
+    data = StartDataIntakePayload()
+    specversion = "1.0"    
+    
+    
+class CredentialsPayload(Record):
+    payload = Map(String())
+    type = String()    
+    
+class CreateDataSourcePayload(Record):
+    name = String()
+    description = String()
+    type = String()
+    credentials = CredentialsPayload()
+    provider_id = String()    
+    
+class CommandCreateDataSource(ComandoIntegracion):
+    data = CreateDataSourcePayload()
+    specversion = "1.0"     

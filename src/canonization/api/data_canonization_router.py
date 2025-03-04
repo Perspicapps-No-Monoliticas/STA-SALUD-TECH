@@ -11,7 +11,7 @@ from modules.data_canonization.application.queries import (
 
 from modules.data_canonization.application.mappers import (
     DataCanonizationDTOJsonMapper,
-    CreateIntakeDTOJsonMapper,
+    CreateCanonizationDTOJsonMapper,
 )
 
 from modules.data_canonization.application.commands import StartDataCanonizationCommand
@@ -20,7 +20,7 @@ from seedwork.presentation.api import create_router
 from seedwork.application.commands import dispatch_command
 
 # Ensure dispatch_command is registered for the commands
-import modules.data_canonization.infraestrucuture.command_dispatcher  # type: ignore
+import modules.data_canonization.infrastructure.command_dispatcher  # type: ignore
 
 data_canonization_router = create_router("/data-canonizations")
 
@@ -51,7 +51,7 @@ def get_data_canonization(data_canonization_id: uuid.UUID):
 
 @data_canonization_router.post("")
 def start_data_canonization(data_canonization: Dict, response: Response):
-    map_data_canonization = CreateIntakeDTOJsonMapper()
+    map_data_canonization = CreateCanonizationDTOJsonMapper()
     try:
         data_canonization_dto = map_data_canonization.external_to_dto(data_canonization)
         command = StartDataCanonizationCommand.from_dto(data_canonization_dto)

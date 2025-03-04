@@ -2,7 +2,7 @@ from seedwork.application.queries import QueryHandler
 
 
 from modules.data_canonization.domain.factories import DataCanonizationFactory
-from modules.data_canonization.infraestrucuture.factories import RepositoryFactory
+from modules.data_canonization.infrastructure.factories import RepositoryFactory
 
 
 class DataCanonizationeQueryBaseHandler(QueryHandler):

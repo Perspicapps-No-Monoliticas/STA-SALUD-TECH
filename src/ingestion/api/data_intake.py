@@ -18,7 +18,7 @@ from seedwork.presentation.api import create_router
 from seedwork.application.commands import dispatch_command
 
 # Ensure dispatch_command are registered for the commands
-import modules.data_intake.infraestrucuture.command_dispatcher  # type: ignore
+import modules.data_intake.infrastructure.command_dispatcher  # type: ignore
 
 data_intake_router = create_router("/data-intakes")
 

@@ -1,4 +1,6 @@
 
 EVENTO_INTEGRACION_INGESTION_CREADO = 'data_source_created_v1'
-EVENTO_INTEGRACION_ANONIMIZACION_INICIADO = 'anonimizacion_iniciada_v1'
+START_DATA_INGESTION_V1_TOPIC = "start-data-ingestion-v1"
+CREATE_DATA_SOURCE_V1_TOPIC = "create_data_source_v1"
 EVENTO_INTEGRACION_ANONIMIZACION_FINALIZADO = 'anonimizacion_finalizada_v1'
+EVENTO_INTEGRACION_ANONIMIZACION_INICIADO = 'anonimizacion_iniciada_v1'
