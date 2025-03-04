@@ -18,13 +18,27 @@ spec:
             path: /ingestion
             backend:
               service:
-                name: servicio-ingestion
+                name: ingestion-service
                 port:
                   number: 80
           - pathType: Prefix
             path: /anonimizacion
             backend:
               service:
-                name: servicio-anonimizacion
+                name: anonimizacion-service
+                port:
+                  number: 80
+          - pathType: Prefix
+            path: /canonization
+            backend:
+              service:
+                name: canonization-service
+                port:
+                  number: 80
+          - pathType: Prefix
+            path: /auditoria
+            backend:
+              service:
+                name: auditoria-service
                 port:
                   number: 80
