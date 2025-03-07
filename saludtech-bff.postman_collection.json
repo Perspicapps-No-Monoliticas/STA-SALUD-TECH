@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "a2d11e49-10df-465a-b8f8-8885f6b1c309",
-		"name": "salutech",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "2331986"
+		"_postman_id": "434c94bb-7955-47d9-ad2e-cb7b5feadc24",
+		"name": "saludtech-bff",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "11604273",
+		"_collection_link": "https://red-meteor-249373.postman.co/workspace/Team-Workspace~45e027d8-7e3a-487e-8455-46667f934ef9/collection/11604273-434c94bb-7955-47d9-ad2e-cb7b5feadc24?action=share&source=collection_link&creator=11604273"
 	},
 	"item": [
 		{
@@ -30,11 +31,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{INGESTION_URL}}/data-intakes",
+									"raw": "{{BFF_URL}}/ingestion/data-intakes",
 									"host": [
-										"{{INGESTION_URL}}"
+										"{{BFF_URL}}"
 									],
 									"path": [
+										"ingestion",
 										"data-intakes"
 									],
 									"query": [
@@ -67,15 +69,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{INGESTION_URL}}/data-intakes",
-									"host": [
-										"{{INGESTION_URL}}"
-									],
-									"path": [
-										"data-intakes"
-									]
-								}
+								"url": "{{BFF_URL}}/ingestion/data-intakes"
 							},
 							"response": []
 						},
@@ -97,13 +91,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{INGESTION_URL}}/data-intakes/:id",
+									"raw": "{{BFF_URL}}/ingestion/data-intakes/8e4a4375-dbed-4e74-9fc9-eaf0890b9228",
 									"host": [
-										"{{INGESTION_URL}}"
+										"{{BFF_URL}}"
 									],
 									"path": [
+										"ingestion",
 										"data-intakes",
-										":id"
+										"8e4a4375-dbed-4e74-9fc9-eaf0890b9228"
 									],
 									"query": [
 										{
@@ -115,12 +110,6 @@
 											"key": "page",
 											"value": "3",
 											"disabled": true
-										}
-									],
-									"variable": [
-										{
-											"key": "id",
-											"value": "18113501-87a8-40e4-a173-c8025fe4d7ef"
 										}
 									]
 								}
@@ -146,15 +135,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{INGESTION_URL}}/data-sources",
-									"host": [
-										"{{INGESTION_URL}}"
-									],
-									"path": [
-										"data-sources"
-									]
-								}
+								"url": "{{BFF_URL}}/ingestion/data-sources"
 							},
 							"response": []
 						},
@@ -176,11 +157,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{INGESTION_URL}}/data-sources",
+									"raw": "{{BFF_URL}}/ingestion/data-sources",
 									"host": [
-										"{{INGESTION_URL}}"
+										"{{BFF_URL}}"
 									],
 									"path": [
+										"ingestion",
 										"data-sources"
 									],
 									"query": [
@@ -216,22 +198,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{INGESTION_URL}}/data-sources/:id",
-									"host": [
-										"{{INGESTION_URL}}"
-									],
-									"path": [
-										"data-sources",
-										":id"
-									],
-									"variable": [
-										{
-											"key": "id",
-											"value": "c2aab24c-c514-4692-a4c7-2877cfad9276"
-										}
-									]
-								}
+								"url": "{{BFF_URL}}/ingestion/data-sources/19d7ef21-ac9b-4569-9f3c-a6d5b24ccb84"
 							},
 							"response": []
 						}
@@ -255,11 +222,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{INGESTION_URL}}/health",
+							"raw": "{{BFF_URL}}/ingestion/health",
 							"host": [
-								"{{INGESTION_URL}}"
+								"{{BFF_URL}}"
 							],
 							"path": [
+								"ingestion",
 								"health"
 							],
 							"query": [
@@ -293,11 +261,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{INGESTION_URL}}/reset-db",
+							"raw": "{{BFF_URL}}/ingestion/reset-db",
 							"host": [
-								"{{INGESTION_URL}}"
+								"{{BFF_URL}}"
 							],
 							"path": [
+								"ingestion",
 								"reset-db"
 							],
 							"query": [
@@ -342,11 +311,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{CANONIZATION_URL}}/data-canonizations",
+									"raw": "{{BFF_URL}}/canonization/data-canonizations",
 									"host": [
-										"{{CANONIZATION_URL}}"
+										"{{BFF_URL}}"
 									],
 									"path": [
+										"canonization",
 										"data-canonizations"
 									],
 									"query": [
@@ -379,15 +349,7 @@
 										}
 									}
 								},
-								"url": {
-									"raw": "{{CANONIZATION_URL}}/data-canonizations",
-									"host": [
-										"{{CANONIZATION_URL}}"
-									],
-									"path": [
-										"data-canonizations"
-									]
-								}
+								"url": "{{BFF_URL}}/canonization/data-canonizations"
 							},
 							"response": []
 						},
@@ -397,13 +359,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{CANONIZATION_URL}}/data-canonizations/b8129729-b85a-444f-b250-332528912a00",
+									"raw": "{{BFF_URL}}/canonization/data-canonizations/ecac4495-1629-455b-bbc0-b6d0780901cc",
 									"host": [
-										"{{CANONIZATION_URL}}"
+										"{{BFF_URL}}"
 									],
 									"path": [
+										"canonization",
 										"data-canonizations",
-										"b8129729-b85a-444f-b250-332528912a00"
+										"ecac4495-1629-455b-bbc0-b6d0780901cc"
 									],
 									"query": [
 										{
@@ -441,11 +404,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{CANONIZATION_URL}}/health",
+							"raw": "{{BFF_URL}}/canonization/health",
 							"host": [
-								"{{CANONIZATION_URL}}"
+								"{{BFF_URL}}"
 							],
 							"path": [
+								"canonization",
 								"health"
 							],
 							"query": [
@@ -479,11 +443,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{CANONIZATION_URL}}/reset-db",
+							"raw": "{{BFF_URL}}/canonization/reset-db",
 							"host": [
-								"{{CANONIZATION_URL}}"
+								"{{BFF_URL}}"
 							],
 							"path": [
+								"canonization",
 								"reset-db"
 							],
 							"query": [
@@ -505,46 +470,23 @@
 			]
 		},
 		{
-			"name": "Auditoria",
+			"name": "audit",
 			"item": [
 				{
-					"name": "List all canonizations",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
+					"name": "List Actions",
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{AUDITORIA_IRL}}/accion",
-							"host": [
-								"{{AUDITORIA_IRL}}"
-							],
-							"path": [
-								"accion"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "100",
-									"disabled": true
-								},
-								{
-									"key": "page",
-									"value": "3",
-									"disabled": true
-								}
-							]
-						}
+						"url": "{{BFF_URL}}/auditoria/accion"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Action By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{BFF_URL}}/auditoria/accion/f611635f-f599-4f4e-a40f-e7a8cdfe0429"
 					},
 					"response": []
 				}
@@ -575,18 +517,8 @@
 	],
 	"variable": [
 		{
-			"key": "INGESTION_URL",
-			"value": "34.58.105.81:8000/ingestion",
-			"type": "string"
-		},
-		{
-			"key": "CANONIZATION_URL",
-			"value": "34.58.105.81:8011/canonization",
-			"type": "string"
-		},
-		{
-			"key": "AUDITORIA_IRL",
-			"value": "34.58.105.81:8002/auditoria",
+			"key": "BFF_URL",
+			"value": "localhost:8006/bff/v1",
 			"type": "string"
 		}
 	]
