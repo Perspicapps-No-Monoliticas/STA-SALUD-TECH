@@ -91,14 +91,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{BFF_URL}}/ingestion/data-intakes/8e4a4375-dbed-4e74-9fc9-eaf0890b9228",
+									"raw": "{{BFF_URL}}/ingestion/data-intakes/:id",
 									"host": [
 										"{{BFF_URL}}"
 									],
 									"path": [
 										"ingestion",
 										"data-intakes",
-										"8e4a4375-dbed-4e74-9fc9-eaf0890b9228"
+										":id"
 									],
 									"query": [
 										{
@@ -110,6 +110,12 @@
 											"key": "page",
 											"value": "3",
 											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "18113501-87a8-40e4-a173-c8025fe4d7ef"
 										}
 									]
 								}
@@ -198,7 +204,23 @@
 										}
 									}
 								},
-								"url": "{{BFF_URL}}/ingestion/data-sources/19d7ef21-ac9b-4569-9f3c-a6d5b24ccb84"
+								"url": {
+									"raw": "{{BFF_URL}}/ingestion/data-sources/:id",
+									"host": [
+										"{{BFF_URL}}"
+									],
+									"path": [
+										"ingestion",
+										"data-sources",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "c2aab24c-c514-4692-a4c7-2877cfad9276"
+										}
+									]
+								}
 							},
 							"response": []
 						}
