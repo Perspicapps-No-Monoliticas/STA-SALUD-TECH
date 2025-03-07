@@ -38,12 +38,7 @@ services:
     networks:
       - pulsar
     command: >
-      bin/pulsar initialize-cluster-metadata
-      --cluster cluster-a
-      --zookeeper zookeeper:2181
-      --configuration-store zookeeper:2181
-      --web-service-url http://broker:8080
-      --broker-service-url pulsar://broker:6650
+      bin/pulsar initialize-cluster-metadata --cluster cluster-a --zookeeper zookeeper:2181 --configuration-store zookeeper:2181 --web-service-url http://broker:8080 --broker-service-url pulsar://broker:6650
     depends_on:
       zookeeper:
         condition: service_healthy
@@ -98,9 +93,6 @@ services:
         condition: service_healthy
       bookie:
         condition: service_started
-    ports:
-      - "6650:6650"
-      - "8080:8080"
     command: bash -c "bin/apply-config-from-env.py conf/broker.conf && exec bin/pulsar broker"
     healthcheck:
       test: [ "CMD-SHELL", "bin/pulsar-admin brokers list cluster-a" ]
@@ -243,44 +235,44 @@ services:
 
   # Servicio de Auditoria
   auditoria:
-     build: ./src/auditoria
-     container_name: auditoria-container
-     command: flask --app api run --host=0.0.0.0 --port=8002 --debugger
-     working_dir: /app
-     environment:
-       - BROKER_HOST=broker
-       - DB_USERNAME=auditoria
-       - DB_PASSWORD=admin
-       - DB_HOSTNAME=auditoria_db
-       - DB_NAME=postgres_auditoria_db
-       - PULSAR_BROKER_URL=pulsar://broker:6650
-       - PYTHONPATH=/app
-       - PYTHONUNBUFFERED=1
-     networks:
-       - pulsar
-       - auditoria_net
-     depends_on:
-       auditoria_db:
-         condition: service_healthy
-       broker:
-         condition: service_healthy
-     ports:
-       - "8002:8002"
+    build: ./src/auditoria
+    container_name: auditoria-container
+    command: flask --app api run --host=0.0.0.0 --port=8002 --debugger
+    working_dir: /app
+    environment:
+      - BROKER_HOST=broker
+      - DB_USERNAME=auditoria
+      - DB_PASSWORD=admin
+      - DB_HOSTNAME=auditoria_db
+      - DB_NAME=postgres_auditoria_db
+      - PULSAR_BROKER_URL=pulsar://broker:6650
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+    networks:
+      - pulsar
+      - auditoria_net
+    depends_on:
+      auditoria_db:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
+    ports:
+      - "8002:8002"
   auditoria_db:
-     image: postgres:latest
-     container_name: auditoria_db
-     environment:
-       - POSTGRES_USER=auditoria
-       - POSTGRES_PASSWORD=admin
-       - POSTGRES_DB=postgres_auditoria_db
-     restart: on-failure
-     networks:
-       - auditoria_net
-     healthcheck:
-       test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
-       interval: 10s
-       timeout: 5s
-       retries: 5
+    image: postgres:latest
+    container_name: auditoria_db
+    environment:
+      - POSTGRES_USER=auditoria
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=postgres_auditoria_db
+    restart: on-failure
+    networks:
+      - auditoria_net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   canonization:
     build: ./src/canonization
@@ -386,6 +378,22 @@ services:
     restart: on-failure
     healthcheck:
       test: [ "CMD-SHELL", "redis-cli ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  # Standalone Pulsar
+  pulsar-standalone:
+    image: apachepulsar/pulsar:latest
+    container_name: pulsar-standalone
+    restart: on-failure
+    networks:
+      - pulsar
+    ports:
+      - "6650:6650"
+      - "8080:8080"
+    command: bin/pulsar standalone -nfw
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/admin/v2/brokers/health || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 5
