@@ -16,6 +16,10 @@ from .mappers import DataCanonizationMapper
 
 
 from seedwork.infrastructure.uow import UnitOfWorkPort
+from seedwork.infrastructure.varaibles import (
+    PROCESSING_TIME_WAIT_MIN,
+    PROCESSING_TIME_WAIT_MAX,
+)
 
 
 def _save_uow():
@@ -67,7 +71,7 @@ class ProcessCanonizationService(DomainProcessCanonizationService):
             self.data_canonization_repository.get_by_id(canonization_uuid)
         )
         print(f"Data canonization {data_canonization.id} started")
-        time.sleep(random.randint(1, 10))
+        time.sleep(random.randint(PROCESSING_TIME_WAIT_MIN, PROCESSING_TIME_WAIT_MAX))
         data_canonization.finish_canonization(correlation_uuid)
         UnitOfWorkPort.register_batch(
             self.data_canonization_repository.update, data_canonization

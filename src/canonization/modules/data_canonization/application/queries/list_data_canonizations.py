@@ -1,3 +1,5 @@
+import uuid
+
 from seedwork.application.queries import PaginationQuery, execute_query, QueryResult
 from modules.data_canonization.domain.repositories import DataCanonizationRepository
 
@@ -5,7 +7,20 @@ from modules.data_canonization.application.mappers import DataCanonizationMapper
 from .base import DataCanonizationeQueryBaseHandler
 
 
-class GetAllDataCanonizationsQuery(PaginationQuery): ...
+class GetAllDataCanonizationsQuery(PaginationQuery):
+    provider_id: uuid.UUID = None
+    ingestion_id: uuid.UUID = None
+
+    def __init__(
+        self,
+        *args,
+        provider_id: uuid.UUID = None,
+        ingestion_id: uuid.UUID = None,
+        **kwargs
+    ):
+        super().__init__(*args, **kwargs)
+        self.provider_id = provider_id
+        self.ingestion_id = ingestion_id
 
 
 class GetAllDataCanonizationsQueryHandler(DataCanonizationeQueryBaseHandler):
@@ -14,7 +29,10 @@ class GetAllDataCanonizationsQueryHandler(DataCanonizationeQueryBaseHandler):
             DataCanonizationRepository.__class__
         )
         data_canonizations = self.data_canonization_factory.create_object(
-            repository.get_paginated(query.page, query.limit), DataCanonizationMapper()
+            repository.get_paginated(
+                query.page, query.limit, query.provider_id, query.ingestion_id
+            ),
+            DataCanonizationMapper(),
         )
         return QueryResult(result=data_canonizations)
 
