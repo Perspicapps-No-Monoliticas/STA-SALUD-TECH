@@ -404,7 +404,7 @@ services:
      working_dir: /app
      environment:
        - INGESTION_PATH=http://ingestion:8000
-       - CANONIZATION_PATH=http://canonizacion:8005
+       - CANONIZATION_PATH=http://canonization:8005
        - AUDIT_PATH=http://auditoria:8002
        - PYTHONPATH=/app
        - PYTHONUNBUFFERED=1

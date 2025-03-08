@@ -1,19 +1,26 @@
-from fastapi import FastAPI, Request, HTTPException, APIRouter
+from fastapi import FastAPI, Request, HTTPException, APIRouter, Depends
 from fastapi.responses import JSONResponse
-from api.v1.routers import ingestion, canonization, audit
+from config import settings
+from api.v1.routers import ingestion, canonization, audit, authentication
 
 app = FastAPI()
 
-api_router = APIRouter(prefix="/bff/v1")
+health_router = APIRouter()
+@health_router.get(f"{settings['API_PREFIX']}/health")
+def healthcheck():
+    return {"status": "ok"}
+
+
+api_router = APIRouter(prefix=settings['API_PREFIX'], dependencies=[Depends(authentication.validate_token)] )
 
 api_router.include_router(ingestion.router_ingestion)
 api_router.include_router(canonization.router_canonization)
 api_router.include_router(audit.router_audit)
-app.include_router(api_router)
 
-@api_router.get("/healthcheck")
-def healthcheck():
-    return {"status": "ok"}
+app.include_router(authentication.router_auth)
+app.include_router(api_router)
+app.include_router(health_router)
+
 
 @app.exception_handler(HTTPException)
 async def service_exception_handler(request: Request, exc: HTTPException):
