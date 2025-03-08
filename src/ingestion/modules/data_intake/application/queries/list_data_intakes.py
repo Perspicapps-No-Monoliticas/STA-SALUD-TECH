@@ -1,3 +1,6 @@
+import uuid
+from typing import Optional
+
 from seedwork.application.queries import PaginationQuery, execute_query, QueryResult
 from modules.data_intake.domain.repositories import DataIntakeRepository
 
@@ -5,7 +8,12 @@ from modules.data_intake.application.mappers import DataIntakeMapper
 from .base import DataIntakeeQueryBaseHandler
 
 
-class GetAllDataIntakesQuery(PaginationQuery): ...
+class GetAllDataIntakesQuery(PaginationQuery):
+    provider_id: Optional[uuid.UUID] = None
+
+    def __init__(self, provider_id: Optional[uuid.UUID], *args, **hwargs):
+        super().__init__(*args, **hwargs)
+        self.provider_id = provider_id
 
 
 class GetAllDataSourcesQueryHandler(DataIntakeeQueryBaseHandler):
@@ -14,7 +22,8 @@ class GetAllDataSourcesQueryHandler(DataIntakeeQueryBaseHandler):
             DataIntakeRepository.__class__
         )
         data_sources = self.data_intake_factory.create_object(
-            repository.get_paginated(query.page, query.limit), DataIntakeMapper()
+            repository.get_paginated(query.page, query.limit, query.provider_id),
+            DataIntakeMapper(),
         )
         return QueryResult(result=data_sources)
 

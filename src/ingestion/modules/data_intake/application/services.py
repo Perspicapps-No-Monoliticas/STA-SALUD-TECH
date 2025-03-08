@@ -16,6 +16,10 @@ from .mappers import DataIntakeMapper
 
 
 from seedwork.infrastructure.uow import UnitOfWorkPort
+from seedwork.infrastructure.varaibles import (
+    PROCESSING_TIME_WAIT_MIN,
+    PROCESSING_TIME_WAIT_MAX,
+)
 
 
 def _save_uow():
@@ -55,7 +59,7 @@ class ProcessIngestionService(DomainProcessIngestionService):
         _save_uow()
         data_intake: DataIntake = self.data_intake_repository.get_by_id(ingestion_uuid)
         print(f"Data ingestion {data_intake.id} started")
-        time.sleep(random.randint(1, 10))
+        time.sleep(random.randint(PROCESSING_TIME_WAIT_MIN, PROCESSING_TIME_WAIT_MAX))
         data_intake.finish_ingestions(correlation_id)
         UnitOfWorkPort.register_batch(self.data_intake_repository.update, data_intake)
         print(f"Data ingestion {data_intake.id} ended")

@@ -24,8 +24,12 @@ data_intake_router = create_router("/data-intakes")
 
 
 @data_intake_router.get("")
-def list_intakes(page: int = Query(None), limit: int = Query(None)):
-    query = GetAllDataIntakesQuery(page=page, limit=limit)
+def list_intakes(
+    page: int = Query(None),
+    limit: int = Query(None),
+    provider_id: uuid.UUID = Query(None),
+):
+    query = GetAllDataIntakesQuery(page=page, limit=limit, provider_id=provider_id)
     query_result = execute_query(query)
     mapper_data_intake = DataIntakeDTOJsonMapper()
 
