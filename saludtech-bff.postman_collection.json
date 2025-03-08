@@ -20,7 +20,13 @@
 							},
 							"request": {
 								"method": "GET",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{TOKEN}}",
+										"type": "text"
+									}
+								],
 								"body": {
 									"mode": "raw",
 									"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
@@ -59,7 +65,13 @@
 							"name": "Init intake",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{TOKEN}}",
+										"type": "text"
+									}
+								],
 								"body": {
 									"mode": "raw",
 									"raw": "{\n    \"provider_id\": \"afd19370-3387-4b24-9604-1ffe43afe91f\",\n    \"correlation_id\": \"93ac031e-05ef-4f2a-b281-271b8895ee39\"\n}",
@@ -80,7 +92,13 @@
 							},
 							"request": {
 								"method": "GET",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{TOKEN}}",
+										"type": "text"
+									}
+								],
 								"body": {
 									"mode": "raw",
 									"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
@@ -131,7 +149,13 @@
 							"name": "Create source",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{TOKEN}}",
+										"type": "text"
+									}
+								],
 								"body": {
 									"mode": "raw",
 									"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"type\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
@@ -152,7 +176,13 @@
 							},
 							"request": {
 								"method": "GET",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{TOKEN}}",
+										"type": "text"
+									}
+								],
 								"body": {
 									"mode": "raw",
 									"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
@@ -194,7 +224,13 @@
 							},
 							"request": {
 								"method": "GET",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{TOKEN}}",
+										"type": "text"
+									}
+								],
 								"body": {
 									"mode": "raw",
 									"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
@@ -272,7 +308,13 @@
 					"name": "Delete database",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{TOKEN}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
@@ -322,7 +364,13 @@
 							},
 							"request": {
 								"method": "GET",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{TOKEN}}",
+										"type": "text"
+									}
+								],
 								"body": {
 									"mode": "raw",
 									"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
@@ -361,7 +409,13 @@
 							"name": "Init canonization",
 							"request": {
 								"method": "POST",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{TOKEN}}",
+										"type": "text"
+									}
+								],
 								"body": {
 									"mode": "raw",
 									"raw": "{\n    \"provider_id\": \"afd19370-3387-4b24-9604-1ffe43afe91f\",\n    \"anonimization_id\": \"26062612-2ca1-43e8-bab6-337aa9a077ec\",\n    \"ingestion_id\": \"7429f736-4ccf-4d75-8656-64167fd84110\",\n    \"repository_in_path\": \"private/lala/hehe\",\n    \"correlation_id\":\"93ac031e-05ef-4f2a-b281-271b8895ee39\"\n}",
@@ -379,7 +433,13 @@
 							"name": "Canonization detail",
 							"request": {
 								"method": "GET",
-								"header": [],
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{TOKEN}}",
+										"type": "text"
+									}
+								],
 								"url": {
 									"raw": "{{BFF_URL}}/canonization/data-canonizations/ecac4495-1629-455b-bbc0-b6d0780901cc",
 									"host": [
@@ -454,7 +514,13 @@
 					"name": "Delete database",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{TOKEN}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
@@ -498,7 +564,13 @@
 					"name": "List Actions",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{TOKEN}}",
+								"type": "text"
+							}
+						],
 						"url": "{{BFF_URL}}/auditoria/accion"
 					},
 					"response": []
@@ -507,8 +579,53 @@
 					"name": "Get Action By Id",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{TOKEN}}",
+								"type": "text"
+							}
+						],
 						"url": "{{BFF_URL}}/auditoria/accion/f611635f-f599-4f4e-a40f-e7a8cdfe0429"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "generate_token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseJson = pm.response.json();\r",
+									"if (responseJson.token) {\r",
+									"    pm.collectionVariables.set(\"TOKEN\", responseJson.token);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{BFF_URL}}/auth/generate_token"
 					},
 					"response": []
 				}
@@ -541,6 +658,11 @@
 		{
 			"key": "BFF_URL",
 			"value": "localhost:8006/bff/v1",
+			"type": "string"
+		},
+		{
+			"key": "TOKEN",
+			"value": "",
 			"type": "string"
 		}
 	]
