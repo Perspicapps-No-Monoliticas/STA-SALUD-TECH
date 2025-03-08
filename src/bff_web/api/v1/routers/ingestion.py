@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from config import settings
 from api.v1.services.ingestion_service import fetch_data, send_data
 
@@ -22,8 +22,8 @@ def get_data_intake(data_intake_id: str):
     return fetch_data(f"{DATA_INTAKE_URL}/{data_intake_id}")
 
 @router_ingestion.get("/data-intakes")
-def list_data_intakes():
-    return fetch_data(f"{DATA_INTAKE_URL}")
+def list_data_intakes(request: Request):
+    return fetch_data(f"{DATA_INTAKE_URL}",params=dict(request.query_params))
 
 @router_ingestion.post("/data-intakes")
 def create_data_intake(payload: dict):

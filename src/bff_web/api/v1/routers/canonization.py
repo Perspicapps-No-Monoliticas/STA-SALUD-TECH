@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from config import settings
 from api.v1.services.canonization_service import fetch_data, send_data
 
@@ -15,8 +15,8 @@ def reset_db():
     return send_data(f"{CANONIZATION_PATH_URL}/reset-db")
 
 @router_canonization.get("/data-canonizations")
-def list_canonizations():
-    return fetch_data(f"{CANONIZATION_PATH_URL}/data-canonizations")
+def list_canonizations(request: Request):
+    return fetch_data(f"{CANONIZATION_PATH_URL}/data-canonizations",params=dict(request.query_params))
 
 @router_canonization.post("/data-canonizations")
 def create_canonization(payload: dict):
