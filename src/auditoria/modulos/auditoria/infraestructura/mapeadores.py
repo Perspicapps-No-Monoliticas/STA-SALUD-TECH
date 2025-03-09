@@ -30,7 +30,6 @@ class MapadeadorEventosRegulacion(Mapeador):
         return False
 
     def _entidad_a_regulacion_creada(self, entidad: RegulacionCreada, payload=LATEST_payload):
-        print(f"ENTRA A RegulacionCreadaPayloadd{entidad}")
         def v1(evento):
             from .schema.v1.eventos import RegulacionCreadaPayload, EventoRegulacionCreada            
 
@@ -49,7 +48,6 @@ class MapadeadorEventosRegulacion(Mapeador):
             evento_integracion.datacontenttype = 'AVRO'
             evento_integracion.service_name = 'sta'
             evento_integracion.data = payload
-            print("RETORNA RegulacionCreadaPayload")
             return evento_integracion
                     
         if not self.es_payload_valida(payload):

@@ -12,11 +12,8 @@ class ObtenerRegulacion(Query):
 class ObtenerRegulacionHandler(RegulacionQueryBaseHandler):
 
     def handle(self, query: ObtenerRegulacion) -> QueryResultado:
-        print("==========PASO#1============")
         vista = self.fabrica_vista.crear_objeto(Regulacion)
-        print("==========PASO#2============")        
         result = vista.obtener_por(id=query.id)
-        print("==========PASO#3============")
         regulacion =  self.fabrica_auditorias.crear_objeto(result, MapeadorRegulacion())
         return QueryResultado(resultado=regulacion)
 

@@ -11,7 +11,6 @@ def registrar_handlers():
     import modulos.auditoria.aplicacion
 
 def importar_modelos_alchemy():
-    print("ACA CREA LAS TABLAS EN LA BASE DE DATOS")
     import modulos.auditoria.infraestructura.dto
 
 def comenzar_consumidor(app):
@@ -30,7 +29,6 @@ def comenzar_consumidor(app):
 
 def create_app(configuracion={}):
     # Init la aplicacion de Flask
-    print(f"basedir {basedir}")
     app = Flask(__name__, instance_relative_config=True)
     
     app.secret_key = '9d58f98f-3ae8-4149-a09f-3a8c2012e32c'

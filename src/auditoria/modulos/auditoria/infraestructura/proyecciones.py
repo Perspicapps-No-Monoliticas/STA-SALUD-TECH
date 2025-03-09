@@ -17,7 +17,6 @@ class ProyeccionAuditoria(Proyeccion, ABC):
         ...
 
 class ProyeccionAuditoriaLista(ProyeccionAuditoria):
-    print("ENTRA PROYECCION REGULACIONES")
     def __init__(self, nombre_evento, payload):        
         self.nombre_evento = nombre_evento
         self.payload = payload     
@@ -29,8 +28,6 @@ class ProyeccionAuditoriaLista(ProyeccionAuditoria):
         
         fabrica_repositorio = FabricaRepositorio()
         repositorio = fabrica_repositorio.crear_objeto(RepositorioRegulaciones)
-        print(f"Agregar.. {self.nombre_evento}")
-        print(f"Payload.. {self.payload}")
         repositorio.agregar(
             Regulacion(
                 nombre=str(self.nombre_evento),
@@ -51,7 +48,6 @@ class ProyeccionAuditoriaHandler(ProyeccionHandler):
 
 @proyeccion.register(ProyeccionAuditoriaLista)
 def ejecutar_proyeccion_regulacion(proyeccion, app=None):
-    print("REGISTRAR PROYECCION REGULACIONES")
     if not app:
         logging.error('ERROR: Contexto del app no puede ser nulo')
         return

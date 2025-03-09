@@ -19,7 +19,6 @@ class RepositorioRegulacionesSQLAlchemy(RepositorioRegulaciones):
         return self._fabrica_auditorias
 
     def obtener_por_id(self, id: UUID) -> Regulacion:
-        print("Entra#1")
         regulacion_dto = db.session.query(RegulacionDTO).filter_by(id=str(id)).one()
         return self._fabrica_auditorias.crear_objeto(regulacion_dto, MapeadorRegulacion())
 
@@ -28,9 +27,7 @@ class RepositorioRegulacionesSQLAlchemy(RepositorioRegulaciones):
         raise NotImplementedError
 
     def agregar(self, regulacion: Regulacion):
-        print("AGRGAR REGISTRO EN LA bd sin hacer commit") 
         regulacion_dto = self.fabrica_auditorias.crear_objeto(regulacion, MapeadorRegulacion())
-        print("PERSISTE EN BASE DE DATOS2") 
         db.session.add(regulacion_dto)
 
     def actualizar(self, regulacion: Regulacion):
@@ -70,7 +67,6 @@ class RepositorioEventosRegulacionSQLAlchemy(RepositorioEventosRegulaciones):
         evento_dto.formato_contenido = 'JSON'
         evento_dto.nombre_servicio = str(regulacion_evento.service_name)
         evento_dto.contenido = json_str
-        print("PERSISTE SIN COMMIT EN BASE DE DATOS EL EVENTOOOO") 
         db.session.add(evento_dto)
 
     def actualizar(self, regulacion: Regulacion):

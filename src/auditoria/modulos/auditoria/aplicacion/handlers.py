@@ -5,8 +5,6 @@ class HandlerRegulacionIntegracion(Handler):
 
     @staticmethod
     def handle_regulacion_creada(evento):
-        print("     ")
-        print("==========INDICAR QUE LA REGULACION FUE CREADA ============")
         despachador = Despachador()
         despachador.publicar_evento(evento, 'eventos-regulacion')
 

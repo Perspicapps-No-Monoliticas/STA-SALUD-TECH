@@ -29,16 +29,12 @@ class CrearRegulacionHandler(CrearRegulacionBaseHandler): #ESTE ES EL HANDLER
         regulacion.crear_regulacion(regulacion)
         repositorio = self.fabrica_repositorio.crear_objeto(RepositorioRegulaciones)
         repositorio_eventos = self.fabrica_repositorio.crear_objeto(RepositorioEventosRegulaciones)
-        print("==========PASO#5============")
-        UnidadTrabajoPuerto.registrar_batch(repositorio.agregar, regulacion, repositorio_eventos_func=repositorio_eventos.agregar)        
-        print("==========PASO#44444444444444 COMMIT============")
+        UnidadTrabajoPuerto.registrar_batch(repositorio.agregar, regulacion, repositorio_eventos_func=repositorio_eventos.agregar)
         UnidadTrabajoPuerto.commit()
 
 
 @comando.register(CrearRegulacion)
 def ejecutar_comando_crear_regulacion(comando: CrearRegulacion):
-    print("     ")
-    print("==========PASO#1 SOLICITAR EJEUCTAR COMANDO============")
     handler = CrearRegulacionHandler()
     handler.handle(comando)
     
