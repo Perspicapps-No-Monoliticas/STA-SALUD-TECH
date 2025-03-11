@@ -120,8 +120,8 @@ def execute_docker_commands():
         print(f"Error handling Pulsar topics: {e}")
 
 
-for users in [1, 10, 50, 100, 200]:
+for users in [10, 100]:
     for i in range(3):
-        execute_docker_commands()
-        asyncio.run(main(users, 60))
+        # execute_docker_commands()
+        asyncio.run(main(users, 120))
         print(f"Finished {users} users {i+1} times")
