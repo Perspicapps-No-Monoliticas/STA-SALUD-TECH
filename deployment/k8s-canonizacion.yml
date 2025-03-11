@@ -1,27 +1,21 @@
+# CANONIZATION DB STORAGE
 apiVersion: v1
-kind: Service
+kind: PersistentVolumeClaim
 metadata:
-  name: canonization-service
-  namespace: sta-salud
-  annotations:
-    cloud.google.com/backend-config: '{"default": "canonization-config"}' 
+  name: canonization-pvc
 spec:
-  selector:
-    app: canonization
-  type: NodePort
-  ports:
-    - port: 80
-      targetPort: 8005
-      protocol: TCP
-      nodePort: 31022
-
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 ---
 # CANONIZATION DB
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: canonization-db
-  namespace: sta-salud
+  #namespace: sta-salud
   labels:
     app: canonization-db
 spec:
@@ -37,6 +31,15 @@ spec:
       containers:
       - name: canonization-db
         image: postgres:latest
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+            ephemeral-storage: "1Gi"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+            ephemeral-storage: "2Gi"
         ports:
         - containerPort: 5432
         env:
@@ -55,14 +58,46 @@ spec:
             configMapKeyRef:
               name: sta-config
               key: CANONIZATION_DB_NAME
-
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -d
+            - $(POSTGRES_DB)
+            - -U
+            - $(POSTGRES_USER)
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 5
+        volumeMounts:
+        - name: canonization-data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: canonization-data
+        persistentVolumeClaim:
+          claimName: canonization-pvc
+---
+# CANONIZATION DB SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+  name: canonization-db
+spec:
+  selector:
+    app: canonization-db
+  ports:
+  - port: 5432
+    targetPort: 5432  
 ---
 # CANONIZATION APP
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: canonization
-  namespace: sta-salud
+  #namespace: sta-salud
   labels:
     app: canonization
 spec:
@@ -79,6 +114,15 @@ spec:
       - name: canonization
         image: us-central1-docker.pkg.dev/saludtech-alpes/sta-images/canonization:latest
         command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8005"]
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+            ephemeral-storage: "1Gi"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+            ephemeral-storage: "2Gi"
         ports:
         - containerPort: 8005
         env:
@@ -122,28 +166,13 @@ spec:
             configMapKeyRef:
               name: sta-config
               key: REDIS_PORT
-
----      
-# HEALTHCHECK
-apiVersion: cloud.google.com/v1
-kind: BackendConfig
-metadata:
-  name: canonization-config
-  namespace: sta-salud
-spec:
-  healthCheck:
-    checkIntervalSec: 60
-    port: 8005
-    type: HTTP
-    requestPath: /canonization/ping
-
 ---
 # CANONIZATION CONSUMER
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: canonization-consumer
-  namespace: sta-salud
+  #namespace: sta-salud
   labels:
     app: canonization-consumer
 spec:
@@ -160,6 +189,15 @@ spec:
       - name: canonization-consumer
         image: us-central1-docker.pkg.dev/saludtech-alpes/sta-images/canonization:latest
         command: ["python", "-u", "start_consumers.py"]
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+            ephemeral-storage: "1Gi"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+            ephemeral-storage: "2Gi"
         env:
         - name: DB_USER
           valueFrom:
@@ -207,7 +245,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: canonization-worker
-  namespace: sta-salud
+  #namespace: sta-salud
   labels:
     app: canonization-worker
 spec:
@@ -224,6 +262,15 @@ spec:
       - name: canonization-worker
         image: us-central1-docker.pkg.dev/saludtech-alpes/sta-images/canonization:latest
         command: ["celery", "-A", "celery_worker", "worker", "--loglevel=info"]
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+            ephemeral-storage: "1Gi"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+            ephemeral-storage: "2Gi"
         env:
         - name: DB_USER
           valueFrom:
@@ -265,3 +312,33 @@ spec:
             configMapKeyRef:
               name: sta-config
               key: REDIS_PORT
+---      
+# HEALTHCHECK
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: canonization-config
+  #namespace: sta-salud
+spec:
+  healthCheck:
+    checkIntervalSec: 60
+    port: 8005
+    type: HTTP
+    requestPath: /canonization/health
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: canonization-service
+  #namespace: sta-salud
+  annotations:
+    cloud.google.com/backend-config: '{"default": "canonization-config"}' 
+spec:
+  selector:
+    app: canonization
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8005
+      protocol: TCP
+      nodePort: 31022
