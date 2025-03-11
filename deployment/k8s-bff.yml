@@ -1,0 +1,72 @@
+# BFF APP
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bff
+  labels:
+    app: bff
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bff
+  template:
+    metadata:
+      labels:
+        app: bff
+    spec:
+      containers:
+      - name: bff
+        image: us-central1-docker.pkg.dev/saludtech-alpes/sta-images/bff_web:latest
+        command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8006"]
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+            ephemeral-storage: "1Gi"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+            ephemeral-storage: "2Gi"
+        ports:
+        - containerPort: 8006
+        env:
+        - name: INGESTION_PATH
+          value: http://ingestion-service
+        - name: CANONIZATION_PATH
+          value: http://canonization-service
+        - name: AUDIT_PATH
+          value: http://auditoria-service
+        - name: PYTHONPATH
+          value: /app
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        workingDir: /app
+---      
+# HEALTHCHECK
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: bff-config
+spec:
+  healthCheck:
+    checkIntervalSec: 60
+    port: 8006
+    type: HTTP
+    requestPath: /bff/v1/health
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bff-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "bff-config"}' 
+spec:
+  selector:
+    app: bff
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8006
+      protocol: TCP
+      nodePort: 31023

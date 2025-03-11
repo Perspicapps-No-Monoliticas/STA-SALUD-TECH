@@ -5,7 +5,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: gateway-ingress
-  namespace: sta-salud
+  #namespace: sta-salud
   labels:
     name: gateway-ingress
   annotations:
@@ -40,5 +40,12 @@ spec:
             backend:
               service:
                 name: auditoria-service
+                port:
+                  number: 80
+          - pathType: Prefix
+            path: /bff/v1
+            backend:
+              service:
+                name: bff-service
                 port:
                   number: 80

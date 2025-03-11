@@ -1,26 +1,8 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: anonimizacion-service
-  namespace: sta-salud
-  annotations:
-    cloud.google.com/backend-config: '{"default": "anonimizacion-config"}'  
-spec:
-  selector:
-    app: anonimizacion
-  type: NodePort
-  ports:
-    - port: 80
-      targetPort: 8001
-      protocol: TCP
-      nodePort: 31024
-
----
+# ANONIMIZACION APP
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: anonimizacion
-  namespace: sta-salud
   labels:
     app: anonimizacion
 spec:
@@ -37,6 +19,15 @@ spec:
       - name: anonimizacion
         image: us-central1-docker.pkg.dev/saludtech-alpes/sta-images/anonimizacion:latest
         command: ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8001"]
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+            ephemeral-storage: "1Gi"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+            ephemeral-storage: "2Gi"
         ports:
         - containerPort: 8001
         env:
@@ -57,3 +48,19 @@ spec:
     port: 8001
     type: HTTP
     requestPath: /anonimizacion/ping
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: anonimizacion-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "anonimizacion-config"}'  
+spec:
+  selector:
+    app: anonimizacion
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8001
+      protocol: TCP
+      nodePort: 31024

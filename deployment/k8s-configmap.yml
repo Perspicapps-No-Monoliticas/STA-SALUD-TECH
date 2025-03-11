@@ -2,10 +2,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: sta-config
-  namespace: sta-salud
+  #namespace: sta-salud
 data:
-  BROKER_HOST: "broker"
-  PULSAR_BROKER_URL: "pulsar://broker:6650"
+  BROKER_HOST: "34.122.28.67"
+  PULSAR_BROKER_URL: "pulsar://34.122.28.67:6650"
   REDIS_HOST: "redis-service"
   REDIS_PORT: "6379"
   INGESTION_DB_HOST: "ingestion-db"
