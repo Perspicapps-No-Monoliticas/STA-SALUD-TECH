@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "434c94bb-7955-47d9-ad2e-cb7b5feadc24",
-		"name": "saludtech-bff",
+		"_postman_id": "ad1a84d6-f446-4d85-9eca-aa14a4dbee63",
+		"name": "saludtech-bff Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "11604273",
-		"_collection_link": "https://red-meteor-249373.postman.co/workspace/Team-Workspace~45e027d8-7e3a-487e-8455-46667f934ef9/collection/11604273-434c94bb-7955-47d9-ad2e-cb7b5feadc24?action=share&source=collection_link&creator=11604273"
+		"_collection_link": "https://red-meteor-249373.postman.co/workspace/Team-Workspace~45e027d8-7e3a-487e-8455-46667f934ef9/collection/11604273-ad1a84d6-f446-4d85-9eca-aa14a4dbee63?action=share&source=collection_link&creator=11604273"
 	},
 	"item": [
 		{
@@ -15,9 +15,6 @@
 					"item": [
 						{
 							"name": "List all intakes",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
 							"request": {
 								"method": "GET",
 								"header": [
@@ -27,15 +24,6 @@
 										"type": "text"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
 									"raw": "{{BFF_URL}}/ingestion/data-intakes",
 									"host": [
@@ -87,9 +75,6 @@
 						},
 						{
 							"name": "Intake detail",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
 							"request": {
 								"method": "GET",
 								"header": [
@@ -99,15 +84,6 @@
 										"type": "text"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
 									"raw": "{{BFF_URL}}/ingestion/data-intakes/:id",
 									"host": [
@@ -171,9 +147,6 @@
 						},
 						{
 							"name": "List all soruces",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
 							"request": {
 								"method": "GET",
 								"header": [
@@ -183,15 +156,6 @@
 										"type": "text"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
 									"raw": "{{BFF_URL}}/ingestion/data-sources",
 									"host": [
@@ -219,9 +183,6 @@
 						},
 						{
 							"name": "Get source detail",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
 							"request": {
 								"method": "GET",
 								"header": [
@@ -231,15 +192,6 @@
 										"type": "text"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
 									"raw": "{{BFF_URL}}/ingestion/data-sources/:id",
 									"host": [
@@ -264,21 +216,9 @@
 				},
 				{
 					"name": "Health",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "{{BFF_URL}}/ingestion/health",
 							"host": [
@@ -359,9 +299,6 @@
 					"item": [
 						{
 							"name": "List all canonizations",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
 							"request": {
 								"method": "GET",
 								"header": [
@@ -371,15 +308,6 @@
 										"type": "text"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
 									"raw": "{{BFF_URL}}/canonization/data-canonizations",
 									"host": [
@@ -470,21 +398,9 @@
 				},
 				{
 					"name": "Health",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"who\",\n    \"description\": \"testing\",\n    \"type\": \"POSTGRES\",\n    \"credentials\": {\n        \"payload\": {\n            \"DB_USER\":\"DB_USER\",\n            \"DB_PASSWORD\":\"DB_PASSWORD\",\n            \"DB_HOST\":\"DB_HOST\",\n            \"DB_PORT\":\"DB_PORT\",\n            \"DB_NAME\":\"DB_NAME\"\n        },\n        \"source\": \"PASSWORD\"\n    },\n    \"provider_id\":\"afd19370-3387-4b24-9604-1ffe43afe91f\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "{{BFF_URL}}/canonization/health",
 							"host": [
@@ -586,7 +502,7 @@
 								"type": "text"
 							}
 						],
-						"url": "{{BFF_URL}}/auditoria/accion/f611635f-f599-4f4e-a40f-e7a8cdfe0429"
+						"url": "{{BFF_URL}}/auditoria/accion/62aefcbb-957f-4664-bb33-8c4a15108afc"
 					},
 					"response": []
 				}
@@ -657,7 +573,7 @@
 	"variable": [
 		{
 			"key": "BFF_URL",
-			"value": "localhost:8006/bff/v1",
+			"value": "34.111.148.70/bff/v1",
 			"type": "string"
 		},
 		{
