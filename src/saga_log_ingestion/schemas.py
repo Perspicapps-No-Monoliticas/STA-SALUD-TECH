@@ -1,17 +1,25 @@
 from pulsar import schema
 
 
-class Header(schema.Record):
+class EventHeader(schema.Record):
     id = schema.String()
     ingestion = schema.Long()
-    specversion = schema.String("v1.0")
+    specversion = schema.String()
     type = schema.String()
-    datacontenttype = schema.String("json")
+    datacontenttype = schema.String()
     service_name = schema.String()
     country_iso = schema.String()
     correlation_id = schema.String()
 
-
+class CommandHeader(schema.Record):
+    id = schema.String()
+    ingestion = schema.Long()
+    specversion = schema.String()
+    type = schema.String()
+    datacontenttype = schema.String()
+    service_name = schema.String()
+    country_iso = schema.String()
+    correlation_id = schema.String()
 class StartDataIntakePayload(schema.Record):
     provider_id = schema.String()
     correlation_id = schema.String()
@@ -19,7 +27,7 @@ class StartDataIntakePayload(schema.Record):
 
 class CommandStartDataIntake(schema.Record):
     data = StartDataIntakePayload()
-    header = Header()
+    header = CommandHeader()
 
 
 class DataIngestionPayload(schema.Record):
@@ -34,17 +42,17 @@ class DataIngestionPayload(schema.Record):
 
 class DataIngestionCreated(schema.Record):
     data = DataIngestionPayload()
-    header = Header()
+    header = EventHeader()
 
 
 class DataIngestionStarted(schema.Record):
     data = DataIngestionPayload()
-    header = Header()
+    header = EventHeader()
 
 
 class DataIngestionFinished(schema.Record):
     data = DataIngestionPayload()
-    header = Header()
+    header = EventHeader()
 
 
 class AnonimizacionFinalizadaPayload(schema.Record):
@@ -58,7 +66,7 @@ class AnonimizacionFinalizadaPayload(schema.Record):
 
 class EventoAnonimizacionFinalizada(schema.Record):
     data = AnonimizacionFinalizadaPayload()
-    header = Header()
+    header = EventHeader()
 
 
 class StartDataCanonizationPayload(schema.Record):
@@ -71,7 +79,7 @@ class StartDataCanonizationPayload(schema.Record):
 
 class CommandStartDataCanonization(schema.Record):
     data = StartDataCanonizationPayload()
-    header = Header()
+    header = CommandHeader()
 
 
 class DataCanonizationPayload(schema.Record):
@@ -88,14 +96,14 @@ class DataCanonizationPayload(schema.Record):
 
 class EventDataCanonizationCreated(schema.Record):
     data = DataCanonizationPayload()
-    header = Header()
+    header = EventHeader()
 
 
 class EventDataCanonizationStarted(schema.Record):
     data = DataCanonizationPayload()
-    header = Header()
+    header = EventHeader()
 
 
 class EventDataCanonizationCompleted(schema.Record):
     data = DataCanonizationPayload()
-    header = Header()
+    header = EventHeader()

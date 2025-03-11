@@ -2,5 +2,5 @@ fastapi[standard]==0.115.8
 pydantic==2.10.6
 uvicorn==0.34.0 
 PyDispatcher==2.0.7
-pulsar-client==3.6.0
-pulsar-client[avro]==3.6.0
+pulsar-client
+pulsar-client[avro]

@@ -13,7 +13,6 @@ DB_NAME = os.getenv("DB_NAME", "saga_log")
 
 DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
-INGESTION_COMPLETED_V1_TOPIC = "ingestion-completed-v1"
 COUNTRY_CODE = os.getenv("COUNTRY_CODE", "US")
 
 BROKER_URL = os.getenv("PULSAR_BROKER_URL", default="pulsar://localhost:6650")

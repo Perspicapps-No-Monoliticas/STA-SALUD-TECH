@@ -1,4 +1,3 @@
-version: '3'
 networks:
   pulsar:
     driver: bridge
@@ -7,6 +6,8 @@ networks:
   auditoria_net:
     driver: bridge
   canonization_net:
+    driver: bridge
+  saga_logs_net:
     driver: bridge
 services:
   # Start zookeeper
@@ -382,35 +383,74 @@ services:
       timeout: 5s
       retries: 5
   # Standalone Pulsar
-  pulsar-standalone:
-    image: apachepulsar/pulsar:latest
-    container_name: pulsar-standalone
-    restart: on-failure
+  # pulsar-standalone:
+  #   image: apachepulsar/pulsar:latest
+  #   container_name: pulsar-standalone
+  #   restart: on-failure
+  #   networks:
+  #     - pulsar
+  #   ports:
+  #     - "6650:6650"
+  #     - "8080:8080"
+  #   command: bin/pulsar standalone -nfw
+  #   healthcheck:
+  #     test: [ "CMD-SHELL", "curl -f http://localhost:8080/admin/v2/brokers/health || exit 1" ]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  bff:
+    build: ./src/bff_web
+    container_name: bff-container
+    command: uvicorn main:app --host 0.0.0.0 --port 8006  --reload
+    working_dir: /app
+    environment:
+      - INGESTION_PATH=http://ingestion:8000
+      - CANONIZATION_PATH=http://canonization:8005
+      - AUDIT_PATH=http://auditoria:8002
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+    networks:
+      - ingestion_net
+      - auditoria_net
+      - canonization_net
+    ports:
+      - "8006:8006"
+  saga-logs:
+    build: ./src/saga_log_ingestion
+    environment:
+      - DB_USER=saga_logs
+      - DB_PASSWORD=admin
+      - DB_HOST=saga_logs_db
+      - DB_PORT=5432
+      - DB_NAME=postgres_saga_logs_db
+      - PULSAR_BROKER_URL=pulsar://broker:6650
+    container_name: saga-logs-container
+    command: python -u main.py
     networks:
       - pulsar
-    ports:
-      - "6650:6650"
-      - "8080:8080"
-    command: bin/pulsar standalone -nfw
+      - saga_logs_net
+    depends_on:
+      broker:
+        condition: service_healthy
+      saga_logs_db:
+        condition: service_healthy
+      ingestion:
+        condition: service_healthy
+      canonization:
+        condition: service_healthy
+    restart: on-failure
+  saga_logs_db:
+    image: postgres:latest
+    container_name: saga_logs_db
+    environment:
+      - POSTGRES_USER=saga_logs
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=postgres_saga_logs_db
+    networks:
+      - saga_logs_net
+    restart: on-failure
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:8080/admin/v2/brokers/health || exit 1" ]
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
       interval: 10s
       timeout: 5s
       retries: 5
-  bff:
-     build: ./src/bff_web
-     container_name: bff-container
-     command: uvicorn main:app --host 0.0.0.0 --port 8006  --reload
-     working_dir: /app
-     environment:
-       - INGESTION_PATH=http://ingestion:8000
-       - CANONIZATION_PATH=http://canonization:8005
-       - AUDIT_PATH=http://auditoria:8002
-       - PYTHONPATH=/app
-       - PYTHONUNBUFFERED=1
-     networks:
-       - ingestion_net
-       - auditoria_net
-       - canonization_net
-     ports:
-       - "8006:8006"
