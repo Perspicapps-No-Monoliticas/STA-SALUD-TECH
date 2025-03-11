@@ -7,6 +7,10 @@ from seedwork.aplicacion.comandos import ejecutar_commando
 app = FastAPI()
 prefix_router = APIRouter(prefix="/anonimizacion")
 
+@prefix_router.get("/ping")
+def healthcheck():
+    return "pong"
+
 @prefix_router.post("/anonymize/")
 async def anonymize_image(
     file: ImagenMedicaDTO
