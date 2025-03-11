@@ -123,5 +123,5 @@ def execute_docker_commands():
 for users in [10, 100]:
     for i in range(3):
         # execute_docker_commands()
-        asyncio.run(main(users, 120))
+        asyncio.run(main(users, 200))
         print(f"Finished {users} users {i+1} times")
