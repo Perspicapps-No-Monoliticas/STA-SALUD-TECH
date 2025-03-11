@@ -11,7 +11,7 @@ class EventHeader(schema.Record):
     specversion = schema.String("v1.0")
     type = schema.String("event")
     datacontenttype = schema.String("json")
-    service_name = schema.String(default="integration")
+    service_name = schema.String(default="ingestion")
     country_iso = schema.String(default=COUNTRY_CODE)
     correlation_id = schema.String(default=str(uuid.uuid4()))
 
@@ -22,6 +22,6 @@ class CommandHeader(schema.Record):
     specversion = schema.String("v1.0")
     type = schema.String("event")
     datacontenttype = schema.String("json")
-    service_name = schema.String(default="integration")
+    service_name = schema.String(default="ingestion")
     country_iso = schema.String(default=COUNTRY_CODE)
     correlation_id = schema.String(default=str(uuid.uuid4()))

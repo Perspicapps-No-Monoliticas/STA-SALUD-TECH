@@ -23,7 +23,7 @@ class TopicConsumer(Thread, ABC):
             saga_log = SagaLog(
                 correlation_id=payload.header.correlation_id,
                 component=payload.header.service_name,
-                action_name= self.SCHEMA.__class__.__name__,
+                action_name= str(self.__class__.__name__),
                 type=payload.header.type,
                 entity_id=self.get_entity_id(payload),
                 event_at=payload.header.ingestion,
