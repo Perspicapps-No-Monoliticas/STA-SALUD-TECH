@@ -32,7 +32,9 @@ def list_canonizations(
     provider_id: uuid.UUID = Query(None),
     ingestion_id: uuid.UUID = Query(None),
 ):
-    query = GetAllDataCanonizationsQuery(page=page, limit=limit, provider_id=provider_id, ingestion_id=ingestion_id)
+    query = GetAllDataCanonizationsQuery(
+        page=page, limit=limit, provider_id=provider_id, ingestion_id=ingestion_id
+    )
     query_result = execute_query(query)
     mapper_data_canonization = DataCanonizationDTOJsonMapper()
 

@@ -1,73 +1,127 @@
-import json
+import argparse
+import csv
 import uuid
-
-from locust import HttpUser, TaskSet, task, between, run_single_user
-
-from config import BFF_HOST
+import asyncio
+import httpx
+import datetime
+import time
+from config import BFF_HOST, INGESTION_HOST
+import subprocess
 
 JSON_HEADER = {"Content-Type": "application/json"}
 
-all_tokens = []
+all_tokens = set()
+tokens_with_sync = set()
 
 
-class UserBehavior(TaskSet):
-    token: str
+async def login_and_ingest(client):
+    # Login and get token
+    print("Login")
+    response = await client.get(f"{BFF_HOST}/auth/generate_token", headers=JSON_HEADER)
+    provider_id = response.json().get("token")
+    all_tokens.add(provider_id)
+    print(f"Provider {provider_id} logged in")
 
-    @task
-    def login_and_ingest(self):
-        # Login and get token
-        response = self.client.get(
-            f"{BFF_HOST}/auth/generate_token", headers=JSON_HEADER
-        )
-        token = response.json().get("token")
-        self.tokens.append(token)
+    # Set authorization header
+    headers = {"Authorization": f"Bearer {provider_id}"}
+    headers.update(JSON_HEADER)
 
-        # Set authorization header
-        headers = {"Authorization": f"Bearer {token}"}
-        headers.update(JSON_HEADER)
-
-        # Call ingestion endpoint
-        correlation_id = str(uuid.uuid4())
-        self.client.post(
+    # Call ingestion endpoint
+    correlation_id = str(uuid.uuid4())
+    result = await client.post(
+        f"{BFF_HOST}/ingestion/data-intakes",
+        headers=headers,
+        json={
+            "correlation_id": correlation_id,
+            "provider_id": provider_id,
+        },
+    )
+    assert result.status_code == 200
+    # Veryfy sync/completed has started
+    while True:
+        response = await client.get(
             f"{BFF_HOST}/ingestion/data-intakes",
             headers=headers,
-            data=json.dumps({"correlation_id": correlation_id, "provider_id": token}),
+            params={"provider_id": provider_id},
+        )
+        if response.status_code != 200:
+            continue
+        json_result = response.json()
+        if len(json_result) <= 0:
+            continue
+        if json_result[0]["status"] in ["IN_PROGRESS", "COMPLETED"]:
+            tokens_with_sync.add(provider_id)
+            return
+        await asyncio.sleep(0.5)
+
+
+async def main(num_users, timeout):
+    async with httpx.AsyncClient() as client:
+        # Reset ingestion database
+        try:
+            tasks = [
+                asyncio.wait_for(login_and_ingest(client), timeout)
+                for _ in range(num_users)
+            ]
+            await asyncio.gather(*tasks)
+        except asyncio.TimeoutError:
+            print(f"Timeout of {timeout} seconds reached")
+
+    # Check if all tokens have sync
+    print("Users created %d" % len(all_tokens))
+    print("Users with sync %d" % len(tokens_with_sync))
+    print("Users without sync %d" % (len(all_tokens) - len(tokens_with_sync)))
+    # Write to CSV
+    csv_title = f"results/{num_users}_{timeout}_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv"
+    # Create directory if not exists
+    subprocess.run(f"mkdir -p results", shell=True, check=True)
+    with open(csv_title, mode="w") as file:
+        writer = csv.writer(file)
+        writer.writerow(["Provider ID", "Has Sync"])
+        for token in all_tokens:
+            writer.writerow([token, token in tokens_with_sync])
+    all_tokens.clear()
+    tokens_with_sync.clear()
+
+
+def execute_docker_commands():
+    commands = [
+        "docker compose exec ingestion celery -A celery_worker purge -f",
+        "docker compose restart ingestion_worker",
+        "docker compose exec canonization celery -A celery_worker purge -f",
+        "docker compose restart canonization_worker",
+    ]
+    for command in commands:
+        subprocess.run(
+            command,
+            shell=True,
+            check=True,
+            cwd="/Users/work/Documents/school/STA-SALUD-TECH",
         )
 
-    @task
-    def check_ingestion_status(self):
-        for token in self.tokens:
-            headers = {"Authorization": f"Bearer {token}"}
-            response = self.client.get(
-                f"{BFF_HOST}/ingestion/data-intakes?provider_id={token}&limit=1",
-                headers=headers,
+    # Handle Pulsar topics separately
+    try:
+        result = subprocess.run(
+            "docker compose exec broker /pulsar/bin/pulsar-admin topics list public/default",
+            shell=True,
+            check=True,
+            capture_output=True,
+            cwd="/Users/work/Documents/school/STA-SALUD-TECH",
+        )
+        topics = result.stdout.decode().splitlines()
+        for topic in topics:
+            subprocess.run(
+                f"docker compose exec broker /pulsar/bin/pulsar-admin topics delete {topic}",
+                shell=True,
+                check=True,
+                cwd="/Users/work/Documents/school/STA-SALUD-TECH",
             )
-            assert response.status_code == 200
-            status = response.json()[0].get("status")
-            assert status in ["IN_PROGRESS", "COMPLETED"]
+    except subprocess.CalledProcessError as e:
+        print(f"Error handling Pulsar topics: {e}")
 
 
-class WebsiteUser(HttpUser):
-    tasks = [UserBehavior]
-    wait_time = between(30, 31)
-    host = BFF_HOST
-
-    def on_stop(self):
-        # Final check to ensure the count of tokens matches the number of IN_PROGRESS or COMPLETED responses
-        in_progress_or_completed_count = 0
-        for token in self.tasks[0].tokens:
-            headers = {"Authorization": f"Bearer {token}"}
-            response = self.client.get(
-                f"{BFF_HOST}/ingestion/data-intakes?provider_id={token}&limit=1",
-                headers=headers,
-            )
-            if response.status_code == 200 and response.json().get("status") in [
-                "IN_PROGRESS",
-                "COMPLETED",
-            ]:
-                in_progress_or_completed_count += 1
-        assert in_progress_or_completed_count == len(self.tasks[0].tokens)
-
-
-if __name__ == "__main__":
-    run_single_user(WebsiteUser)
+for users in [1, 10, 50, 100, 200]:
+    for i in range(3):
+        execute_docker_commands()
+        asyncio.run(main(users, 60))
+        print(f"Finished {users} users {i+1} times")

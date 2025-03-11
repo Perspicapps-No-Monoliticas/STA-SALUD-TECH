@@ -5,7 +5,9 @@ name = "pypi"
 
 [packages]
 python-dotenv = "*"
-locust = "*"
+requests = "*"
+httpx = "*"
+clear = "*"
 
 [dev-packages]
 black = "*"
