@@ -1,0 +1,42 @@
+version: '3'
+networks:
+  saga_log_net:
+    driver: bridge
+services:
+  saga_log_db:
+    image: postgres:latest
+    container_name: saga_log_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=saga_log
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=saga_log_db
+    restart: on-failure
+    networks:
+      - saga_log_net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5  
+  saga_log:
+    #build: ./src/saga_log_ingestion
+    image: us-central1-docker.pkg.dev/saludtech-alpes/sta-images/sagalog:latest
+    container_name: saga-log-container
+    command: python -u main.py
+    working_dir: /app
+    environment:
+      - PULSAR_BROKER_URL=pulsar://34.122.28.67:6650
+      - DB_USER=saga_log
+      - DB_PASSWORD=admin
+      - DB_HOST=saga_log_db
+      - DB_PORT=5432
+      - DB_NAME=saga_log_db
+    networks:
+      - saga_log_net
+    depends_on:
+      saga_log_db:
+        condition: service_healthy
+    ports:
+      - "8002:8002"
